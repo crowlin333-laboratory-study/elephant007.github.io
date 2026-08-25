@@ -58,7 +58,7 @@
       color: #88c93b;
     }
 
-    /* Hero contenedor */
+    /* Hero contenedor con imagen de fondo */
     .hero {
       position: relative;
       width: 100%;
@@ -71,7 +71,7 @@
       background-repeat: no-repeat;
     }
 
-    /* Capa de degradado */
+    /* Degradado optimizado para reducir el impacto del grano y mejorar legibilidad */
     .hero::before {
       content: '';
       position: absolute;
@@ -80,8 +80,8 @@
       width: 100%;
       height: 100%;
       background: 
-        linear-gradient(0deg, #0d0d0d 12%, rgba(13, 13, 13, 0.65) 50%, rgba(13, 13, 13, 0.3) 100%),
-        linear-gradient(90deg, rgba(13, 13, 13, 0.75) 0%, rgba(13, 13, 13, 0) 65%);
+        linear-gradient(0deg, #0d0d0d 15%, rgba(13, 13, 13, 0.7) 50%, rgba(13, 13, 13, 0.4) 100%),
+        linear-gradient(90deg, rgba(13, 13, 13, 0.8) 0%, rgba(13, 13, 13, 0.1) 70%);
     }
 
     /* Contenido de texto */
