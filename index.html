@@ -1,31 +1,35 @@
-HTML
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Elephant007 — José Luis Rodríguez | Visual Arts & Photography</title>
+
+  <!-- Favicon para la pestaña del navegador -->
   <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Lucide Icons (Iconografía UI) -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Hoja de Estilos Externa -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- CONTENEDOR DE LA RÁFAGA INTRO -->
+  <!-- CONTENEDOR DE LA RÁFAGA INTRO (PRELOADER) -->
   <div id="intro-loader">
     <img id="rafaga-img" src="foto1.jpg" alt="Intro Ráfaga">
     <div class="rafaga-counter"><span id="counter-num">01</span> / 10</div>
   </div>
 
-  <!-- ENCABEZADO SUPERIOR -->
+  <!-- ENCABEZADO SUPERIOR LIBRE CON LOGO Y DOCK -->
   <header class="top-header">
     <div class="brand-container">
       <img src="logo.png" alt="Elephant007 Logo" class="brand-logo">
       <div class="brand">Elephant<span>007</span></div>
     </div>
 
+    <!-- Menú macOS compacto horizontal en la esquina superior derecha -->
     <nav class="mac-dock-top">
       <a href="#deportes" class="dock-btn active">
         <i data-lucide="camera"></i>
@@ -46,12 +50,13 @@ HTML
     </nav>
   </header>
 
-  <!-- HERO PRINCIPAL HOME -->
+  <!-- HERO PRINCIPAL (PORTADA HOMEPAGE) -->
   <section class="hero">
     <div class="content">
       <div class="subtitle">José Luis Rodríguez — Visual Arts</div>
       <h1>Sports Photography & <span>Graphic Design</span></h1>
       
+      <!-- Botón Call to Action con Obturador Interactivo -->
       <a href="#deportes" class="btn-shutter">
         <svg class="shutter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="9" />
@@ -67,22 +72,33 @@ HTML
     </div>
   </section>
 
-  <!-- FOOTER TAGS -->
+  <!-- FOOTER / SECCIÓN DE CAJAS CENTRADAS -->
   <footer class="footer-tags">
     <div class="tag-box">Fotografía Deportiva</div>
     <div class="tag-box">E-Commerce Product Editor</div>
     <div class="tag-box">Graphic Design</div>
   </footer>
 
-  <!-- WHATSAPP FLOTANTE -->
+  <!-- BOTÓN FLOTANTE DE WHATSAPP -->
   <a href="https://wa.me/525560681662" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contacto por WhatsApp">
     <i data-lucide="message-circle"></i>
   </a>
 
+  <!-- SCRIPTS INTERACTIVOS -->
   <script>
+    // Inicializar Iconos Lucide
     lucide.createIcons();
 
-    // RÁFAGA DE FOTOS INTRO
+    // Control del Estado Activo en el Dock Superior
+    const dockButtons = document.querySelectorAll('.dock-btn');
+    dockButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        dockButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // RÁFAGA INTRODUCTORIA DE FOTOS (10 IMÁGENES A 150MS)
     const fotos = [
       'foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg', 'foto5.jpg',
       'foto6.jpg', 'foto7.jpg', 'foto8.jpg', 'foto9.jpg', 'DSC04784.jpg'
@@ -93,7 +109,6 @@ HTML
     const counterNum = document.getElementById('counter-num');
     const introLoader = document.getElementById('intro-loader');
 
-    // Cambia la foto cada 150 milisegundos (efecto ráfaga cámara)
     const interval = setInterval(() => {
       currentIndex++;
       if (currentIndex < fotos.length) {
@@ -101,7 +116,6 @@ HTML
         counterNum.textContent = String(currentIndex + 1).padStart(2, '0');
       } else {
         clearInterval(interval);
-        // Transición de salida hacia el Home
         introLoader.classList.add('fade-out');
         setTimeout(() => {
           introLoader.style.display = 'none';
