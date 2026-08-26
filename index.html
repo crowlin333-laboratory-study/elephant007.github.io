@@ -1,3 +1,6 @@
+HTML
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -44,7 +47,7 @@
     }
 
     .brand-logo {
-      height: 34px;
+      height: 36px;
       width: auto;
       object-fit: contain;
     }
@@ -57,7 +60,7 @@
     }
 
     .brand span {
-      color: #88c93b; /* Accent Neon Green */
+      color: #ff3b00; /* Naranja a juego con el logo */
     }
 
     nav a {
@@ -72,10 +75,10 @@
     }
 
     nav a:hover {
-      color: #88c93b;
+      color: #ff3b00;
     }
 
-    /* Hero contenedor con imagen de fondo original */
+    /* Hero contenedor con imagen de fondo */
     .hero {
       position: relative;
       width: 100%;
@@ -88,7 +91,7 @@
       background-repeat: no-repeat;
     }
 
-    /* Máscara de degradado para sombras profundas y legibilidad perfecta */
+    /* Degradado optimizado para sombras y contraste */
     .hero::before {
       content: '';
       position: absolute;
@@ -101,7 +104,7 @@
         linear-gradient(90deg, rgba(13, 13, 13, 0.8) 0%, rgba(13, 13, 13, 0.15) 70%);
     }
 
-    /* Contenido de texto en zona inferior izquierda */
+    /* Contenido de texto */
     .content {
       position: relative;
       z-index: 2;
@@ -119,7 +122,7 @@
     }
 
     h1 span {
-      color: #88c93b;
+      color: #ff3b00; /* Acento Naranja */
     }
 
     .subtitle {
@@ -144,13 +147,14 @@
       background: rgba(255, 255, 255, 0.08);
       padding: 7px 16px;
       border-radius: 4px;
-      border: 1px solid rgba(136, 201, 59, 0.3);
+      border: 1px solid rgba(255, 59, 0, 0.4); /* Borde naranja sutil */
       color: #dddddd;
-      transition: border-color 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     .tag:hover {
-      border-color: #88c93b;
+      border-color: #ff3b00;
+      color: #ffffff;
     }
   </style>
 </head>
