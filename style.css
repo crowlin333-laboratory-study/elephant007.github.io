@@ -1,6 +1,3 @@
-CSS
-
-
 /* Reset & Base */
 * {
   margin: 0;
@@ -14,6 +11,49 @@ body, html {
   font-family: 'Helvetica Neue', Arial, sans-serif;
   color: #ffffff;
   overflow-x: hidden;
+}
+
+/* ESTILOS DE LA RÁFAGA INTRO (PRELOADER) */
+#intro-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0d0d0d;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: opacity 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+#intro-loader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#rafaga-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(20%) contrast(110%);
+}
+
+.rafaga-counter {
+  position: absolute;
+  bottom: 40px;
+  right: 5%;
+  font-family: monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #ffffff;
+  background: rgba(13, 13, 13, 0.75);
+  padding: 6px 14px;
+  border-left: 3px solid #ff5500;
+  border-radius: 2px;
 }
 
 /* ENCABEZADO SUPERIOR LIBRE */
@@ -99,7 +139,7 @@ body, html {
   color: #cccccc;
 }
 
-/* Estado Hover */
+/* Estado Hover Dock */
 .dock-btn:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.4);
@@ -113,7 +153,7 @@ body, html {
   color: #ffffff;
 }
 
-/* Estado Activo */
+/* Estado Activo Dock */
 .dock-btn.active {
   background: #ff5500;
   border-color: #ff5500;
@@ -128,7 +168,7 @@ body, html {
   color: #ffffff;
 }
 
-/* HERO CONTAINER & MÁSCARA ACLARADA */
+/* HERO CONTAINER & PORTADA */
 .hero {
   position: relative;
   width: 100%;
@@ -142,7 +182,7 @@ body, html {
   background-repeat: no-repeat;
 }
 
-/* Degradado más tenue para darle vida y luz a la fotografía de fondo */
+/* Máscara de degradado tenue para rescatar luz de la foto de fondo */
 .hero::before {
   content: '';
   position: absolute;
@@ -225,7 +265,7 @@ h1 span {
   transform-origin: center;
 }
 
-/* HOVER OBTURADOR: APERTURA Y GIRO DE LENTE */
+/* Hover Obturador */
 .btn-shutter:hover {
   background: #ff5500;
   border-color: #ff5500;
@@ -242,7 +282,7 @@ h1 span {
   stroke: #ffffff;
 }
 
-/* CENTRADO DE LAS CAJAS DEL FOOTER */
+/* CENTRADO DE CAJAS EN FOOTER */
 .footer-tags {
   position: fixed;
   bottom: 25px;
