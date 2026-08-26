@@ -1,29 +1,31 @@
+HTML
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Elephant007 — José Luis Rodríguez | Visual Arts & Photography</title>
-
-  <!-- Favicon para la pestaña del navegador -->
   <link rel="icon" type="image/png" href="favicon.png">
-
-  <!-- Lucide Icons (Iconografía vectorial UI) -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Hoja de Estilos Externa -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Encabezado Superior con Logo a la izquierda y Menú macOS a la derecha -->
+  <!-- CONTENEDOR DE LA RÁFAGA INTRO -->
+  <div id="intro-loader">
+    <img id="rafaga-img" src="foto1.jpg" alt="Intro Ráfaga">
+    <div class="rafaga-counter"><span id="counter-num">01</span> / 10</div>
+  </div>
+
+  <!-- ENCABEZADO SUPERIOR -->
   <header class="top-header">
     <div class="brand-container">
       <img src="logo.png" alt="Elephant007 Logo" class="brand-logo">
       <div class="brand">Elephant<span>007</span></div>
     </div>
 
-    <!-- Menú macOS en esquina superior derecha -->
     <nav class="mac-dock-top">
       <a href="#deportes" class="dock-btn active">
         <i data-lucide="camera"></i>
@@ -44,13 +46,12 @@
     </nav>
   </header>
 
- <!-- Hero Principal -->
+  <!-- HERO PRINCIPAL HOME -->
   <section class="hero">
     <div class="content">
       <div class="subtitle">José Luis Rodríguez — Visual Arts</div>
       <h1>Sports Photography & <span>Graphic Design</span></h1>
       
-      <!-- Botón Call to Action con Obturador Interactivo -->
       <a href="#deportes" class="btn-shutter">
         <svg class="shutter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="9" />
@@ -66,32 +67,47 @@
     </div>
   </section>
 
-  <!-- Footer con las etiquetas de especialidad estilo caja -->
+  <!-- FOOTER TAGS -->
   <footer class="footer-tags">
     <div class="tag-box">Fotografía Deportiva</div>
     <div class="tag-box">E-Commerce Product Editor</div>
     <div class="tag-box">Graphic Design</div>
   </footer>
 
- <!-- Botón Flotante de WhatsApp Enlazado -->
-<a href="https://wa.me/525560681662?text=Hola%20Jos%C3%A9%20Luis,%20vi%20tu%20sitio%20Elephant007%20y%20me%20gustar%C3%ADa%20cotizar%20un%20proyecto." 
-   class="whatsapp-float" 
-   target="_blank" 
-   rel="noopener noreferrer" 
-   aria-label="Contacto por WhatsApp">
-  <i data-lucide="message-circle"></i>
-</a>
-  <!-- Script para Renderizar Iconos de Lucide y control de estado activo -->
+  <!-- WHATSAPP FLOTANTE -->
+  <a href="https://wa.me/525560681662" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contacto por WhatsApp">
+    <i data-lucide="message-circle"></i>
+  </a>
+
   <script>
     lucide.createIcons();
 
-    const dockButtons = document.querySelectorAll('.dock-btn');
-    dockButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        dockButtons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
+    // RÁFAGA DE FOTOS INTRO
+    const fotos = [
+      'foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg', 'foto5.jpg',
+      'foto6.jpg', 'foto7.jpg', 'foto8.jpg', 'foto9.jpg', 'DSC04784.jpg'
+    ];
+
+    let currentIndex = 0;
+    const rafagaImg = document.getElementById('rafaga-img');
+    const counterNum = document.getElementById('counter-num');
+    const introLoader = document.getElementById('intro-loader');
+
+    // Cambia la foto cada 150 milisegundos (efecto ráfaga cámara)
+    const interval = setInterval(() => {
+      currentIndex++;
+      if (currentIndex < fotos.length) {
+        rafagaImg.src = fotos[currentIndex];
+        counterNum.textContent = String(currentIndex + 1).padStart(2, '0');
+      } else {
+        clearInterval(interval);
+        // Transición de salida hacia el Home
+        introLoader.classList.add('fade-out');
+        setTimeout(() => {
+          introLoader.style.display = 'none';
+        }, 800);
+      }
+    }, 150);
   </script>
 
 </body>
