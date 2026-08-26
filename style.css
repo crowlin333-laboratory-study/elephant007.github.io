@@ -1,6 +1,3 @@
-CSS
-
-
 /* Reset & Base */
 * {
   margin: 0;
@@ -49,7 +46,7 @@ body, html {
 }
 
 .brand span {
-  color: #ff3b00;
+  color: #ff5500;
 }
 
 /* MENÚ TIPO MAC OS (COMPACTO Y HORIZONTAL) */
@@ -68,19 +65,19 @@ body, html {
 
 .dock-btn {
   display: flex;
-  flex-direction: row; /* Icono y texto alineados horizontalmente */
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 38px; /* Menor altura */
-  padding: 0 16px; /* Más largo a los lados */
-  border-radius: 20px; /* Forma de cápsula limpia */
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 20px;
   color: #cccccc;
   text-decoration: none;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.25s ease;
-  white-space: nowrap; /* Impide que el texto se rompa en 2 líneas */
+  white-space: nowrap;
 }
 
 .dock-btn i {
@@ -99,7 +96,7 @@ body, html {
   color: #cccccc;
 }
 
-/* Estado Hover: Gris cristal translúcido muy limpio */
+/* Estado Hover */
 .dock-btn:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.4);
@@ -113,7 +110,7 @@ body, html {
   color: #ffffff;
 }
 
-/* Estado Activo: Naranja Ámbar (#ff5500) sólido con texto blanco para legibilidad perfecta */
+/* Estado Activo */
 .dock-btn.active {
   background: #ff5500;
   border-color: #ff5500;
@@ -128,13 +125,14 @@ body, html {
   color: #ffffff;
 }
 
-/* HERO CONTAINER */
+/* HERO CONTAINER & CENTRADO DE TEXTOS */
 .hero {
   position: relative;
   width: 100%;
   height: 100vh;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   background-image: url('DSC04784.jpg');
   background-size: cover;
   background-position: center top;
@@ -157,42 +155,46 @@ body, html {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 900px;
-  padding: 0 5% 120px 8%;
+  max-width: 950px;
+  padding: 0 5%;
+  text-align: center;
 }
 
 .subtitle {
   font-size: 1.15rem;
   color: #e0e0e0;
-  letter-spacing: 2.5px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 h1 {
-  font-size: clamp(2rem, 5vw, 3.6rem);
+  font-size: clamp(2.2rem, 5.5vw, 4rem);
   font-weight: 800;
   letter-spacing: -1px;
   line-height: 1.1;
   text-transform: uppercase;
-  margin-bottom: 18px;
+  margin: 0 auto 24px auto;
   word-wrap: break-word;
 }
 
 h1 span {
-  color: #ff3b00;
+  color: #ff5500;
 }
 
-/* FOOTER / SECCIÓN DE CAJAS DE ETIQUETAS */
+/* CENTRADO DE LAS CAJAS DEL FOOTER */
 .footer-tags {
   position: fixed;
   bottom: 25px;
-  left: 8%;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 100;
   display: flex;
+  justify-content: center;
   gap: 12px;
   flex-wrap: wrap;
+  width: max-content;
 }
 
 .tag-box {
@@ -203,14 +205,14 @@ h1 span {
   background: rgba(18, 18, 18, 0.85);
   padding: 10px 18px;
   border-radius: 4px;
-  border: 1px solid rgba(255, 59, 0, 0.5);
+  border: 1px solid rgba(255, 85, 0, 0.5);
   color: #ffffff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
   transition: border-color 0.3s ease;
 }
 
 .tag-box:hover {
-  border-color: #ff3b00;
+  border-color: #ff5500;
 }
 
 /* BOTÓN FLOTANTE WHATSAPP (INFERIOR DERECHA) */
@@ -247,7 +249,7 @@ h1 span {
 @media (max-width: 768px) {
   .top-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 14px;
     top: 15px;
     left: 4%;
@@ -257,27 +259,24 @@ h1 span {
   .mac-dock-top {
     width: 100%;
     justify-content: space-between;
-    padding: 6px 8px;
+    padding: 6px;
   }
 
   .dock-btn {
-    width: 48px;
-    height: 48px;
-  }
-
-  .dock-btn i {
-    width: 18px;
-    height: 18px;
+    padding: 0 10px;
+    height: 34px;
   }
 
   .dock-btn span {
-    font-size: 0.52rem;
+    font-size: 0.6rem;
   }
 
   .footer-tags {
     position: relative;
     bottom: auto;
     left: auto;
+    transform: none;
+    width: 100%;
     padding: 0 6% 30px 6%;
     background: #0d0d0d;
   }
