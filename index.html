@@ -16,10 +16,26 @@
 </head>
 <body>
 
-  <!-- CONTENEDOR DE LA RÁFAGA INTRO (PRELOADER CON PAPEL RASGADO) -->
-  <div id="intro-loader">
-    <img id="rafaga-img" src="foto1.jpg" alt="Intro Ráfaga" class="paper-rip">
-    <div class="rafaga-counter"><span id="counter-num">01</span> / 10</div>
+  <!-- CONTENEDOR DE CAPAS SUPERPUESTAS EN SOBREEXPOSICIÓN -->
+  <div id="intro-overlay">
+    <div class="layers-stack">
+      <img src="foto1.jpg" class="layer layer-1" alt="Intro Layer 1">
+      <img src="foto2.jpg" class="layer layer-2" alt="Intro Layer 2">
+      <img src="foto3.jpg" class="layer layer-3" alt="Intro Layer 3">
+      <img src="foto4.jpg" class="layer layer-4" alt="Intro Layer 4">
+      <img src="foto5.jpg" class="layer layer-5" alt="Intro Layer 5">
+      <img src="foto6.jpg" class="layer layer-6" alt="Intro Layer 6">
+      <img src="foto7.jpg" class="layer layer-7" alt="Intro Layer 7">
+      <img src="foto8.jpg" class="layer layer-8" alt="Intro Layer 8">
+      <img src="foto9.jpg" class="layer layer-9" alt="Intro Layer 9">
+      <img src="DSC04784.jpg" class="layer layer-10" alt="Intro Layer 10">
+    </div>
+
+    <!-- Visor Fijo de Cámara -->
+    <div class="intro-hud">
+      <div class="hud-brand">ELEPHANT<span>007</span> / RÁFAGA</div>
+      <div class="hud-counter"><span id="layer-num">01</span> / 10</div>
+    </div>
   </div>
 
   <!-- ENCABEZADO SUPERIOR LIBRE CON LOGO Y DOCK -->
@@ -102,35 +118,28 @@
       });
     });
 
-    // RÁFAGA INTRO CON TRANSICIÓN DE PAPEL RASGADO (450MS)
-    const fotos = [
-      'foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg', 'foto5.jpg',
-      'foto6.jpg', 'foto7.jpg', 'foto8.jpg', 'foto9.jpg', 'DSC04784.jpg'
-    ];
-
-    let currentIndex = 0;
-    const rafagaImg = document.getElementById('rafaga-img');
-    const counterNum = document.getElementById('counter-num');
-    const introLoader = document.getElementById('intro-loader');
+    // REVELADO SEQUENCIAL DE CAPAS SOBREEXPUESTAS (300MS)
+    const layers = document.querySelectorAll('.layer');
+    const layerNum = document.getElementById('layer-num');
+    const introOverlay = document.getElementById('intro-overlay');
+    let currentLayer = 0;
 
     const interval = setInterval(() => {
-      currentIndex++;
-      if (currentIndex < fotos.length) {
-        // Reiniciar animación CSS de rasgado en cada iteración
-        rafagaImg.classList.remove('paper-rip');
-        void rafagaImg.offsetWidth; 
-        rafagaImg.src = fotos[currentIndex];
-        rafagaImg.classList.add('paper-rip');
-
-        counterNum.textContent = String(currentIndex + 1).padStart(2, '0');
+      if (currentLayer < layers.length) {
+        layers[currentLayer].classList.add('visible');
+        layerNum.textContent = String(currentLayer + 1).padStart(2, '0');
+        currentLayer++;
       } else {
         clearInterval(interval);
-        introLoader.classList.add('fade-out');
+        // Desvanecimiento suave del ensamble completo hacia la portada
         setTimeout(() => {
-          introLoader.style.display = 'none';
-        }, 900);
+          introOverlay.classList.add('fade-out');
+          setTimeout(() => {
+            introOverlay.style.display = 'none';
+          }, 1000);
+        }, 500);
       }
-    }, 450);
+    }, 300);
   </script>
 
 </body>
