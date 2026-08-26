@@ -16,7 +16,7 @@
 </head>
 <body>
 
-  <!-- CONTENEDOR DE CAPAS SUPERPUESTAS EN SOBREEXPOSICIÓN -->
+  <!-- CONTENEDOR INTRO OVERLAY (CAPAS ORGANICAS) -->
   <div id="intro-overlay">
     <div class="layers-stack">
       <img src="foto1.jpg" class="layer layer-1" alt="Intro Layer 1">
@@ -31,7 +31,7 @@
       <img src="DSC04784.jpg" class="layer layer-10" alt="Intro Layer 10">
     </div>
 
-    <!-- Visor Fijo de Cámara -->
+    <!-- Visor Fijo de Cámara HUD -->
     <div class="intro-hud">
       <div class="hud-brand">ELEPHANT<span>007</span> / RÁFAGA</div>
       <div class="hud-counter"><span id="layer-num">01</span> / 10</div>
@@ -118,7 +118,7 @@
       });
     });
 
-    // REVELADO SEQUENCIAL DE CAPAS SOBREEXPUESTAS (300MS)
+    // REVELADO DE CAPAS ORGANICAS CON SEGURIDAD (300MS)
     const layers = document.querySelectorAll('.layer');
     const layerNum = document.getElementById('layer-num');
     const introOverlay = document.getElementById('intro-overlay');
@@ -127,19 +127,26 @@
     const interval = setInterval(() => {
       if (currentLayer < layers.length) {
         layers[currentLayer].classList.add('visible');
-        layerNum.textContent = String(currentLayer + 1).padStart(2, '0');
+        if (layerNum) layerNum.textContent = String(currentLayer + 1).padStart(2, '0');
         currentLayer++;
       } else {
         clearInterval(interval);
-        // Desvanecimiento suave del ensamble completo hacia la portada
         setTimeout(() => {
           introOverlay.classList.add('fade-out');
           setTimeout(() => {
             introOverlay.style.display = 'none';
-          }, 1000);
-        }, 500);
+          }, 800);
+        }, 400);
       }
     }, 300);
+
+    // Límite de seguridad para evitar bloqueos (3.5s máximo)
+    setTimeout(() => {
+      if (introOverlay && introOverlay.style.display !== 'none') {
+        introOverlay.classList.add('fade-out');
+        setTimeout(() => { introOverlay.style.display = 'none'; }, 800);
+      }
+    }, 3500);
   </script>
 
 </body>
