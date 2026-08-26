@@ -8,40 +8,38 @@
   <!-- Favicon para la pestaña del navegador -->
   <link rel="icon" type="image/png" href="favicon.png">
 
+  <!-- Lucide Icons (Iconografía vectorial de UI) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <!-- Hoja de Estilos Externa -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Encabezado con efecto Glassmorphic y acento de medio borde -->
-  <header>
+  <!-- Encabezado libre: Solo Logo e Isotipo -->
+  <header class="top-header">
     <div class="brand-container">
       <img src="logo.png" alt="Elephant007 Logo" class="brand-logo">
       <div class="brand">Elephant<span>007</span></div>
     </div>
-
-    <!-- Navegación Escritorio -->
-    <nav class="nav-desktop">
-      <a href="#deportes">Deportes</a>
-      <a href="#diseno">Diseño</a>
-      <a href="#ecommerce">E-Commerce</a>
-      <a href="#contacto">Contacto</a>
-    </nav>
-
-    <!-- Botón de Menú de Hamburguesa para Móviles -->
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
   </header>
 
-  <!-- Menú de Pantalla Completa para Móviles -->
-  <div class="nav-mobile" id="navMobile">
-    <a href="#deportes" class="mobile-link">Deportes</a>
-    <a href="#diseno" class="mobile-link">Diseño</a>
-    <a href="#ecommerce" class="mobile-link">E-Commerce</a>
-    <a href="#contacto" class="mobile-link">Contacto</a>
+  <!-- Navigation Dock (Estilo macOS) -->
+  <div class="dock-wrapper">
+    <nav class="mac-dock">
+      <a href="#deportes" class="dock-item" data-title="Fotografía">
+        <i data-lucide="camera"></i>
+      </a>
+      <a href="#diseno" class="dock-item" data-title="Diseño">
+        <i data-lucide="pencil"></i>
+      </a>
+      <a href="#ecommerce" class="dock-item" data-title="E-Commerce">
+        <i data-lucide="shopping-bag"></i>
+      </a>
+      <a href="#contacto" class="dock-item" data-title="Contacto">
+        <i data-lucide="mail"></i>
+      </a>
+    </nav>
   </div>
 
   <!-- Hero Principal -->
@@ -57,21 +55,14 @@
     </div>
   </section>
 
-  <!-- Script para la interacción del Menú Móvil -->
+  <!-- Botón Flotante de WhatsApp (Inferior Derecha) -->
+  <a href="https://wa.me/525560681662" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contacto por WhatsApp">
+    <i data-lucide="message-circle"></i>
+  </a>
+
+  <!-- Script para Renderizar Iconos de Lucide -->
   <script>
-    const menuToggle = document.getElementById('menuToggle');
-    const navMobile = document.getElementById('navMobile');
-    const mobileLinks = document.querySelectorAll('.mobile-link');
-
-    menuToggle.addEventListener('click', () => {
-      navMobile.classList.toggle('active');
-    });
-
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        navMobile.classList.remove('active');
-      });
-    });
+    lucide.createIcons();
   </script>
 
 </body>
