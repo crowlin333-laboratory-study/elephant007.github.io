@@ -1,3 +1,6 @@
+CSS
+
+
 /* Reset & Base */
 * {
   margin: 0;
@@ -125,7 +128,7 @@ body, html {
   color: #ffffff;
 }
 
-/* HERO CONTAINER & CENTRADO DE TEXTOS */
+/* HERO CONTAINER & MÁSCARA ACLARADA */
 .hero {
   position: relative;
   width: 100%;
@@ -139,6 +142,7 @@ body, html {
   background-repeat: no-repeat;
 }
 
+/* Degradado más tenue para darle vida y luz a la fotografía de fondo */
 .hero::before {
   content: '';
   position: absolute;
@@ -147,8 +151,8 @@ body, html {
   width: 100%;
   height: 100%;
   background: 
-    linear-gradient(0deg, #0d0d0d 15%, rgba(13, 13, 13, 0.7) 50%, rgba(13, 13, 13, 0.35) 100%),
-    linear-gradient(90deg, rgba(13, 13, 13, 0.8) 0%, rgba(13, 13, 13, 0.15) 70%);
+    linear-gradient(0deg, #0d0d0d 8%, rgba(13, 13, 13, 0.4) 50%, rgba(13, 13, 13, 0.15) 100%),
+    linear-gradient(90deg, rgba(13, 13, 13, 0.4) 0%, rgba(13, 13, 13, 0.1) 70%);
 }
 
 .content {
@@ -158,15 +162,19 @@ body, html {
   max-width: 950px;
   padding: 0 5%;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .subtitle {
   font-size: 1.15rem;
-  color: #e0e0e0;
+  color: #f0f0f0;
   letter-spacing: 3px;
   text-transform: uppercase;
   font-weight: 600;
   margin-bottom: 18px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
 }
 
 h1 {
@@ -175,12 +183,63 @@ h1 {
   letter-spacing: -1px;
   line-height: 1.1;
   text-transform: uppercase;
-  margin: 0 auto 24px auto;
+  margin: 0 auto 28px auto;
   word-wrap: break-word;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.7);
 }
 
 h1 span {
   color: #ff5500;
+}
+
+/* BOTÓN OBTURADOR INTERACTIVO (MINIMALISTA OUTLINE) */
+.btn-shutter {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 28px;
+  background: rgba(13, 13, 13, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid #ffffff;
+  border-radius: 30px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+}
+
+.shutter-icon {
+  width: 22px;
+  height: 22px;
+  stroke: #ffffff;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shutter-icon .blade {
+  transition: transform 0.4s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+/* HOVER OBTURADOR: APERTURA Y GIRO DE LENTE */
+.btn-shutter:hover {
+  background: #ff5500;
+  border-color: #ff5500;
+  color: #ffffff;
+  box-shadow: 0 6px 25px rgba(255, 85, 0, 0.5);
+  transform: translateY(-3px);
+}
+
+.btn-shutter:hover .shutter-icon {
+  transform: rotate(120deg) scale(1.15);
+}
+
+.btn-shutter:hover .shutter-icon .blade {
+  stroke: #ffffff;
 }
 
 /* CENTRADO DE LAS CAJAS DEL FOOTER */
