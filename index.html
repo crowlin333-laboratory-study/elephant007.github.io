@@ -16,9 +16,9 @@
 </head>
 <body>
 
-  <!-- CONTENEDOR DE LA RÁFAGA INTRO (PRELOADER) -->
+  <!-- CONTENEDOR DE LA RÁFAGA INTRO (PRELOADER CON PAPEL RASGADO) -->
   <div id="intro-loader">
-    <img id="rafaga-img" src="foto1.jpg" alt="Intro Ráfaga">
+    <img id="rafaga-img" src="foto1.jpg" alt="Intro Ráfaga" class="paper-rip">
     <div class="rafaga-counter"><span id="counter-num">01</span> / 10</div>
   </div>
 
@@ -80,7 +80,11 @@
   </footer>
 
   <!-- BOTÓN FLOTANTE DE WHATSAPP -->
-  <a href="https://wa.me/525560681662" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contacto por WhatsApp">
+  <a href="https://wa.me/525560681662?text=Hola%20Jos%C3%A9%20Luis,%20vi%20tu%20sitio%20Elephant007%20y%20me%20gustar%C3%ADa%20cotizar%20un%20proyecto." 
+     class="whatsapp-float" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     aria-label="Contacto por WhatsApp">
     <i data-lucide="message-circle"></i>
   </a>
 
@@ -98,38 +102,35 @@
       });
     });
 
-   JavaScript
+    // RÁFAGA INTRO CON TRANSICIÓN DE PAPEL RASGADO (450MS)
+    const fotos = [
+      'foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg', 'foto5.jpg',
+      'foto6.jpg', 'foto7.jpg', 'foto8.jpg', 'foto9.jpg', 'DSC04784.jpg'
+    ];
 
+    let currentIndex = 0;
+    const rafagaImg = document.getElementById('rafaga-img');
+    const counterNum = document.getElementById('counter-num');
+    const introLoader = document.getElementById('intro-loader');
 
-// RÁFAGA INTRO CON EFECTO DE PAPEL RASGADO Y TRANSICIÓN MÁS LENTA (450MS)
-const fotos = [
-  'foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg', 'foto5.jpg',
-  'foto6.jpg', 'foto7.jpg', 'foto8.jpg', 'foto9.jpg', 'DSC04784.jpg'
-];
+    const interval = setInterval(() => {
+      currentIndex++;
+      if (currentIndex < fotos.length) {
+        // Reiniciar animación CSS de rasgado en cada iteración
+        rafagaImg.classList.remove('paper-rip');
+        void rafagaImg.offsetWidth; 
+        rafagaImg.src = fotos[currentIndex];
+        rafagaImg.classList.add('paper-rip');
 
-let currentIndex = 0;
-const rafagaImg = document.getElementById('rafaga-img');
-const counterNum = document.getElementById('counter-num');
-const introLoader = document.getElementById('intro-loader');
-
-const interval = setInterval(() => {
-  currentIndex++;
-  if (currentIndex < fotos.length) {
-    // Aplicar animación de rasgado
-    rafagaImg.classList.remove('paper-rip');
-    void rafagaImg.offsetWidth; // Force reflow para reiniciar la animación CSS
-    rafagaImg.src = fotos[currentIndex];
-    rafagaImg.classList.add('paper-rip');
-
-    counterNum.textContent = String(currentIndex + 1).padStart(2, '0');
-  } else {
-    clearInterval(interval);
-    introLoader.classList.add('fade-out');
-    setTimeout(() => {
-      introLoader.style.display = 'none';
-    }, 900);
-  }
-}, 450); // Tiempo más pausado para apreciar el efecto
+        counterNum.textContent = String(currentIndex + 1).padStart(2, '0');
+      } else {
+        clearInterval(interval);
+        introLoader.classList.add('fade-out');
+        setTimeout(() => {
+          introLoader.style.display = 'none';
+        }, 900);
+      }
+    }, 450);
   </script>
 
 </body>
