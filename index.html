@@ -98,30 +98,38 @@
       });
     });
 
-    // RÁFAGA INTRODUCTORIA DE FOTOS (10 IMÁGENES A 150MS)
-    const fotos = [
-      'foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg', 'foto5.jpg',
-      'foto6.jpg', 'foto7.jpg', 'foto8.jpg', 'foto9.jpg', 'DSC04784.jpg'
-    ];
+   JavaScript
 
-    let currentIndex = 0;
-    const rafagaImg = document.getElementById('rafaga-img');
-    const counterNum = document.getElementById('counter-num');
-    const introLoader = document.getElementById('intro-loader');
 
-    const interval = setInterval(() => {
-      currentIndex++;
-      if (currentIndex < fotos.length) {
-        rafagaImg.src = fotos[currentIndex];
-        counterNum.textContent = String(currentIndex + 1).padStart(2, '0');
-      } else {
-        clearInterval(interval);
-        introLoader.classList.add('fade-out');
-        setTimeout(() => {
-          introLoader.style.display = 'none';
-        }, 800);
-      }
-    }, 150);
+// RÁFAGA INTRO CON EFECTO DE PAPEL RASGADO Y TRANSICIÓN MÁS LENTA (450MS)
+const fotos = [
+  'foto1.jpg', 'foto2.jpg', 'foto3.jpg', 'foto4.jpg', 'foto5.jpg',
+  'foto6.jpg', 'foto7.jpg', 'foto8.jpg', 'foto9.jpg', 'DSC04784.jpg'
+];
+
+let currentIndex = 0;
+const rafagaImg = document.getElementById('rafaga-img');
+const counterNum = document.getElementById('counter-num');
+const introLoader = document.getElementById('intro-loader');
+
+const interval = setInterval(() => {
+  currentIndex++;
+  if (currentIndex < fotos.length) {
+    // Aplicar animación de rasgado
+    rafagaImg.classList.remove('paper-rip');
+    void rafagaImg.offsetWidth; // Force reflow para reiniciar la animación CSS
+    rafagaImg.src = fotos[currentIndex];
+    rafagaImg.classList.add('paper-rip');
+
+    counterNum.textContent = String(currentIndex + 1).padStart(2, '0');
+  } else {
+    clearInterval(interval);
+    introLoader.classList.add('fade-out');
+    setTimeout(() => {
+      introLoader.style.display = 'none';
+    }, 900);
+  }
+}, 450); // Tiempo más pausado para apreciar el efecto
   </script>
 
 </body>
