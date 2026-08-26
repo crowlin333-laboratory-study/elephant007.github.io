@@ -8,7 +8,7 @@
   <!-- Favicon para la pestaña del navegador -->
   <link rel="icon" type="image/png" href="favicon.png">
 
-  <!-- Lucide Icons (Iconografía vectorial de UI) -->
+  <!-- Lucide Icons (Iconografía vectorial UI) -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <!-- Hoja de Estilos Externa -->
@@ -16,53 +16,65 @@
 </head>
 <body>
 
-  <!-- Encabezado libre: Solo Logo e Isotipo -->
+  <!-- Encabezado Superior con Logo a la izquierda y Menú macOS a la derecha -->
   <header class="top-header">
     <div class="brand-container">
       <img src="logo.png" alt="Elephant007 Logo" class="brand-logo">
       <div class="brand">Elephant<span>007</span></div>
     </div>
-  </header>
 
-  <!-- Navigation Dock (Estilo macOS) -->
-  <div class="dock-wrapper">
-    <nav class="mac-dock">
-      <a href="#deportes" class="dock-item" data-title="Fotografía">
+    <!-- Menú macOS en esquina superior derecha -->
+    <nav class="mac-dock-top">
+      <a href="#deportes" class="dock-btn active">
         <i data-lucide="camera"></i>
+        <span>Fotografía</span>
       </a>
-      <a href="#diseno" class="dock-item" data-title="Diseño">
+      <a href="#diseno" class="dock-btn">
         <i data-lucide="pencil"></i>
+        <span>Diseño</span>
       </a>
-      <a href="#ecommerce" class="dock-item" data-title="E-Commerce">
+      <a href="#ecommerce" class="dock-btn">
         <i data-lucide="shopping-bag"></i>
+        <span>E-Commerce</span>
       </a>
-      <a href="#contacto" class="dock-item" data-title="Contacto">
+      <a href="#contacto" class="dock-btn">
         <i data-lucide="mail"></i>
+        <span>Contacto</span>
       </a>
     </nav>
-  </div>
+  </header>
 
   <!-- Hero Principal -->
   <section class="hero">
     <div class="content">
       <div class="subtitle">José Luis Rodríguez — Visual Arts</div>
       <h1>Sports Photography & <span>Graphic Design</span></h1>
-      <div class="tags">
-        <span class="tag">Fotografía Deportiva</span>
-        <span class="tag">E-Commerce Product Editor</span>
-        <span class="tag">Graphic Design</span>
-      </div>
     </div>
   </section>
+
+  <!-- Footer con las etiquetas de especialidad estilo caja -->
+  <footer class="footer-tags">
+    <div class="tag-box">Fotografía Deportiva</div>
+    <div class="tag-box">E-Commerce Product Editor</div>
+    <div class="tag-box">Graphic Design</div>
+  </footer>
 
   <!-- Botón Flotante de WhatsApp (Inferior Derecha) -->
   <a href="https://wa.me/525560681662" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contacto por WhatsApp">
     <i data-lucide="message-circle"></i>
   </a>
 
-  <!-- Script para Renderizar Iconos de Lucide -->
+  <!-- Script para Renderizar Iconos de Lucide y control de estado activo -->
   <script>
     lucide.createIcons();
+
+    const dockButtons = document.querySelectorAll('.dock-btn');
+    dockButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        dockButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
   </script>
 
 </body>
