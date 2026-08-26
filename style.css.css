@@ -1,0 +1,259 @@
+/* Reset & Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  background-color: #0d0d0d;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* HEADER & NAVEGACIÓN EN ESCRITORIO (Glassmorphism + Borde inicial) */
+header {
+  position: fixed;
+  top: 20px;
+  left: 5%;
+  width: 90%;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  
+  /* Style Glassmorphic Transparente */
+  background: rgba(20, 20, 20, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  /* Estilo cuadrado con medio borde del lado inicial (izquierdo) */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #ff3b00;
+  border-radius: 0px;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+.brand {
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.brand span {
+  color: #ff3b00;
+}
+
+.nav-desktop {
+  display: flex;
+  align-items: center;
+}
+
+.nav-desktop a {
+  color: #cccccc;
+  text-decoration: none;
+  margin-left: 28px;
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.nav-desktop a:hover {
+  color: #ff3b00;
+}
+
+/* BOTÓN DE MENÚ DE HAMBURGUESA (Móvil) */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 110;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+/* Overlay de Menú Móvil */
+.nav-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(13, 13, 13, 0.96);
+  backdrop-filter: blur(15px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  z-index: 105;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.nav-mobile.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-mobile a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.nav-mobile a:hover {
+  color: #ff3b00;
+}
+
+/* HERO CONTAINER */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  background-image: url('DSC04784.jpg');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(0deg, #0d0d0d 15%, rgba(13, 13, 13, 0.7) 50%, rgba(13, 13, 13, 0.35) 100%),
+    linear-gradient(90deg, rgba(13, 13, 13, 0.8) 0%, rgba(13, 13, 13, 0.15) 70%);
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 900px;
+  padding: 0 5% 70px 8%;
+}
+
+.subtitle {
+  font-size: 1.15rem;
+  color: #e0e0e0;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* Título Adaptable para prevenir desbordamientos */
+h1 {
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+h1 span {
+  color: #ff3b00;
+}
+
+.tags {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 7px 16px;
+  border-radius: 0px;
+  border: 1px solid rgba(255, 59, 0, 0.4);
+  color: #dddddd;
+  transition: all 0.3s ease;
+}
+
+.tag:hover {
+  border-color: #ff3b00;
+  color: #ffffff;
+}
+
+/* MEDIA QUERIES PARA DISPOSITIVOS MÓVILES */
+@media (max-width: 768px) {
+  header {
+    top: 12px;
+    left: 4%;
+    width: 92%;
+    padding: 12px 18px;
+  }
+
+  .nav-desktop {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .content {
+    padding: 0 6% 50px 6%;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    letter-spacing: 1.8px;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 7vw, 2.5rem);
+    line-height: 1.15;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    padding: 6px 12px;
+  }
+}
