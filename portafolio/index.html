@@ -1,1 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portafolio — Elephant007 | José Luis Rodríguez</title>
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../favicon.png">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Hoja de Estilos Aislada Externa -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="portfolio-body">
+
+  <!-- ENCABEZADO SUPERIOR -->
+  <header class="top-header">
+    <a href="../index.html" class="brand-container">
+      <img src="../logo.png" alt="Elephant007 Logo" class="brand-logo">
+      <div class="brand">Elephant<span>007</span></div>
+    </a>
+
+    <!-- Menú Dock Solo con los 3 Tipos -->
+    <nav class="mac-dock">
+      <a href="../index.html" class="dock-btn">
+        <i data-lucide="home"></i>
+        <span>Inicio</span>
+      </a>
+      <a href="#deportes" class="dock-btn active" data-nav="deportes">
+        <i data-lucide="camera"></i>
+        <span>Deportiva</span>
+      </a>
+      <a href="#producto" class="dock-btn" data-nav="producto">
+        <i data-lucide="shopping-bag"></i>
+        <span>Retoque</span>
+      </a>
+      <a href="#corporativo" class="dock-btn" data-nav="corporativo">
+        <i data-lucide="briefcase"></i>
+        <span>Corporativo</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- SECCIÓN PORTAFOLIO EN FONDO BLANCO PURO -->
+  <main class="portfolio-container">
+    
+    <!-- BARRA DE FILTROS SOLO CON LOS 3 TIPOS DE PROYECTO -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="deportes">Fotografía Deportiva</button>
+      <button class="filter-btn" data-filter="producto">Retoque de Producto</button>
+      <button class="filter-btn" data-filter="corporativo">Foto Corporativa</button>
+    </div>
+
+    <!-- RETÍCULA DE 3 COLUMNAS -->
+    <div class="portfolio-grid">
+
+      <!-- ================= FOTOGRAFÍA DEPORTIVA ================= -->
+      <!-- 1. SPARTAN RACE -->
+      <article class="portfolio-card" data-category="deportes">
+        <div class="card-image">
+          <img src="../spartan.jpg" alt="Spartan Race Coverage">
+          <span class="card-badge">Deportiva</span>
+        </div>
+        <div class="card-info">
+          <h3>Spartan Race — Obstacle Course</h3>
+          <p>Fotografía de acción extrema y alta exigencia física. Captura de fuerza, barro, superación de obstáculos y expresividad en tiempo real.</p>
+        </div>
+      </article>
+
+      <!-- 2. TRIATLÓN -->
+      <article class="portfolio-card" data-category="deportes">
+        <div class="card-image">
+          <img src="../triatlon.jpg" alt="Cobertura de Triatlón">
+          <span class="card-badge">Deportiva</span>
+        </div>
+        <div class="card-info">
+          <h3>Triatlón — Velocidad & Alto Rendimiento</h3>
+          <p>Fotografía de barrido en ruta (panning) a alta velocidad. Enfoque dinámico en transiciones, ciclismo de precisión y estética de competencia.</p>
+        </div>
+      </article>
+
+      <!-- 3. CARRERA BAL -->
+      <article class="portfolio-card" data-category="deportes">
+        <div class="card-image">
+          <img src="../carrera-bal.jpg" alt="Carrera BAL">
+          <span class="card-badge">Deportiva</span>
+        </div>
+        <div class="card-info">
+          <h3>Carrera BAL — Cobertura Atletismo</h3>
+          <p>Registro fotográfico masivo y de ambiente deportivo. Seguimiento de corredores, salidas dinámicas, momentos de meta y branding del evento.</p>
+        </div>
+      </article>
+
+      <!-- 4. L'ÉTAPE PUEBLA -->
+      <article class="portfolio-card" data-category="deportes">
+        <div class="card-image">
+          <img src="../foto4.jpg" alt="L'Étape Puebla">
+          <span class="card-badge">Deportiva</span>
+        </div>
+        <div class="card-info">
+          <h3>L'Étape Puebla — Tour de France</h3>
+          <p>Fotografía de competencia internacional en ruta. Cobertura de pelotón, ascensos de alta exigencia y sprints finales a alta velocidad.</p>
+        </div>
+      </article>
+
+      <!-- ================= RETOQUE DE PRODUCTO ================= -->
+      <!-- 5. RETOQUE TEXTIL -->
+      <article class="portfolio-card" data-category="producto">
+        <div class="card-image">
+          <img src="../foto2.jpg" alt="Retoque Textil y Ropa">
+          <span class="card-badge">Retoque</span>
+        </div>
+        <div class="card-info">
+          <h3>Postproducción Textil & Lookbook</h3>
+          <p>Desarrugado digital de prendas, corrección cromática y estandarización de siluetas para catálogos de e-commerce e indumentaria.</p>
+        </div>
+      </article>
+
+      <!-- 6. PRODUCT SHOT -->
+      <article class="portfolio-card" data-category="producto">
+        <div class="card-image">
+          <img src="../foto5.jpg" alt="Product Shot y Adaptación">
+          <span class="card-badge">Retoque</span>
+        </div>
+        <div class="card-info">
+          <h3>Product Shot & Adaptación Digital</h3>
+          <p>Limpieza avanzada de producto, trazado de vectores, alineación automatizada por script y composición para e-commerce.</p>
+        </div>
+      </article>
+
+      <!-- ================= FOTOGRAFÍA CORPORATIVA ================= -->
+      <!-- 7. COBERTURA DE EVENTOS -->
+      <article class="portfolio-card" data-category="corporativo">
+        <div class="card-image">
+          <img src="../foto3.jpg" alt="Fotografía Corporativa y Eventos">
+          <span class="card-badge">Corporativo</span>
+        </div>
+        <div class="card-info">
+          <h3>Cobertura de Eventos & Marcas</h3>
+          <p>Registro fotográfico institucional para activaciones, entregas de kits, lanzamientos y dinamismo corporativo de marca.</p>
+        </div>
+      </article>
+
+      <!-- 8. ACTIVACIONES COMERCIALES -->
+      <article class="portfolio-card" data-category="corporativo">
+        <div class="card-image">
+          <img src="../foto6.jpg" alt="Eventos e Identidad Corporativa">
+          <span class="card-badge">Corporativo</span>
+        </div>
+        <div class="card-info">
+          <h3>Foros & Activaciones Comerciales</h3>
+          <p>Fotografía editorial y de prensa para foros, presentaciones en vivo y documentación de identidad corporativa.</p>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- BOTÓN FLOTANTE WHATSAPP -->
+  <a href="https://wa.me/525560681662?text=Hola%20Jos%C3%A9%20Luis,%20vi%20tu%20sitio%20Elephant007%20y%20me%20gustar%C3%ADa%20cotizar%20un%20proyecto." 
+     class="whatsapp-float" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     aria-label="Contacto por WhatsApp">
+    <i data-lucide="message-circle"></i>
+  </a>
+
+  <!-- SCRIPTS DE NAVEGACIÓN Y FILTRADO -->
+  <script>
+    lucide.createIcons();
+
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const dockNavButtons = document.querySelectorAll('.dock-btn[data-nav]');
+    const portfolioCards = document.querySelectorAll('.portfolio-card');
+
+    function filterCategory(category) {
+      // Activar botón de filtro
+      filterButtons.forEach(b => {
+        if (b.getAttribute('data-filter') === category) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+
+      // Activar botón de menú dock
+      dockNavButtons.forEach(d => {
+        if (d.getAttribute('data-nav') === category) {
+          d.classList.add('active');
+        } else {
+          d.classList.remove('active');
+        }
+      });
+
+      // Mostrar únicamente las tarjetas de la categoría seleccionada
+      portfolioCards.forEach(card => {
+        if (card.getAttribute('data-category') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Eventos de clic en botones de filtro
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cat = btn.getAttribute('data-filter');
+        filterCategory(cat);
+      });
+    });
+
+    // Eventos de clic en el menú dock superior
+    dockNavButtons.forEach(navBtn => {
+      navBtn.addEventListener('click', () => {
+        const cat = navBtn.getAttribute('data-nav');
+        if (cat) filterCategory(cat);
+      });
+    });
+
+    // Iniciar por defecto en "Fotografía Deportiva"
+    filterCategory('deportes');
+  </script>
+
+</body>
+</html>

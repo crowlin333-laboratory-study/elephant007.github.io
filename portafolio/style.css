@@ -1,0 +1,282 @@
+/* RESET & BASE ISLADOS EN BLANCO PURO */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body.portfolio-body {
+  background-color: #ffffff !important;
+  color: #111111;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+}
+
+/* ENCABEZADO Y BRANDING */
+.top-header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  padding: 16px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #eeeeee;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+.brand {
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #111111;
+}
+
+.brand span {
+  color: #ff5500;
+}
+
+/* MENÚ DOCK COMPACTO */
+.mac-dock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  border-radius: 30px;
+}
+
+.dock-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 20px;
+  color: #555555;
+  text-decoration: none;
+  background: transparent;
+  transition: all 0.25s ease;
+}
+
+.dock-btn i {
+  width: 16px;
+  height: 16px;
+  stroke: #555555;
+}
+
+.dock-btn span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.dock-btn:hover {
+  background: #ffffff;
+  color: #111111;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.dock-btn:hover i {
+  stroke: #111111;
+}
+
+.dock-btn.active {
+  background: #111111;
+  color: #ffffff;
+}
+
+.dock-btn.active i {
+  stroke: #ffffff;
+}
+
+.dock-btn.active span {
+  color: #ffffff;
+}
+
+/* CONTENEDOR Y FILTROS */
+.portfolio-container {
+  padding: 60px 5% 100px 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  color: #666666;
+  padding: 10px 22px;
+  border-radius: 25px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: #111111;
+  color: #ffffff;
+  border-color: #111111;
+}
+
+.filter-btn.active {
+  border-bottom: 3px solid #ff5500;
+}
+
+/* RETÍCULA DE 3 COLUMNAS */
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.portfolio-card {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eef0f2;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.portfolio-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.09);
+}
+
+.card-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: #f5f5f7;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.portfolio-card:hover .card-image img {
+  transform: scale(1.04);
+}
+
+.card-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(17, 17, 17, 0.88);
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 4px;
+}
+
+/* MICRO-TEXTO (MÁXIMO 3 LÍNEAS) */
+.card-info {
+  padding: 22px 20px 24px 20px;
+}
+
+.card-info h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #111111;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: -0.2px;
+}
+
+.card-info p {
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #666666;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* BOTÓN FLOTANTE WHATSAPP */
+.whatsapp-float {
+  position: fixed;
+  bottom: 25px;
+  right: 4%;
+  width: 48px;
+  height: 48px;
+  background: #25d366;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+  transition: transform 0.3s ease;
+  text-decoration: none;
+}
+
+.whatsapp-float i {
+  width: 24px;
+  height: 24px;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+}
+
+/* RESPONSIVO */
+@media (max-width: 1024px) {
+  .portfolio-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .top-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
