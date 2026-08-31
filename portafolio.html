@@ -3,50 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elephant007 — José Luis Rodríguez | Visual Arts & Photography</title>
+  <title>Portafolio — Elephant007 | José Luis Rodríguez</title>
 
-  <!-- Favicon para la pestaña del navegador -->
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png">
 
-  <!-- Lucide Icons (Iconografía UI) -->
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Hoja de Estilos Externa -->
+  <!-- Hoja de Estilos Única -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="page-portfolio">
 
-  <!-- CONTENEDOR INTRO OVERLAY (CAPAS ORGANICAS) -->
-  <div id="intro-overlay">
-    <div class="layers-stack">
-      <img src="foto1.jpg" class="layer layer-1" alt="Intro Layer 1">
-      <img src="foto2.jpg" class="layer layer-2" alt="Intro Layer 2">
-      <img src="foto3.jpg" class="layer layer-3" alt="Intro Layer 3">
-      <img src="foto4.jpg" class="layer layer-4" alt="Intro Layer 4">
-      <img src="foto5.jpg" class="layer layer-5" alt="Intro Layer 5">
-      <img src="foto6.jpg" class="layer layer-6" alt="Intro Layer 6">
-      <img src="foto7.jpg" class="layer layer-7" alt="Intro Layer 7">
-      <img src="foto8.jpg" class="layer layer-8" alt="Intro Layer 8">
-      <img src="foto9.jpg" class="layer layer-9" alt="Intro Layer 9">
-      <img src="DSC04784.jpg" class="layer layer-10" alt="Intro Layer 10">
-    </div>
-
-    <!-- Visor Fijo de Cámara HUD -->
-    <div class="intro-hud">
-      <div class="hud-brand">ELEPHANT<span>007</span> / RÁFAGA</div>
-      <div class="hud-counter"><span id="layer-num">01</span> / 10</div>
-    </div>
-  </div>
-
-  <!-- ENCABEZADO SUPERIOR LIBRE CON LOGO Y DOCK -->
-  <header class="top-header">
-    <div class="brand-container">
+  <!-- ENCABEZADO SUPERIOR -->
+  <header class="top-header-portfolio">
+    <a href="index.html" class="brand-container">
       <img src="logo.png" alt="Elephant007 Logo" class="brand-logo">
-      <div class="brand">Elephant<span>007</span></div>
-    </div>
+      <div class="brand brand-dark">Elephant<span>007</span></div>
+    </a>
 
-    <!-- Menú macOS compacto horizontal en la esquina superior derecha -->
+    <!-- Menú Dock -->
     <nav class="mac-dock-top">
+      <a href="index.html" class="dock-btn">
+        <i data-lucide="home"></i>
+        <span>Inicio</span>
+      </a>
       <a href="#deportes" class="dock-btn active">
         <i data-lucide="camera"></i>
         <span>Fotografía</span>
@@ -59,39 +41,13 @@
         <i data-lucide="shopping-bag"></i>
         <span>E-Commerce</span>
       </a>
-      <a href="#contacto" class="dock-btn">
-        <i data-lucide="mail"></i>
-        <span>Contacto</span>
-      </a>
     </nav>
   </header>
 
-  <!-- HERO PRINCIPAL (PORTADA HOMEPAGE) -->
-  <section class="hero">
-    <div class="content">
-      <div class="subtitle">José Luis Rodríguez — Visual Arts</div>
-      <h1>Sports Photography & <span>Graphic Design</span></h1>
-      
-      <!-- Botón Call to Action con Obturador Interactivo -->
-      <a href="#portafolio" class="btn-shutter">
-        <svg class="shutter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="9" />
-          <path class="blade blade-1" d="M12 3 L16 10" />
-          <path class="blade blade-2" d="M19.8 8.5 L14.5 14" />
-          <path class="blade blade-3" d="M18.8 16.5 L11.5 15.5" />
-          <path class="blade blade-4" d="M10 20.8 L8.2 13" />
-          <path class="blade blade-5" d="M4.2 15.5 L9.5 10" />
-          <path class="blade blade-6" d="M5.2 7.5 L12.5 8.5" />
-        </svg>
-        <span>Ver Portafolio</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- SECCIÓN PORTAFOLIO EN FONDO BLANCO PURO (3 COLUMNAS) -->
+  <!-- SECCIÓN PORTAFOLIO EN FONDO BLANCO PURO -->
   <main id="portafolio" class="portfolio-section">
     
-    <!-- BARRA DE FILTROS (STICKY TABS) -->
+    <!-- BARRA DE FILTROS -->
     <div class="filter-bar">
       <button class="filter-btn active" data-filter="all">Todos</button>
       <button class="filter-btn" data-filter="deportes">Fotografía Deportiva</button>
@@ -177,14 +133,7 @@
     </div>
   </main>
 
-  <!-- FOOTER / SECCIÓN DE CAJAS CENTRADAS -->
-  <footer class="footer-tags">
-    <div class="tag-box">Fotografía Deportiva</div>
-    <div class="tag-box">E-Commerce Product Editor</div>
-    <div class="tag-box">Graphic Design</div>
-  </footer>
-
-  <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+  <!-- BOTÓN FLOTANTE WHATSAPP -->
   <a href="https://wa.me/525560681662?text=Hola%20Jos%C3%A9%20Luis,%20vi%20tu%20sitio%20Elephant007%20y%20me%20gustar%C3%ADa%20cotizar%20un%20proyecto." 
      class="whatsapp-float" 
      target="_blank" 
@@ -193,51 +142,10 @@
     <i data-lucide="message-circle"></i>
   </a>
 
-  <!-- SCRIPTS INTERACTIVOS -->
+  <!-- SCRIPTS DE NAVEGACIÓN Y FILTRADO -->
   <script>
-    // Inicializar Iconos Lucide
     lucide.createIcons();
 
-    // Control del Estado Activo en el Dock Superior
-    const dockButtons = document.querySelectorAll('.dock-btn');
-    dockButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        dockButtons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-
-    // REVELADO DE CAPAS ORGANICAS CON SEGURIDAD (300MS)
-    const layers = document.querySelectorAll('.layer');
-    const layerNum = document.getElementById('layer-num');
-    const introOverlay = document.getElementById('intro-overlay');
-    let currentLayer = 0;
-
-    const interval = setInterval(() => {
-      if (currentLayer < layers.length) {
-        layers[currentLayer].classList.add('visible');
-        if (layerNum) layerNum.textContent = String(currentLayer + 1).padStart(2, '0');
-        currentLayer++;
-      } else {
-        clearInterval(interval);
-        setTimeout(() => {
-          introOverlay.classList.add('fade-out');
-          setTimeout(() => {
-            introOverlay.style.display = 'none';
-          }, 800);
-        }, 400);
-      }
-    }, 300);
-
-    // Límite de seguridad para evitar bloqueos (3.5s máximo)
-    setTimeout(() => {
-      if (introOverlay && introOverlay.style.display !== 'none') {
-        introOverlay.classList.add('fade-out');
-        setTimeout(() => { introOverlay.style.display = 'none'; }, 800);
-      }
-    }, 3500);
-
-    // FILTRADO INTERACTIVO DEL PORTAFOLIO
     const filterButtons = document.querySelectorAll('.filter-btn');
     const portfolioCards = document.querySelectorAll('.portfolio-card');
 
