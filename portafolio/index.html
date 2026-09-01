@@ -167,7 +167,43 @@
      aria-label="Contacto por WhatsApp">
     <i data-lucide="message-circle"></i>
   </a>
+<!-- VENTANA MODAL / LIGHTBOX DE GALERÍA EXTENDIDA -->
+<div id="portfolio-modal" class="modal-overlay">
+  <div class="modal-content">
+    <button class="modal-close" id="modal-close">&times;</button>
+    
+    <div class="modal-body">
+      <!-- Lado Izquierdo: Galería de Fotos Grandes -->
+      <div class="modal-gallery">
+        <img id="modal-img" src="" alt="Detalle del proyecto">
+        <div class="modal-nav">
+          <button id="prev-btn">&larr; Anterior</button>
+          <span id="modal-counter">1 / 5</span>
+          <button id="next-btn">Siguiente &rarr;</button>
+        </div>
+      </div>
 
+      <!-- Lado Derecho: Ficha Técnica -->
+      <div class="modal-info">
+        <span id="modal-badge" class="card-badge">Deportiva</span>
+        <h2 id="modal-title">Título del Proyecto</h2>
+        <p id="modal-desc">Descripción técnica extendida...</p>
+        
+        <div class="modal-specs">
+          <h4>Detalles del Servicio</h4>
+          <ul id="modal-specs-list">
+            <!-- Se llena dinámicamente -->
+          </ul>
+        </div>
+
+        <a href="https://wa.me/525560681662?text=Hola%20Jos%C3%A9%20Luis,%20me%20interesa%20un%20servicio%20similar%20a..." 
+           target="_blank" class="modal-cta">
+           Cotizar Proyecto Similar
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
   <!-- SCRIPTS DE NAVEGACIÓN Y FILTRADO -->
   <script>
     lucide.createIcons();
