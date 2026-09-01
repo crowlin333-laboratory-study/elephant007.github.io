@@ -279,4 +279,142 @@ body.portfolio-body {
     flex-direction: column;
     gap: 12px;
   }
+}  
+
+CSS
+
+
+/* ESTILOS DEL MODAL LIGHTBOX */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(13, 13, 13, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 5%;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 12px;
+  max-width: 1100px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: #333;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 30px;
+  padding: 30px;
+}
+
+.modal-gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.modal-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.modal-nav button {
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.modal-info h2 {
+  font-size: 1.5rem;
+  margin: 15px 0 10px 0;
+  text-transform: uppercase;
+}
+
+.modal-info p {
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.modal-specs {
+  margin: 25px 0;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.modal-specs h4 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.modal-specs ul {
+  list-style: none;
+  padding: 0;
+}
+
+.modal-specs li {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.modal-cta {
+  display: block;
+  text-align: center;
+  background: #111111;
+  color: #ffffff;
+  padding: 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: background 0.3s ease;
+}
+
+.modal-cta:hover {
+  background: #ff5500;
+}
+
+@media (max-width: 850px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+  }
 }
