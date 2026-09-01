@@ -61,7 +61,7 @@
       <!-- 1. SPARTAN RACE -->
       <article class="portfolio-card" data-category="deportes" data-project="spartan">
         <div class="card-image">
-          <img src="../spartan-hero.jpg" alt="Spartan Race Coverage">
+          <img src="../spartan.jpg" alt="Spartan Race Coverage">
           <span class="card-badge">Deportiva</span>
         </div>
         <div class="card-info">
@@ -73,7 +73,7 @@
       <!-- 2. TRIATLÓN -->
       <article class="portfolio-card" data-category="deportes" data-project="triatlon">
         <div class="card-image">
-          <img src="../triatlon-hero.jpg" alt="Cobertura de Triatlón">
+          <img src="../triatlon.jpg" alt="Cobertura de Triatlón">
           <span class="card-badge">Deportiva</span>
         </div>
         <div class="card-info">
@@ -97,7 +97,7 @@
       <!-- 4. L'ÉTAPE PUEBLA -->
       <article class="portfolio-card" data-category="deportes" data-project="letape">
         <div class="card-image">
-          <img src="../foto4.jpg" alt="L'Étape Puebla">
+          <img src="../etape.jpg" alt="L'Étape Puebla">
           <span class="card-badge">Deportiva</span>
         </div>
         <div class="card-info">
@@ -162,7 +162,7 @@
   <!-- VENTANA MODAL / LIGHTBOX DE GALERÍA EXTENDIDA -->
   <div id="portfolio-modal" class="modal-overlay">
     <div class="modal-content">
-      <button class="modal-close" id="modal-close">&times;</button>
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">&times;</button>
       
       <div class="modal-body">
         <!-- Izquierda: Carrusel de Fotos -->
@@ -190,7 +190,7 @@
             </ul>
           </div>
 
-          <a id="modal-whatsapp-link" href="https://wa.me/525560681662" target="_blank" rel="noopener noreferrer" class="modal-cta">
+          <a id="modal-whatsapp-link" href="https://wa.me/525560681662?text=Hola%20Jos%C3%A9%20Luis,%20me%20interesa%20un%20proyecto%20similar..." target="_blank" rel="noopener noreferrer" class="modal-cta">
             Cotizar Proyecto Similar
           </a>
         </div>
@@ -211,35 +211,35 @@
   <script>
     lucide.createIcons();
 
-    // 1. BASE DE DATOS DE PROYECTOS EXTENDIDOS (GALERÍAS Y FICHAS TÉCNICAS)
+    // 1. BASE DE DATOS CON RUTAS Y NOMBRES ESTANDARIZADOS
     const projectsData = {
       spartan: {
         badge: "Deportiva",
         title: "Spartan Race — Fire & Mud Trail",
-        desc: "Documentación completa de ruta de obstáculos y alta resistencia. Captura de momentos críticos en zonas de barro, congelado de fuego a alta velocidad y expresividad emocional del atleta.",
-        images: ["../spartan-hero.jpg", "../DSC05935.jpg", "../DSC05912.jpg", "../DSC05410.jpg"],
+        desc: "Documentación fotográfica completa en ruta de obstáculos y alta exigencia física. Captura de momentos de tensión en barro, saltos de fuego congelados a 1/2000s y expresividad del atleta.",
+        images: ["../spartan.jpg", "../spartan_1.jpg", "../spartan_2.jpg", "../spartan_3.jpg"],
         specs: [
           "<strong>Técnica:</strong> Alta velocidad de obturación (1/2000s) & Panning",
-          "<strong>Enfoque:</strong> Acción extrema, expresividad & branding",
-          "<strong>Coloring:</strong> Contrastes cálidos (fuego) y fríos (humo)"
+          "<strong>Enfoque:</strong> Acción extrema, expresividad & branding masivo",
+          "<strong>Postproducción:</strong> Contrastes cálidos (fuego) y fríos (humo)"
         ]
       },
       triatlon: {
         badge: "Deportiva",
         title: "Triatlón — Velocidad & Alto Rendimiento",
-        desc: "Registro fotográfico multidisciplinario (Natación, Ciclismo y Atletismo). Cobertura en ruta de alta velocidad, transiciones en zona de pits y llegadas a meta.",
-        images: ["../triatlon-hero.jpg", "../DSC03618.jpg", "../DSC04227.jpg", "../DSC02688.jpg"],
+        desc: "Registro multidisciplinario de competencia internacional (Natación, Ciclismo y Atletismo). Cobertura en ruta de barrido dinámico a alta velocidad, área de pits y cruce de meta.",
+        images: ["../triatlon.jpg", "../triatlon_1.jpg", "../triatlon_2.jpg", "../triatlon_3.jpg"],
         specs: [
           "<strong>Técnica:</strong> Barrido dinámico (Panning 1/60s)",
-          "<strong>Cobertura:</strong> Natación abierta, Pits & Ruta de ciclismo",
-          "<strong>Postproducción:</strong> Enfriamiento cromático de asfalto & realce textil"
+          "<strong>Cobertura:</strong> Natación en agua abierta, Pits & Ruta de ciclismo",
+          "<strong>Coloring:</strong> Enfriamiento de asfalto & realce textil"
         ]
       },
       bal: {
         badge: "Deportiva",
         title: "Carrera BAL — Cobertura Atletismo",
         desc: "Documentación masiva para eventos atléticos de gran convocatoria. Captura de arranques masivos, branding de patrocinadores en ruta y emociones de meta.",
-        images: ["../carrera-bal.jpg", "../foto1.jpg"],
+        images: ["../carrera-bal.jpg", "../carrera-bal_1.jpg", "../carrera-bal_2.jpg"],
         specs: [
           "<strong>Tipo:</strong> Carrera Atlética Masiva",
           "<strong>Enfoque:</strong> Identidad corporativa y dinamismo de corredores",
@@ -249,8 +249,8 @@
       letape: {
         badge: "Deportiva",
         title: "L'Étape Puebla — Tour de France",
-        desc: "Cobertura de ciclismo de ruta internacional. Seguimiento de pelotones, ascensos de alta montaña y llegadas al sprint con estética de competencia pro.",
-        images: ["../foto4.jpg"],
+        desc: "Fotografía deportiva de competencia internacional en ruta. Registro del pelotón, ascensos de exigencia en alta montaña y sprints finales.",
+        images: ["../etape.jpg", "../etape_1.jpg", "../etape_2.jpg"],
         specs: [
           "<strong>Ambiente:</strong> Ruta internacional Tour de France",
           "<strong>Técnica:</strong> Enfoque continuo y encuadres en movimiento",
@@ -260,7 +260,7 @@
       textil: {
         badge: "Retoque",
         title: "Postproducción Textil & Lookbook",
-        desc: "Retoque digital especializado para marcas de moda e indumentaria e-commerce. Limpieza de imperfecciones, suavizado de arrugas conservando la textura de la tela y corrección de color.",
+        desc: "Retoque digital especializado para marcas de moda e indumentaria e-commerce. Limpieza de imperfecciones, suavizado de arrugas conservando la textura de la tela y corrección cromática.",
         images: ["../foto2.jpg"],
         specs: [
           "<strong>Flujo:</strong> Desarrugado automatizado (Retouch4me Fabric)",
@@ -271,7 +271,7 @@
       packshot: {
         badge: "Retoque",
         title: "Product Shot & Adaptación Digital",
-        desc: "Edición y estandarización de fotos de producto para e-commerce. Recorte con trazado de recortes perfecto, sombras naturales ajustadas y script de alineación.",
+        desc: "Edición y estandarización de fotos de producto para e-commerce. Recorte con trazado vectorial perfecto, sombras naturales ajustadas y script de alineación batch.",
         images: ["../foto5.jpg"],
         specs: [
           "<strong>Automatización:</strong> Script de centrado y encuadre batch en Photoshop",
@@ -282,7 +282,7 @@
       eventos: {
         badge: "Corporativo",
         title: "Cobertura de Eventos & Marcas",
-        desc: "Registro de activaciones de marca, entregas de kits, convenciones y lanzamientos comerciales. Fotografías dinámicas con iluminación de ambiente cuidada.",
+        desc: "Registro fotográfico institucional para activaciones de marca, entregas de kits, convenciones y lanzamientos comerciales con iluminación ambiental cuidada.",
         images: ["../foto3.jpg"],
         specs: [
           "<strong>Enfoque:</strong> Branding de patrocinadores y networking",
@@ -293,7 +293,7 @@
       foros: {
         badge: "Corporativo",
         title: "Foros & Activaciones Comerciales",
-        desc: "Fotografía de escenario y foros culturales en vivo. Dominio de iluminación compleja de escenario, interacción de ponentes y público.",
+        desc: "Fotografía editorial para foros, presentaciones en vivo y documentación de identidad corporativa en espacios con iluminación de escenario compleja.",
         images: ["../foto6.jpg"],
         specs: [
           "<strong>Luz:</strong> Escenario y luz ambiental baja",
@@ -302,7 +302,7 @@
       }
     };
 
-    // 2. FILTRADO Y SINCRONIZACIÓN DE MENÚ
+    // 2. FILTRADO Y NAV DOCK
     const filterButtons = document.querySelectorAll('.filter-btn');
     const dockNavButtons = document.querySelectorAll('.dock-btn[data-nav]');
     const portfolioCards = document.querySelectorAll('.portfolio-card');
@@ -332,7 +332,7 @@
 
     filterCategory('deportes');
 
-    // 3. LÓGICA DE LA VENTANA MODAL / LIGHTBOX
+    // 3. LÓGICA DE APERTURA Y NAVEGACIÓN MODAL LIGHTBOX
     const modal = document.getElementById('portfolio-modal');
     const modalClose = document.getElementById('modal-close');
     const modalImg = document.getElementById('modal-img');
@@ -360,12 +360,12 @@
           // Llenar especificaciones
           modalSpecsList.innerHTML = data.specs.map(s => `<li>${s}</li>`).join('');
 
-          // Configurar imágenes
+          // Configurar serie de imágenes
           currentProjectImages = data.images;
           currentImageIndex = 0;
           updateModalImage();
 
-          // Mostrar modal
+          // Abrir modal
           modal.classList.add('active');
           document.body.style.overflow = 'hidden';
         }
@@ -373,8 +373,10 @@
     });
 
     function updateModalImage() {
-      modalImg.src = currentProjectImages[currentImageIndex];
-      modalCounter.textContent = `${currentImageIndex + 1} / ${currentProjectImages.length}`;
+      if (currentProjectImages.length > 0) {
+        modalImg.src = currentProjectImages[currentImageIndex];
+        modalCounter.textContent = `${currentImageIndex + 1} / ${currentProjectImages.length}`;
+      }
 
       if (currentProjectImages.length <= 1) {
         prevBtn.style.display = 'none';
@@ -385,12 +387,14 @@
       }
     }
 
-    prevBtn.addEventListener('click', () => {
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       currentImageIndex = (currentImageIndex - 1 + currentProjectImages.length) % currentProjectImages.length;
       updateModalImage();
     });
 
-    nextBtn.addEventListener('click', () => {
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       currentImageIndex = (currentImageIndex + 1) % currentProjectImages.length;
       updateModalImage();
     });
