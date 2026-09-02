@@ -1,1 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Servicios de Diseño — Elephant007 | José Luis Rodríguez</title>
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Hoja de Estilos Exclusiva -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="portfolio-body">
+
+  <!-- ENCABEZADO SUPERIOR Y NAV DOCK -->
+  <header class="top-header">
+    <a href="index.html" class="brand-container">
+      <img src="logo.png" alt="Elephant007 Logo" class="brand-logo">
+      <div class="brand">Elephant<span>007</span></div>
+    </a>
+
+    <nav class="mac-dock">
+      <a href="index.html" class="dock-btn">
+        <i data-lucide="home"></i>
+        <span>Inicio</span>
+      </a>
+      <a href="#diseno" class="dock-btn active">
+        <i data-lucide="pen-tool"></i>
+        <span>Diseño</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="portfolio-container">
+    
+    <div class="portfolio-category" id="diseno-section">
+      <h3 class="category-title">Servicios de Diseño & Creador Visual</h3>
+      <div class="portfolio-grid">
+
+        <!-- Tarjeta 1: Desarrollo & Diseño Web -->
+        <article class="portfolio-card service-card" data-project="webUI">
+          <div class="card-icon-wrapper">
+            <i data-lucide="layout-template" class="service-icon"></i>
+            <span class="card-badge">Diseño Web</span>
+          </div>
+          <div class="card-info">
+            <h4>Desarrollo & Diseño Web</h4>
+            <p>Creación de sitios web adaptativos, maquetación HTML/CSS y optimización visual para plataformas digitales.</p>
+          </div>
+        </article>
+
+        <!-- Tarjeta 2: Social Media & Content Creator -->
+        <article class="portfolio-card service-card" data-project="socialMedia">
+          <div class="card-icon-wrapper">
+            <i data-lucide="share-2" class="service-icon"></i>
+            <span class="card-badge">Social Media</span>
+          </div>
+          <div class="card-info">
+            <h4>Social Media & Content Creator</h4>
+            <p>Estrategia gráfica para redes sociales, mailing masivo y contenido impulsado por herramientas de IA generativa.</p>
+          </div>
+        </article>
+
+        <!-- Tarjeta 3: Imagen Corporativa & Branding -->
+        <article class="portfolio-card service-card" data-project="branding">
+          <div class="card-icon-wrapper">
+            <i data-lucide="palette" class="service-icon"></i>
+            <span class="card-badge">Branding</span>
+          </div>
+          <div class="card-info">
+            <h4>Imagen Corporativa & Branding</h4>
+            <p>Desarrollo de marcas, diseño de medallas/jerseys conmemorativos, identidad visual y vectores institucionales.</p>
+          </div>
+        </article>
+
+        <!-- Tarjeta 4: Producción Audiovisual & Cobertura Aérea -->
+        <article class="portfolio-card service-card" data-project="audiovisualDrone">
+          <div class="card-icon-wrapper">
+            <i data-lucide="video" class="service-icon"></i>
+            <span class="card-badge">Video & Drone</span>
+          </div>
+          <div class="card-info">
+            <h4>Producción Audiovisual & Cobertura Aérea</h4>
+            <p>Video promocional, videoclips para proyectos urbanos/musicales y tomas aéreas cinemáticas con drone para eventos.</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- VENTANA MODAL / LIGHTBOX -->
+  <div id="portfolio-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">&times;</button>
+      
+      <div class="modal-body">
+        <div class="modal-info">
+          <div>
+            <span id="modal-badge" class="card-badge">Diseño</span>
+            <h2 id="modal-title">Título del Servicio</h2>
+            <p id="modal-desc">Descripción extendida...</p>
+            
+            <div class="modal-specs">
+              <h4>Especificaciones Técnicas</h4>
+              <ul id="modal-specs-list"></ul>
+            </div>
+          </div>
+
+          <a id="modal-whatsapp-link" href="https://wa.me/525560681662?text=Hola%20Jos%C3%A9%20Luis,%20me%20interesa%20un%20proyecto%20similar..." target="_blank" rel="noopener noreferrer" class="modal-cta">
+            Cotizar Servicio
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT EJECUTABLE (JS) -->
+  <script>
+    // Inicializar íconos Lucide
+    lucide.createIcons();
+
+    // Base de datos de servicios de diseño
+    const projectsData = {
+      webUI: {
+        badge: "Diseño Web",
+        title: "Desarrollo & Diseño Web",
+        desc: "Creación y maquetación de sitios web funcionales y adaptativos. Estructuración visual para proyectos comerciales, landing pages y maquetación centrada en la presencia digital de marcas.",
+        specs: [
+          "<strong>Herramientas:</strong> HTML5, CSS3, JavaScript & maquetación responsive",
+          "<strong>Enfoque:</strong> Landing pages, portafolios web & adaptación digital",
+          "<strong>Optimización:</strong> Navegación clara & compatibilidad multidispositivo"
+        ]
+      },
+      socialMedia: {
+        badge: "Social Media",
+        title: "Social Media & Content Creator",
+        desc: "Estrategia gráfica para posicionamiento en plataformas digitales. Producción de piezas publicitarias, campañas de Email Marketing (Mailing) y generación de imágenes publicitarias con IA generativa.",
+        specs: [
+          "<strong>Plataformas:</strong> Instagram, Facebook & Email Marketing",
+          "<strong>Tecnología:</strong> Prompting en IA (Vertex AI / Google Cloud) & Photoshop",
+          "<strong>Entregables:</strong> Banners, templates para feed & assets publicitarios"
+        ]
+      },
+      branding: {
+        badge: "Branding",
+        title: "Imagen Corporativa & Branding",
+        desc: "Creación y evolución de marcas comerciales e institucionales. Diseño de identidad gráfica, logotipos vectoriales, papelería corporativa y aplicaciones conmemorativas como medallas y jerseys deportivos.",
+        specs: [
+          "<strong>Vectorización:</strong> Illustrator & diseño de marcas desde cero",
+          "<strong>Diseño Deportivo:</strong> Propuestas de medallas & jersey conmemorativo",
+          "<strong>Entregables:</strong> Guías de identidad, vectores de marca & renders"
+        ]
+      },
+      audiovisualDrone: {
+        badge: "Video & Drone",
+        title: "Producción Audiovisual & Cobertura Aérea",
+        desc: "Producción de video comercial, musical y cobertura aérea con drone. Captura de tomas dinámicas en eventos masivos/deportivos y producción visual para proyectos urbanos y de hip-hop.",
+        specs: [
+          "<strong>Equipo:</strong> Operación de drone de alta precisión & video en tierra",
+          "<strong>Edición:</strong> Premiere Pro, corrección de color & edición dinámico",
+          "<strong>Proyectos:</strong> Videoclips urbanos (Ana MC) & cobertura de eventos"
+        ]
+      }
+    };
+
+    // Lógica para apertura del modal al hacer clic en las tarjetas
+    const modal = document.getElementById('portfolio-modal');
+    const modalClose = document.getElementById('modal-close');
+    const modalBadge = document.getElementById('modal-badge');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalSpecsList = document.getElementById('modal-specs-list');
+    const serviceCards = document.querySelectorAll('.service-card');
+
+    serviceCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const projectId = card.getAttribute('data-project');
+        const data = projectsData[projectId];
+
+        if (data) {
+          modalBadge.textContent = data.badge;
+          modalTitle.textContent = data.title;
+          modalDesc.textContent = data.desc;
+          modalSpecsList.innerHTML = data.specs.map(s => `<li>${s}</li>`).join('');
+
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    });
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  </script>
+</body>
+</html>
