@@ -179,15 +179,17 @@
 
         <!-- Derecha: Ficha Técnica -->
         <div class="modal-info">
-          <span id="modal-badge" class="card-badge">Deportiva</span>
-          <h2 id="modal-title">Título del Proyecto</h2>
-          <p id="modal-desc">Descripción extendida...</p>
-          
-          <div class="modal-specs">
-            <h4>Especificaciones Técnicas</h4>
-            <ul id="modal-specs-list">
-              <!-- Se llena por JavaScript -->
-            </ul>
+          <div>
+            <span id="modal-badge" class="card-badge">Deportiva</span>
+            <h2 id="modal-title">Título del Proyecto</h2>
+            <p id="modal-desc">Descripción extendida...</p>
+            
+            <div class="modal-specs">
+              <h4>Especificaciones Técnicas</h4>
+              <ul id="modal-specs-list">
+                <!-- Se llena por JavaScript -->
+              </ul>
+            </div>
           </div>
 
           <a id="modal-whatsapp-link" href="https://wa.me/525560681662?text=Hola%20Jos%C3%A9%20Luis,%20me%20interesa%20un%20proyecto%20similar..." target="_blank" rel="noopener noreferrer" class="modal-cta">
@@ -389,6 +391,13 @@
           modalBadge.textContent = data.badge;
           modalTitle.textContent = data.title;
           modalDesc.textContent = data.desc;
+
+          // APLICAR FORMATO 940x1215 EXCLUSIVAMENTE A LAS CATEGORÍAS DE RETOQUE
+          if (projectId === 'textil' || projectId === 'packshot') {
+            modal.classList.add('is-product-retouch');
+          } else {
+            modal.classList.remove('is-product-retouch');
+          }
 
           // Llenar especificaciones
           modalSpecsList.innerHTML = data.specs.map(s => `<li>${s}</li>`).join('');
