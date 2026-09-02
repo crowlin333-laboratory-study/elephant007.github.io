@@ -43,6 +43,27 @@
       <p class="hero-bio">
         Experiencia en e-commerce realizando edición fotográfica masiva optimizada para conversión mediante IA y retoque avanzado[cite: 1]. Cobertura fotográfica, producción aérea con drone y diseño conmemorativo para marcas de alto impacto[cite: 1]. Desarrollo de páginas web adaptativas y estrategias de contenido en redes sociales enfocadas en engagement[cite: 1]. Producción de video promocional y dirección gráfica con visión comercial[cite: 1].
       </p>
+
+      <!-- MARCAS Y CLIENTES -->
+      <div class="brands-section">
+        <span class="brands-label">Marcas y proyectos con los que he colaborado</span>
+        <div class="brands-grid">
+          <div class="brand-chip"><i data-lucide="shopping-bag"></i> Liverpool</div>
+          <div class="brand-chip"><i data-lucide="trophy"></i> Asdeporte</div>
+          <div class="brand-chip"><i data-lucide="building-2"></i> Banorte</div>
+          <div class="brand-chip"><i data-lucide="smartphone"></i> Movistar</div>
+          <div class="brand-chip"><i data-lucide="bike"></i> GFNY</div>
+          <div class="brand-chip"><i data-lucide="shirt"></i> Adidas</div>
+          <div class="brand-chip"><i data-lucide="code"></i> Velosoft</div>
+          <div class="brand-chip"><i data-lucide="store"></i> Megaempeños</div>
+          <div class="brand-chip"><i data-lucide="sun"></i> CalorSolar</div>
+          <div class="brand-chip"><i data-lucide="cpu"></i> Tanken</div>
+          <div class="brand-chip"><i data-lucide="package"></i> Jofel</div>
+          <div class="brand-chip"><i data-lucide="palette"></i> Barro Negro</div>
+          <div class="brand-chip"><i data-lucide="shopping-cart"></i> LoveStoreInn</div>
+          <div class="brand-chip"><i data-lucide="monitor"></i> Kamkio</div>
+        </div>
+      </div>
     </section>
 
     <!-- GRID FLAT DE SERVICIOS -->
@@ -191,13 +212,11 @@
         const data = projectsData[projectId];
 
         if (data) {
-          // Mostrar Loader del elefantito primero
           modal.classList.add('active');
           elephantLoader.style.display = 'flex';
           modalInfoBody.style.display = 'none';
           document.body.style.overflow = 'hidden';
 
-          // Cargar datos tras animación breve
           setTimeout(() => {
             modalTitle.textContent = data.title;
             modalDesc.textContent = data.desc;
