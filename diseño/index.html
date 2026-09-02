@@ -37,12 +37,41 @@
 
   <main class="portfolio-container">
     
-    <!-- RESUMEN PROFESIONAL SOBRIO -->
+    <!-- RESUMEN PROFESIONAL (GRID DE 3 BLOQUES CON BULLETS) -->
     <section class="profile-summary">
       <h1 class="hero-title">Servicios Creativos & Estrategia Visual</h1>
-      <p class="hero-bio">
-        Experiencia en e-commerce realizando edición fotográfica masiva optimizada para conversión mediante IA y retoque avanzado. Cobertura fotográfica, producción aérea con drone y diseño conmemorativo para marcas de alto impacto. Desarrollo de páginas web adaptativas y estrategias de contenido en redes sociales enfocadas en engagement. Producción de video promocional y dirección gráfica con visión comercial.
-      </p>
+      
+      <div class="profile-grid">
+        <!-- Bloque 1: E-Commerce & Retoque -->
+        <div class="profile-col">
+          <h3>E-Commerce & IA</h3>
+          <ul>
+            <li>Edición fotográfica masiva optimizada para conversión[cite: 1].</li>
+            <li>Implementación de Workflows con Inteligencia Artificial generativa[cite: 1].</li>
+            <li>Retoque digital avanzado PSD para catálogos y plataformas de retail[cite: 1].</li>
+          </ul>
+        </div>
+
+        <!-- Bloque 2: Producción & Drone -->
+        <div class="profile-col">
+          <h3>Producción & Cobertura</h3>
+          <ul>
+            <li>Cobertura fotográfica y producción aérea con drone para eventos[cite: 1].</li>
+            <li>Diseño de piezas conmemorativas (medallas y jerseys de alto impacto)[cite: 1].</li>
+            <li>Producción de video promocional y videoclips para proyectos urbanos[cite: 1].</li>
+          </ul>
+        </div>
+
+        <!-- Bloque 3: Web & Redes Sociales -->
+        <div class="profile-col">
+          <h3>Estrategia Digital</h3>
+          <ul>
+            <li>Desarrollo de páginas web adaptativas y maquetación HTML/CSS[cite: 1].</li>
+            <li>Estrategia gráfica para redes sociales orientada al engagement[cite: 1].</li>
+            <li>Dirección gráfica integral con enfoque puramente comercial[cite: 1].</li>
+          </ul>
+        </div>
+      </div>
 
       <!-- MARCAS Y CLIENTES -->
       <div class="brands-section">
@@ -121,7 +150,7 @@
 
   </main>
 
-  <!-- MODAL CON ANIMACIÓN DE ELEFANTITO -->
+  <!-- MODAL CON ANIMACIÓN DE ELEFANTITO Y ENVÍO A WHATSAPP -->
   <div id="portfolio-modal" class="modal-overlay">
     <div class="modal-content">
       <button class="modal-close" id="modal-close">&times;</button>
@@ -142,13 +171,13 @@
           <ul id="modal-specs-list"></ul>
         </div>
 
-        <!-- FORMULARIO DIRECTO DE COTIZACIÓN -->
-        <form class="quote-form" action="https://formspree.io/f/tu-id" method="POST">
+        <!-- FORMULARIO DIRECTO A WHATSAPP -->
+        <form class="quote-form" id="whatsapp-quote-form">
           <h4>Cotizar este Proyecto</h4>
-          <input type="text" placeholder="Tu Nombre o Empresa" required>
-          <input type="email" placeholder="Correo de contacto" required>
-          <textarea rows="3" placeholder="Platícame sobre tu proyecto o idea..." required></textarea>
-          <button type="submit" class="modal-cta-btn">Enviar Mensaje</button>
+          <input type="text" id="ws-nombre" placeholder="Tu Nombre o Empresa" required>
+          <input type="email" id="ws-email" placeholder="Correo de contacto" required>
+          <textarea id="ws-mensaje" rows="3" placeholder="Platícame sobre tu proyecto o idea..." required></textarea>
+          <button type="submit" class="modal-cta-btn">Enviar a WhatsApp</button>
         </form>
       </div>
 
@@ -224,7 +253,7 @@
 
             elephantLoader.style.display = 'none';
             modalInfoBody.style.display = 'block';
-          }, 900);
+          }, 800);
         }
       });
     });
@@ -237,6 +266,23 @@
     function closeModal() {
       modal.classList.remove('active');
       document.body.style.overflow = 'auto';
+    }
+
+    // Lógica para enviar el mensaje directamente a WhatsApp
+    const wsForm = document.getElementById('whatsapp-quote-form');
+    if (wsForm) {
+      wsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nombre = document.getElementById('ws-nombre').value;
+        const email = document.getElementById('ws-email').value;
+        const mensaje = document.getElementById('ws-mensaje').value;
+        const servicio = modalTitle.textContent;
+
+        const texto = `Hola José Luis, me interesa cotizar el servicio de *${servicio}*.\n\n*Nombre:* ${nombre}\n*Correo:* ${email}\n*Detalles:* ${mensaje}`;
+        const url = `https://wa.me/525560681662?text=${encodeURIComponent(texto)}`;
+
+        window.open(url, '_blank');
+      });
     }
   </script>
 </body>
