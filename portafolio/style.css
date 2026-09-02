@@ -193,7 +193,22 @@ body.portfolio-body {
   color: #6e6e73;
   line-height: 1.5;
 }
+/* ==========================================
+   ENCUADRE EXCLUSIVO TARJETAS RETOQUE (940x1215)
+=========================================== */
 
+/* Aplicar relación de aspecto 3:4 a la miniatura de la tarjeta de producto */
+.portfolio-card[data-category="producto"] .card-image {
+  height: auto;
+  aspect-ratio: 940 / 1215;
+  background-color: #f8f8f8;
+}
+
+/* Mostrar la imagen completa centrada sin recortes laterales ni verticales */
+.portfolio-card[data-category="producto"] .card-image img {
+  object-fit: contain;
+  padding: 8px;
+}
 /* ==========================================
    5. VENTANA MODAL / LIGHTBOX
 =========================================== */
