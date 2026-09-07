@@ -87,7 +87,7 @@ body.portfolio-body {
 }
 
 /* ==========================================
-   3. HERO DE E-COMMERCE & PROCESO EN 3 PASOS
+   3. HERO & PROCESO 3 COLUMNAS
 =========================================== */
 .portfolio-container {
   max-width: 1000px;
@@ -170,22 +170,14 @@ body.portfolio-body {
 .brand-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
   background-color: #f5f5f7;
   color: #1d1d1f;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 500;
   transition: all 0.2s ease;
   cursor: default;
-}
-
-.brand-chip i {
-  width: 14px;
-  height: 14px;
-  color: #0071e3;
-  stroke-width: 2;
 }
 
 .brand-chip:hover {
@@ -194,7 +186,7 @@ body.portfolio-body {
 }
 
 /* ==========================================
-   4. TARJETAS CON PROPORCIÓN VERTICAL (940x1215)
+   4. TARJETAS FLAT & CONTENEDOR DE ÍCONOS
 =========================================== */
 .category-header {
   margin-bottom: 28px;
@@ -209,8 +201,8 @@ body.portfolio-body {
 
 .ecommerce-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 32px 24px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
 }
 
 .flat-card {
@@ -218,74 +210,37 @@ body.portfolio-body {
   flex-direction: column;
   gap: 16px;
   cursor: pointer;
-  padding: 12px;
-  border-radius: 12px;
-  transition: background-color 0.2s ease;
+  padding: 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .flat-card:hover {
   background-color: #fbfbfd;
+  transform: translateY(-4px);
 }
 
-.card-image-box {
+/* Caja gris clara superior centrada */
+.card-icon-wrapper {
   position: relative;
   width: 100%;
+  height: 180px;
   border-radius: 12px;
-  overflow: hidden;
   background-color: #f5f5f7;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.card-image-box.aspect-vertical {
-  aspect-ratio: 940 / 1215;
-}
-
-.card-image-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 12px;
-  transition: transform 0.3s ease;
-}
-
-.flat-card:hover .card-image-box img {
-  transform: scale(1.03);
-}
-
-.card-image-box.icon-fallback {
-  background: linear-gradient(135deg, #f5f5f7 0%, #e5e5ea 100%);
-}
-
-.animated-icon {
-  width: 42px;
-  height: 42px;
-  stroke-width: 1.5;
+.draw-icon {
+  width: 52px;
+  height: 52px;
   color: #1d1d1f;
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.flat-card:hover .animated-icon {
-  transform: scale(1.12) rotate(-3deg);
-  color: #0071e3;
-}
-
-.card-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  color: #1d1d1f;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 10px;
 }
 
 .card-content h3 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   color: #1d1d1f;
   margin-bottom: 6px;
@@ -296,7 +251,7 @@ body.portfolio-body {
   font-size: 13px;
   color: #6e6e73;
   line-height: 1.5;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .btn-more {
@@ -315,7 +270,7 @@ body.portfolio-body {
 }
 
 /* ==========================================
-   5. MODAL CON ELEFANTITO ANIMADO & FORMULARIO
+   5. MODAL & ELEFANTITO ANIMADO
 =========================================== */
 .modal-overlay {
   position: fixed;
@@ -459,12 +414,16 @@ body.portfolio-body {
   background: #1eb855;
 }
 
-@media (max-width: 768px) {
-  .profile-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 900px) {
   .ecommerce-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-grid,
+  .ecommerce-grid {
+    grid-template-columns: 1fr;
   }
   .hero-title {
     font-size: 28px;
