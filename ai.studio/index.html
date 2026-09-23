@@ -80,18 +80,48 @@
       border-color: var(--accent);
       outline: none;
     }
-    .file-upload-group {
+    
+    /* Selector de archivos personalizado y elegante */
+    .file-upload-wrapper {
+      position: relative;
       background: #1f2937;
       border: 1px dashed var(--border-dark);
-      padding: 5px;
       border-radius: 6px;
+      padding: 8px 10px;
       text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .file-upload-group input[type="file"] {
-      font-size: 0.7rem;
-      color: var(--subtext);
+    .file-upload-wrapper:hover {
+      border-color: var(--accent);
+      background: #1a2332;
+    }
+    .file-upload-wrapper input[type="file"] {
+      position: absolute;
+      left: 0;
+      top: 0;
       width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
     }
+    .file-upload-text {
+      font-size: 0.75rem;
+      color: var(--subtext);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+    .file-upload-wrapper.has-file {
+      border-color: #059669;
+      background: rgba(5, 150, 105, 0.1);
+    }
+    .file-upload-wrapper.has-file .file-upload-text {
+      color: #34d399;
+      font-weight: 600;
+    }
+
     .btn-generate {
       background: linear-gradient(135deg, #e5c158, #b89728);
       color: #121214;
@@ -285,22 +315,25 @@
 
     <div>
       <label>1. Foto Base Frente (Requerida)</label>
-      <div class="file-upload-group">
-        <input type="file" id="imgFront" accept="image/*">
+      <div class="file-upload-wrapper" id="wrapFront">
+        <span class="file-upload-text" id="textFront">📁 Cargar imagen frontal...</span>
+        <input type="file" id="imgFront" accept="image/*" onchange="updateFileName('imgFront', 'textFront', 'wrapFront')">
       </div>
     </div>
 
     <div>
       <label>2. Foto Base Espalda</label>
-      <div class="file-upload-group">
-        <input type="file" id="imgBack" accept="image/*">
+      <div class="file-upload-wrapper" id="wrapBack">
+        <span class="file-upload-text" id="textBack">📁 Cargar imagen trasera...</span>
+        <input type="file" id="imgBack" accept="image/*" onchange="updateFileName('imgBack', 'textBack', 'wrapBack')">
       </div>
     </div>
 
     <div>
       <label>3. Foto Detalle Textura / Costura</label>
-      <div class="file-upload-group">
-        <input type="file" id="imgDetail" accept="image/*">
+      <div class="file-upload-wrapper" id="wrapDetail">
+        <span class="file-upload-text" id="textDetail">📁 Cargar detalle...</span>
+        <input type="file" id="imgDetail" accept="image/*" onchange="updateFileName('imgDetail', 'textDetail', 'wrapDetail')">
       </div>
     </div>
 
@@ -398,6 +431,21 @@
     const ai = new GoogleGenAI({ apiKey: API_KEY });
     const generatedImagesData = {};
 
+    // Actualiza el nombre del archivo en el selector personalizado
+    window.updateFileName = function(inputId, textId, wrapId) {
+      const input = document.getElementById(inputId);
+      const textSpan = document.getElementById(textId);
+      const wrapper = document.getElementById(wrapId);
+
+      if (input.files && input.files.length > 0) {
+        const fileName = input.files[0].name;
+        textSpan.textContent = `✔ ${fileName}`;
+        wrapper.classList.add('has-file');
+      } else {
+        wrapper.classList.remove('has-file');
+      }
+    }
+
     async function fileToGenerativePart(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -461,7 +509,7 @@
 
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Renderizando...</p>
+        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Renderizando con IA...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
@@ -487,6 +535,7 @@
       ];
 
       let imageUrl = null;
+      let textResponse = null;
 
       try {
         let contentsArray = [basePrompts[index]];
@@ -498,15 +547,37 @@
         const response = await generateWithRetry(contentsArray);
 
         const candidate = response.candidates?.[0];
-        const part = candidate?.content?.parts?.[0];
-        if (part && part.inlineData) {
-          imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+        const parts = candidate?.content?.parts;
+
+        if (parts) {
+          for (const part of parts) {
+            if (part.inlineData) {
+              imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+              break;
+            }
+            if (part.text) {
+              textResponse = part.text;
+            }
+          }
         }
       } catch (error) {
-        console.warn("Aviso de cuota/red de Google, usando tarjeta visual de estudio.", error);
+        console.warn("Aviso de red o límite:", error);
       }
 
-      if (!imageUrl) {
+      if (imageUrl) {
+        // CASO A: Imagen real generada por Google
+        generatedImagesData[index] = imageUrl;
+        document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
+        document.getElementById(downloadBtns[index]).style.display = 'block';
+      } else if (textResponse) {
+        // CASO B: Si la IA devuelve texto en lugar de imagen, lo mostramos para diagnóstico
+        document.getElementById(bodyId).innerHTML = `
+          <div style="padding:10px; text-align:left; font-size:0.7rem; color:#374151; overflow-y:auto; height:100%; box-sizing:border-box;">
+            <strong>💬 Respuesta de la IA:</strong><br>${textResponse}
+          </div>
+        `;
+      } else {
+        // CASO C: Respaldo visual si no hubo respuesta directa
         const canvas = document.createElement('canvas');
         canvas.width = 600;
         canvas.height = 600;
@@ -537,11 +608,10 @@
         ctx.fillText('✔ LISTO PARA E-COMMERCE', canvas.width / 2, 360);
 
         imageUrl = canvas.toDataURL('image/jpeg', 0.95);
+        generatedImagesData[index] = imageUrl;
+        document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
+        document.getElementById(downloadBtns[index]).style.display = 'block';
       }
-
-      generatedImagesData[index] = imageUrl;
-      document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
-      document.getElementById(downloadBtns[index]).style.display = 'block';
     }
 
     function downloadCard(index) {
