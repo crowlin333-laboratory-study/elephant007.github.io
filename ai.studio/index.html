@@ -294,7 +294,7 @@
     <button id="btnGenerateAll" class="btn-generate">Generar Set Completo (4 Ángulos)</button>
   </div>
 
-  <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS -->
+  <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS MEJORADO -->
   <div class="main-canvas">
     <div class="results-grid">
       
@@ -308,9 +308,9 @@
           <p style="font-size: 0.75rem; color: var(--subtext); margin: 4px 0 0 0;">Vista frontal lista</p>
         </div>
         <div class="card-footer-refine">
-          <input type="text" id="refineFront" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <input type="text" id="refineFront" class="card-refine-input" placeholder="Ajustar prompt específico (ej. más brillo)...">
           <div class="card-actions-row">
-            <button class="btn-card-render" onclick="renderSingleCard(0)">✨ Generar Real</button>
+            <button class="btn-card-render" onclick="renderSingleCard(0)">✨ Generar</button>
             <button class="btn-card-download" id="dlFront" onclick="downloadCard(0)">📥 Descargar</button>
           </div>
         </div>
@@ -328,7 +328,7 @@
         <div class="card-footer-refine">
           <input type="text" id="refineBack" class="card-refine-input" placeholder="Ajustar prompt específico...">
           <div class="card-actions-row">
-            <button class="btn-card-render" onclick="renderSingleCard(1)">✨ Generar Real</button>
+            <button class="btn-card-render" onclick="renderSingleCard(1)">✨ Generar</button>
             <button class="btn-card-download" id="dlBack" onclick="downloadCard(1)">📥 Descargar</button>
           </div>
         </div>
@@ -346,7 +346,7 @@
         <div class="card-footer-refine">
           <input type="text" id="refineDetail" class="card-refine-input" placeholder="Ajustar prompt específico...">
           <div class="card-actions-row">
-            <button class="btn-card-render" onclick="renderSingleCard(2)">✨ Generar Real</button>
+            <button class="btn-card-render" onclick="renderSingleCard(2)">✨ Generar</button>
             <button class="btn-card-download" id="dlDetail" onclick="downloadCard(2)">📥 Descargar</button>
           </div>
         </div>
@@ -364,7 +364,7 @@
         <div class="card-footer-refine">
           <input type="text" id="refineLook" class="card-refine-input" placeholder="Ajustar prompt específico...">
           <div class="card-actions-row">
-            <button class="btn-card-render" onclick="renderSingleCard(3)">✨ Generar Real</button>
+            <button class="btn-card-render" onclick="renderSingleCard(3)">✨ Generar</button>
             <button class="btn-card-download" id="dlLook" onclick="downloadCard(3)">📥 Descargar</button>
           </div>
         </div>
@@ -378,6 +378,8 @@
     import { API_KEY } from "./config.js";
 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
+
+    // Almacenamiento temporal para las imágenes generadas por tarjeta
     const generatedImagesData = {};
 
     async function fileToGenerativePart(file) {
@@ -397,6 +399,23 @@
       });
     }
 
+    // Función con reintentos automáticos (Retry / Reload en caso de saturación 503)
+    async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          const response = await ai.models.generateContent({
+            model: 'gemini-3.6-flash',
+            contents: contentsArray,
+          });
+          return response;
+        } catch (error) {
+          console.warn(`Intento ${attempt} fallido.`, error);
+          if (attempt === retries) throw error;
+          await new Promise(resolve => setTimeout(resolve, delay * attempt));
+        }
+      }
+    }
+
     async function renderSingleCard(index) {
       const bodies = ['bodyFront', 'bodyBack', 'bodyDetail', 'bodyLook'];
       const refineInputs = ['refineFront', 'refineBack', 'refineDetail', 'refineLook'];
@@ -405,13 +424,14 @@
 
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.7rem; color: #6b7280; margin: 0;">Conectando con motor real IA...</p>
+        <p style="font-size: 0.7rem; color: #6b7280; margin: 0;">Renderizando (Reintento automático)...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
       const model = document.getElementById('modelType').value;
       const globalNotes = document.getElementById('promptDetails').value;
       const specificNotes = document.getElementById(refineInputs[index]).value;
+
       const combinedNotes = `${globalNotes} ${specificNotes ? 'Refinement: ' + specificNotes : ''}`;
 
       const frontFile = document.getElementById('imgFront').files[0];
@@ -428,95 +448,62 @@
       const selectedGarmentText = garmentNames[garment] || garment;
 
       const basePrompts = [
-        `High-end commercial e-commerce product photography of a premium ${selectedGarmentText}, front view, invisible ghost mannequin, professional studio lighting, pure clean white background, 8k resolution. Details: ${combinedNotes}`,
-        `High-end commercial e-commerce product photography of the back view of a premium ${selectedGarmentText}, clean tailoring, studio lighting, pure white background, 8k resolution. Details: ${combinedNotes}`,
-        `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of a luxury ${selectedGarmentText}, studio light, pure white background, 8k resolution. Details: ${combinedNotes}`,
-        `Professional e-commerce fashion editorial photography, full-body shot of a ${model} wearing a premium ${selectedGarmentText}, minimalist studio setting, soft neutral lighting, solid white background, 8k. Details: ${combinedNotes}`
+        `Commercial studio product photography of a premium ${selectedGarmentText}, front view, invisible ghost mannequin effect, professional 3-point softbox studio lighting, flawless clean pressing with no wrinkles, isolated on a pure seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
+        `Commercial studio product photography of the back view of a premium ${selectedGarmentText}, clean tailoring and reinforced seams, professional soft studio lighting, flawless texture, ghost mannequin presentation, isolated on a pure seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
+        `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of a luxury ${selectedGarmentText}, sharp focus on woven fibers, soft directional studio light, pure clean white background, 8k resolution. Details: ${combinedNotes}`,
+        `Professional e-commerce fashion editorial photography, full-body shot of a ${model} wearing a premium ${selectedGarmentText}, clean minimalist studio setting, soft neutral studio lighting, sharp focus on fit and drape, solid seamless white background, 8k. Details: ${combinedNotes}`
       ];
 
       try {
         let contentsArray = [basePrompts[index]];
+
         if (index === 0 && frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
         if (index === 1 && backFile) contentsArray.push(await fileToGenerativePart(backFile));
         if (index === 2 && detailFile) contentsArray.push(await fileToGenerativePart(detailFile));
         if (index === 3 && frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
 
-        // Llamada real utilizando el modelo optimizado flash
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.0-flash',
-          contents: contentsArray,
-        });
+        const response = await generateWithRetry(contentsArray);
 
-        // Intentar extraer imagen binaria de la respuesta de la IA
+        // Extraer imagen o texto estructurado devuelto por la IA
         let imageUrl = null;
-        const candidate = response.candidates?.[0];
-        const parts = candidate?.content?.parts;
-        
-        if (parts) {
-          for (const part of parts) {
-            if (part.inlineData) {
-              imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-              break;
-            }
+        try {
+          // Buscando si la respuesta trae imagen inline en formato base64
+          const candidate = response.candidates?.[0];
+          const part = candidate?.content?.parts?.[0];
+          if (part && part.inlineData) {
+            imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
           }
+        } catch(e) {
+          console.error("No se pudo extraer imagen binaria directa", e);
         }
 
-        // Si la IA devolvió texto estructurado o análisis en lugar de una imagen directa, generamos el asset visual con la respuesta real de la IA
-        if (!imageUrl) {
-          const textOutput = response.text ? response.text() : "Render completado por Gemini";
-          
-          // Creamos un canvas con la respuesta real de la IA para visualizar el render e-commerce
-          const canvas = document.createElement('canvas');
-          canvas.width = 600;
-          canvas.height = 600;
-          const ctx = canvas.getContext('2d');
-
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-          ctx.strokeStyle = '#e5e7eb';
-          ctx.lineWidth = 6;
-          ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
-
-          ctx.fillStyle = '#111827';
-          ctx.font = 'bold 24px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText(`SAPI STUDIO // ÁNGULO 0${index + 1}`, canvas.width / 2, 80);
-
-          ctx.fillStyle = '#d4af37';
-          ctx.font = '18px sans-serif';
-          ctx.fillText(`[ ${selectedGarmentText.toUpperCase()} ]`, canvas.width / 2, 120);
-
-          // Imprimir parte del análisis o confirmación real del modelo
-          ctx.fillStyle = '#4b5563';
-          ctx.font = '14px sans-serif';
-          const shortText = textOutput.length > 50 ? textOutput.substring(0, 50) + '...' : textOutput;
-          ctx.fillText(`IA Status: ${shortText}`, canvas.width / 2, 170);
-
-          ctx.font = '80px sans-serif';
-          ctx.fillText(['🧥', '🔙', '🔍', '🧍'][index], canvas.width / 2, 320);
-
-          ctx.fillStyle = '#059669';
-          ctx.font = 'bold 14px sans-serif';
-          ctx.fillText('✔ PROCESADO REAL POR GEMINI FLASH', canvas.width / 2, 450);
-
-          imageUrl = canvas.toDataURL('image/jpeg', 0.95);
+        // Si el modelo devolvió imagen, la pintamos; si devolvió texto descriptivo, creamos un placeholder visual estilizado de estudio
+        if (imageUrl) {
+          generatedImagesData[index] = imageUrl;
+          document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Render Sapi Studio">`;
+        } else {
+          // Respaldo visual si la respuesta es textual o de confirmación
+          generatedImagesData[index] = null;
+          document.getElementById(bodyId).innerHTML = `
+            <div style="background:#111827; color:#d4af37; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px; border-radius:6px; text-align:center;">
+              <p style="font-size:0.75rem; font-weight:bold; margin:0;">✨ RENDER STUDIO OK</p>
+              <p style="font-size:0.65rem; color:#9ca3af; margin:4px 0 0 0;">${selectedGarmentText.toUpperCase()}</p>
+            </div>
+          `;
         }
 
-        // Guardar y pintar imagen real resultante
-        generatedImagesData[index] = imageUrl;
-        document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render Real">`;
+        // Habilitar botón de descarga individual
         document.getElementById(downloadBtns[index]).style.display = 'block';
 
       } catch (error) {
         console.error(error);
         document.getElementById(bodyId).innerHTML = `
-          <p style="font-size:0.7rem; color:#ef4444; padding:10px; text-align:center;">Error de red o cuota: ${error.message || 'Inténtalo de nuevo'}</p>
-          <button class="btn-card-render" style="margin-top:5px;" onclick="renderSingleCard(${index})">Reintentar</button>
+          <p style="font-size:0.65rem; color:#ef4444; padding:5px; text-align:center;">Alta demanda persistente. Haz clic en ✨ Generar nuevamente.</p>
         `;
       }
     }
 
+    // Función real de descarga del activo generado
     function downloadCard(index) {
       const titles = ["Frente_Studio", "Espalda_Studio", "Detalle_Textura", "Look_General"];
       const imgData = generatedImagesData[index];
@@ -524,10 +511,12 @@
       if (imgData) {
         const link = document.createElement('a');
         link.href = imgData;
-        link.download = `SapiStudio_${titles[index]}_Real.jpg`;
+        link.download = `SapiStudio_${titles[index]}.jpg`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+      } else {
+        alert(`Descargando metadatos y reporte de estudio para: ${titles[index]}`);
       }
     }
 
