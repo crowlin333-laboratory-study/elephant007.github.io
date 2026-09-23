@@ -117,9 +117,9 @@
       grid-template-rows: repeat(2, 1fr);
       gap: 16px;
       width: 100%;
-      max-width: 800px;
+      max-width: 840px;
       height: 100%;
-      max-height: 800px;
+      max-height: 840px;
     }
     .result-card {
       background: var(--card-bg);
@@ -127,40 +127,104 @@
       border-radius: 10px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      padding: 16px;
       position: relative;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
     .card-label {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(17, 24, 39, 0.8);
+      background: rgba(17, 24, 39, 0.9);
       color: #fff;
       padding: 4px 8px;
       border-radius: 4px;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 600;
       letter-spacing: 0.5px;
-      z-index: 10;
     }
-    .placeholder-content {
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #f9fafb;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 10px;
       text-align: center;
-      color: var(--subtext);
-      padding: 20px;
+      position: relative;
     }
-    .placeholder-content span { font-size: 2.2rem; display: block; margin-bottom: 8px; }
-    .placeholder-content p { font-size: 0.8rem; margin: 0; }
+    .card-footer-refine {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .card-refine-input {
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .card-refine-input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    .card-actions-row {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-card-render {
+      flex: 1;
+      background: var(--panel-bg);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .btn-card-render:hover {
+      background: var(--accent);
+      color: var(--panel-bg);
+    }
+    .btn-card-download {
+      flex: 1;
+      background: #059669;
+      color: #fff;
+      border: none;
+      padding: 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      display: none; /* Se activa al generar con éxito */
+      transition: opacity 0.2s;
+    }
+    .btn-card-download:hover { opacity: 0.9; }
+
     .loader {
       border: 3px solid #e5e7eb;
       border-top: 3px solid var(--accent);
       border-radius: 50%;
-      width: 35px;
-      height: 35px;
+      width: 30px;
+      height: 30px;
       animation: spin 1s linear infinite;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
@@ -216,44 +280,89 @@
     </div>
 
     <div>
-      <label>Prompt Descriptivo de Acabados</label>
+      <label>Prompt General de Acabados</label>
       <textarea id="promptDetails" rows="2" placeholder="Ej. Algodón heavyweight, color negro mate..."></textarea>
     </div>
 
-    <button id="btnGenerate" class="btn-generate">Generar Set Fotográfico (4 Ángulos)</button>
+    <button id="btnGenerateAll" class="btn-generate">Generar Set Completo (4 Ángulos)</button>
   </div>
 
-  <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS E ICONOS -->
+  <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS MEJORADO -->
   <div class="main-canvas">
     <div class="results-grid">
-      <div class="result-card" id="cardFront">
-        <div class="card-label">01 // FRENTE STUDIO</div>
-        <div class="placeholder-content">
-          <span>🧥</span>
-          <p>Vista frontal lista para render</p>
+      
+      <!-- TARJETA 01: FRENTE -->
+      <div class="result-card">
+        <div class="card-header-row">
+          <span class="card-label">01 // FRENTE STUDIO</span>
+        </div>
+        <div class="card-body" id="bodyFront">
+          <span style="font-size: 2rem;">🧥</span>
+          <p style="font-size: 0.75rem; color: var(--subtext); margin: 4px 0 0 0;">Vista frontal lista</p>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineFront" class="card-refine-input" placeholder="Ajustar prompt específico (ej. más brillo)...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(0)">✨ Generar</button>
+            <button class="btn-card-download" id="dlFront" onclick="downloadCard(0)">📥 Descargar</button>
+          </div>
         </div>
       </div>
-      <div class="result-card" id="cardBack">
-        <div class="card-label">02 // ESPALDA STUDIO</div>
-        <div class="placeholder-content">
-          <span>🔙</span>
-          <p>Vista trasera lista para render</p>
+
+      <!-- TARJETA 02: ESPALDA -->
+      <div class="result-card">
+        <div class="card-header-row">
+          <span class="card-label">02 // ESPALDA STUDIO</span>
+        </div>
+        <div class="card-body" id="bodyBack">
+          <span style="font-size: 2rem;">🔙</span>
+          <p style="font-size: 0.75rem; color: var(--subtext); margin: 4px 0 0 0;">Vista trasera lista</p>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineBack" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(1)">✨ Generar</button>
+            <button class="btn-card-download" id="dlBack" onclick="downloadCard(1)">📥 Descargar</button>
+          </div>
         </div>
       </div>
-      <div class="result-card" id="cardDetail">
-        <div class="card-label">03 // DETALLE TEXTURA</div>
-        <div class="placeholder-content">
-          <span>🔍</span>
-          <p>Detalle de cuello/bolsa listo</p>
+
+      <!-- TARJETA 03: DETALLE -->
+      <div class="result-card">
+        <div class="card-header-row">
+          <span class="card-label">03 // DETALLE TEXTURA</span>
+        </div>
+        <div class="card-body" id="bodyDetail">
+          <span style="font-size: 2rem;">🔍</span>
+          <p style="font-size: 0.75rem; color: var(--subtext); margin: 4px 0 0 0;">Detalle de textura listo</p>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineDetail" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(2)">✨ Generar</button>
+            <button class="btn-card-download" id="dlDetail" onclick="downloadCard(2)">📥 Descargar</button>
+          </div>
         </div>
       </div>
-      <div class="result-card" id="cardLook">
-        <div class="card-label">04 // PLANO LOOK GENERAL</div>
-        <div class="placeholder-content">
-          <span>🧍</span>
-          <p>Modelo completo listo</p>
+
+      <!-- TARJETA 04: LOOK GENERAL -->
+      <div class="result-card">
+        <div class="card-header-row">
+          <span class="card-label">04 // PLANO LOOK GENERAL</span>
+        </div>
+        <div class="card-body" id="bodyLook">
+          <span style="font-size: 2rem;">🧍</span>
+          <p style="font-size: 0.75rem; color: var(--subtext); margin: 4px 0 0 0;">Modelo completo listo</p>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineLook" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(3)">✨ Generar</button>
+            <button class="btn-card-download" id="dlLook" onclick="downloadCard(3)">📥 Descargar</button>
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -263,7 +372,6 @@
 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-    // Función auxiliar para convertir archivo subido a base64
     async function fileToGenerativePart(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -281,20 +389,27 @@
       });
     }
 
-    async function runMultiGeneration() {
-      const cards = ['cardFront', 'cardBack', 'cardDetail', 'cardLook'];
-      
-      cards.forEach(cardId => {
-        document.getElementById(cardId).innerHTML = `
-          <div class="card-label">Procesando...</div>
-          <div class="loader"></div>
-          <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">Iniciando pipeline IA</p>
-        `;
-      });
+    async function renderSingleCard(index) {
+      const bodies = ['bodyFront', 'bodyBack', 'bodyDetail', 'bodyLook'];
+      const refineInputs = ['refineFront', 'refineBack', 'refineDetail', 'refineLook'];
+      const downloadBtns = ['dlFront', 'dlBack', 'dlDetail', 'dlLook'];
+      const titles = ["FRENTE STUDIO", "ESPALDA STUDIO", "DETALLE TEXTURA", "LOOK GENERAL"];
+      const icons = ['🧥', '🔙', '🔍', '🧍'];
+      const bodyId = bodies[index];
+
+      // Mostrar loader en el cuerpo de la tarjeta correspondiente
+      document.getElementById(bodyId).innerHTML = `
+        <div class="loader"></div>
+        <p style="font-size: 0.7rem; color: #6b7280; margin: 0;">Procesando IA...</p>
+      `;
 
       const garment = document.getElementById('garmentType').value;
       const model = document.getElementById('modelType').value;
-      const customNotes = document.getElementById('promptDetails').value;
+      const globalNotes = document.getElementById('promptDetails').value;
+      const specificNotes = document.getElementById(refineInputs[index]).value;
+
+      // Combinar notas generales con la mejora específica de este ángulo
+      const combinedNotes = `${globalNotes} ${specificNotes ? 'Refinement: ' + specificNotes : ''}`;
 
       const frontFile = document.getElementById('imgFront').files[0];
       const backFile = document.getElementById('imgBack').files[0];
@@ -309,72 +424,58 @@
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
-      const prompts = [
-        `Commercial studio product photography of a premium ${selectedGarmentText}, front view, invisible ghost mannequin effect, professional 3-point softbox studio lighting, flawless clean pressing with no wrinkles, isolated on a pure seamless solid white background, 8k resolution. Details: ${customNotes}`,
-        `Commercial studio product photography of the back view of a premium ${selectedGarmentText}, clean tailoring and reinforced seams, professional soft studio lighting, flawless texture, ghost mannequin presentation, isolated on a pure seamless solid white background, 8k resolution. Details: ${customNotes}`,
-        `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of a luxury ${selectedGarmentText}, sharp focus on woven fibers, soft directional studio light, pure clean white background, 8k resolution. Details: ${customNotes}`,
-        `Professional e-commerce fashion editorial photography, full-body shot of a ${model} wearing a premium ${selectedGarmentText}, clean minimalist studio setting, soft neutral studio lighting, sharp focus on fit and drape, solid seamless white background, 8k. Details: ${customNotes}`
+      const basePrompts = [
+        `Commercial studio product photography of a premium ${selectedGarmentText}, front view, invisible ghost mannequin effect, professional 3-point softbox studio lighting, flawless clean pressing with no wrinkles, isolated on a pure seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
+        `Commercial studio product photography of the back view of a premium ${selectedGarmentText}, clean tailoring and reinforced seams, professional soft studio lighting, flawless texture, ghost mannequin presentation, isolated on a pure seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
+        `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of a luxury ${selectedGarmentText}, sharp focus on woven fibers, soft directional studio light, pure clean white background, 8k resolution. Details: ${combinedNotes}`,
+        `Professional e-commerce fashion editorial photography, full-body shot of a ${model} wearing a premium ${selectedGarmentText}, clean minimalist studio setting, soft neutral studio lighting, sharp focus on fit and drape, solid seamless white background, 8k. Details: ${combinedNotes}`
       ];
 
-      const titles = ["01 // FRENTE STUDIO", "02 // ESPALDA STUDIO", "03 // DETALLE TEXTURA", "04 // PLANO LOOK GENERAL"];
-      const icons = ['🧥', '🔙', '🔍', '🧍'];
-
       try {
-        // Ejecución secuencial controlada para proteger el límite de peticiones (Rate Limit / 503)
-        for (let index = 0; index < prompts.length; index++) {
-          const promptText = prompts[index];
-          let contentsArray = [promptText];
+        let contentsArray = [basePrompts[index]];
 
-          if (index === 0 && frontFile) {
-            contentsArray.push(await fileToGenerativePart(frontFile));
-          } else if (index === 1 && backFile) {
-            contentsArray.push(await fileToGenerativePart(backFile));
-          } else if (index === 2 && detailFile) {
-            contentsArray.push(await fileToGenerativePart(detailFile));
-          } else if (index === 3 && frontFile) {
-            contentsArray.push(await fileToGenerativePart(frontFile));
-          }
+        if (index === 0 && frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
+        if (index === 1 && backFile) contentsArray.push(await fileToGenerativePart(backFile));
+        if (index === 2 && detailFile) contentsArray.push(await fileToGenerativePart(detailFile));
+        if (index === 3 && frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
 
-          document.getElementById(cards[index]).innerHTML = `
-            <div class="card-label">${titles[index]}</div>
-            <div class="loader"></div>
-            <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">Renderizando ángulo ${index + 1}/4...</p>
-          `;
+        const response = await ai.models.generateContent({
+          model: 'gemini-3.6-flash',
+          contents: contentsArray,
+        });
 
-          // Llamada real al modelo de Google GenAI con el modelo optimizado 3.6-flash
-          const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
-            contents: contentsArray,
-          });
-
-          // Renderizado exitoso en la tarjeta individual
-          document.getElementById(cards[index]).innerHTML = `
-            <div class="card-label">${titles[index]}</div>
-            <div style="width:100%; height:100%; background:#fff; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; padding:10px; text-align:center;">
-              <span style="font-size: 2.5rem;">${icons[index]}</span>
-              <p style="color:#111; font-weight:600; font-size:0.8rem; margin:0;">${selectedGarmentText.toUpperCase()}</p>
-              <p style="color:#059669; font-size:0.7rem; margin:0; font-weight:bold;">✔ Render Studio Exitoso</p>
-            </div>
-          `;
-
-          // Pausa preventiva de 1 segundo entre peticiones
-          if (index < prompts.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
-        }
+        // Éxito: Actualizar tarjeta y mostrar botón de descarga
+        document.getElementById(bodyId).innerHTML = `
+          <span style="font-size: 2.2rem;">${icons[index]}</span>
+          <p style="color:#059669; font-weight:bold; font-size:0.75rem; margin:4px 0 0 0;">✔ ${titles[index]} Generado</p>
+        `;
+        document.getElementById(downloadBtns[index]).style.display = 'block';
 
       } catch (error) {
         console.error(error);
-        cards.forEach(cardId => {
-          document.getElementById(cardId).innerHTML = `
-            <div class="card-label" style="background:#ef4444;">Error API</div>
-            <p style="font-size:0.75rem; color:#ef4444; padding:10px; text-align:center;">${error.message || 'Alta demanda temporal. Vuelve a intentar.'}</p>
-          `;
-        });
+        document.getElementById(bodyId).innerHTML = `
+          <p style="font-size:0.7rem; color:#ef4444; padding:5px; text-align:center;">Error: ${error.message || 'Límite de cuota alcanzado'}</p>
+        `;
       }
     }
 
-    document.getElementById('btnGenerate').addEventListener('click', runMultiGeneration);
+    // Función simulada de descarga de asset generado
+    function downloadCard(index) {
+      const titles = ["Frente_Studio", "Espalda_Studio", "Detalle_Textura", "Look_General"];
+      alert(`Iniciando descarga del activo: ${titles[index]}.jpg`);
+    }
+
+    async function runMultiGeneration() {
+      for (let i = 0; i < 4; i++) {
+        await renderSingleCard(i);
+        if (i < 3) await new Promise(resolve => setTimeout(resolve, 3000));
+      }
+    }
+
+    window.renderSingleCard = renderSingleCard;
+    window.downloadCard = downloadCard;
+
+    document.getElementById('btnGenerateAll').addEventListener('click', runMultiGeneration);
   </script>
 </body>
 </html>
