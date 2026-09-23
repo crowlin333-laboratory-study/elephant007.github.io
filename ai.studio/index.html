@@ -445,7 +445,7 @@
         if (index === 2 && detailFile) contentsArray.push(await fileToGenerativePart(detailFile));
         if (index === 3 && frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
 
-        // Llamada real con el modelo configurado correctamente
+        // Intento de conexión con la API real utilizando gemini-3.6-flash
         const response = await ai.models.generateContent({
           model: 'gemini-3.6-flash',
           contents: contentsArray,
@@ -463,12 +463,12 @@
           }
         }
       } catch (error) {
-        // Captura el error de cuota o red de forma limpia
+        // Red de seguridad: si la API deniega por cuota gratuita (429), activa el canvas limpio
         console.warn("Aviso de cuota/red detectado, activando modo resiliente de estudio.");
         imageUrl = null; 
       }
 
-      // Respaldo visual limpio si la API está en límite gratuito
+      // Respaldo visual en caso de que la cuota gratuita siga limitando la respuesta
       if (!imageUrl) {
         const canvas = document.createElement('canvas');
         canvas.width = 600;
