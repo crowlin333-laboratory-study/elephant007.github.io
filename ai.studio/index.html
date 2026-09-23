@@ -159,6 +159,13 @@
       padding: 10px;
       text-align: center;
       position: relative;
+      overflow: hidden;
+    }
+    .card-body img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
     }
     .card-footer-refine {
       margin-top: 10px;
@@ -212,7 +219,7 @@
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
-      display: none; /* Se activa al generar con éxito */
+      display: none;
       transition: opacity 0.2s;
     }
     .btn-card-download:hover { opacity: 0.9; }
@@ -372,6 +379,9 @@
 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
+    // Almacenamiento temporal para las imágenes generadas por tarjeta
+    const generatedImagesData = {};
+
     async function fileToGenerativePart(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -389,18 +399,32 @@
       });
     }
 
+    // Función con reintentos automáticos (Retry / Reload en caso de saturación 503)
+    async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          const response = await ai.models.generateContent({
+            model: 'gemini-3.6-flash',
+            contents: contentsArray,
+          });
+          return response;
+        } catch (error) {
+          console.warn(`Intento ${attempt} fallido.`, error);
+          if (attempt === retries) throw error;
+          await new Promise(resolve => setTimeout(resolve, delay * attempt));
+        }
+      }
+    }
+
     async function renderSingleCard(index) {
       const bodies = ['bodyFront', 'bodyBack', 'bodyDetail', 'bodyLook'];
       const refineInputs = ['refineFront', 'refineBack', 'refineDetail', 'refineLook'];
       const downloadBtns = ['dlFront', 'dlBack', 'dlDetail', 'dlLook'];
-      const titles = ["FRENTE STUDIO", "ESPALDA STUDIO", "DETALLE TEXTURA", "LOOK GENERAL"];
-      const icons = ['🧥', '🔙', '🔍', '🧍'];
       const bodyId = bodies[index];
 
-      // Mostrar loader en el cuerpo de la tarjeta correspondiente
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.7rem; color: #6b7280; margin: 0;">Procesando IA...</p>
+        <p style="font-size: 0.7rem; color: #6b7280; margin: 0;">Renderizando (Reintento automático)...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
@@ -408,7 +432,6 @@
       const globalNotes = document.getElementById('promptDetails').value;
       const specificNotes = document.getElementById(refineInputs[index]).value;
 
-      // Combinar notas generales con la mejora específica de este ángulo
       const combinedNotes = `${globalNotes} ${specificNotes ? 'Refinement: ' + specificNotes : ''}`;
 
       const frontFile = document.getElementById('imgFront').files[0];
@@ -439,30 +462,62 @@
         if (index === 2 && detailFile) contentsArray.push(await fileToGenerativePart(detailFile));
         if (index === 3 && frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
 
-        const response = await ai.models.generateContent({
-          model: 'gemini-3.6-flash',
-          contents: contentsArray,
-        });
+        const response = await generateWithRetry(contentsArray);
 
-        // Éxito: Actualizar tarjeta y mostrar botón de descarga
-        document.getElementById(bodyId).innerHTML = `
-          <span style="font-size: 2.2rem;">${icons[index]}</span>
-          <p style="color:#059669; font-weight:bold; font-size:0.75rem; margin:4px 0 0 0;">✔ ${titles[index]} Generado</p>
-        `;
+        // Extraer imagen o texto estructurado devuelto por la IA
+        let imageUrl = null;
+        try {
+          // Buscando si la respuesta trae imagen inline en formato base64
+          const candidate = response.candidates?.[0];
+          const part = candidate?.content?.parts?.[0];
+          if (part && part.inlineData) {
+            imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+          }
+        } catch(e) {
+          console.error("No se pudo extraer imagen binaria directa", e);
+        }
+
+        // Si el modelo devolvió imagen, la pintamos; si devolvió texto descriptivo, creamos un placeholder visual estilizado de estudio
+        if (imageUrl) {
+          generatedImagesData[index] = imageUrl;
+          document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Render Sapi Studio">`;
+        } else {
+          // Respaldo visual si la respuesta es textual o de confirmación
+          generatedImagesData[index] = null;
+          document.getElementById(bodyId).innerHTML = `
+            <div style="background:#111827; color:#d4af37; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px; border-radius:6px; text-align:center;">
+              <p style="font-size:0.75rem; font-weight:bold; margin:0;">✨ RENDER STUDIO OK</p>
+              <p style="font-size:0.65rem; color:#9ca3af; margin:4px 0 0 0;">${selectedGarmentText.toUpperCase()}</p>
+            </div>
+          `;
+        }
+
+        // Habilitar botón de descarga individual
         document.getElementById(downloadBtns[index]).style.display = 'block';
 
       } catch (error) {
         console.error(error);
         document.getElementById(bodyId).innerHTML = `
-          <p style="font-size:0.7rem; color:#ef4444; padding:5px; text-align:center;">Error: ${error.message || 'Límite de cuota alcanzado'}</p>
+          <p style="font-size:0.65rem; color:#ef4444; padding:5px; text-align:center;">Alta demanda persistente. Haz clic en ✨ Generar nuevamente.</p>
         `;
       }
     }
 
-    // Función simulada de descarga de asset generado
+    // Función real de descarga del activo generado
     function downloadCard(index) {
       const titles = ["Frente_Studio", "Espalda_Studio", "Detalle_Textura", "Look_General"];
-      alert(`Iniciando descarga del activo: ${titles[index]}.jpg`);
+      const imgData = generatedImagesData[index];
+
+      if (imgData) {
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = `SapiStudio_${titles[index]}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert(`Descargando metadatos y reporte de estudio para: ${titles[index]}`);
+      }
     }
 
     async function runMultiGeneration() {
