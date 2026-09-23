@@ -277,16 +277,26 @@
       const model = document.getElementById('modelType').value;
       const customNotes = document.getElementById('promptDetails').value;
 
-      // Prompts profesionales de estudio incorporados para cada vista
+      // Diccionario dinámico para adaptar el tipo de prenda seleccionado al motor de IA
+      const garmentNames = {
+        'hoodie': 'oversized hoodie',
+        'tee': 'basic t-shirt',
+        'jacket': 'denim jacket',
+        'pants': 'jogger pants'
+      };
+
+      const selectedGarmentText = garmentNames[garment] || garment;
+
+      // Prompts profesionales dinámicos estructurados para estudio comercial
       const prompts = [
-        `Commercial studio product photography of a premium ${garment}, front view, invisible ghost mannequin effect, professional 3-point softbox studio lighting, flawless clean pressing with no wrinkles, isolated on a pure seamless solid white background, 8k resolution. ${customNotes}`,
-        `Commercial studio product photography of the back view of a premium ${garment}, clean tailoring and reinforced seams, professional soft studio lighting, flawless texture, ghost mannequin presentation, isolated on a pure seamless solid white background, 8k resolution. ${customNotes}`,
-        `Macro commercial product photography, extreme close-up detail of the fabric texture and reinforced collar stitching of a luxury ${garment}, sharp focus on woven fibers, soft directional studio light, pure clean white background, 8k resolution. ${customNotes}`,
-        `Professional e-commerce fashion editorial photography, full-body shot of a ${model} wearing a premium ${garment}, clean minimalist studio setting, soft neutral studio lighting, sharp focus on garment fit and drape, solid seamless white background, 8k. ${customNotes}`
+        `Commercial studio product photography of a premium ${selectedGarmentText}, front view, invisible ghost mannequin effect, professional 3-point softbox studio lighting, flawless clean pressing with no wrinkles, isolated on a pure seamless solid white background, 8k resolution. Details: ${customNotes}`,
+        `Commercial studio product photography of the back view of a premium ${selectedGarmentText}, clean tailoring and reinforced seams, professional soft studio lighting, flawless texture, ghost mannequin presentation, isolated on a pure seamless solid white background, 8k resolution. Details: ${customNotes}`,
+        `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of a luxury ${selectedGarmentText}, sharp focus on woven fibers, soft directional studio light, pure clean white background, 8k resolution. Details: ${customNotes}`,
+        `Professional e-commerce fashion editorial photography, full-body shot of a ${model} wearing a premium ${selectedGarmentText}, clean minimalist studio setting, soft neutral studio lighting, sharp focus on fit and drape, solid seamless white background, 8k. Details: ${customNotes}`
       ];
 
       try {
-        // Simulación de render o conexión directa al SDK de Vertex AI para los 4 prompts
+        // Simulación de respuesta conectada al pipeline de render e-commerce
         setTimeout(() => {
           const icons = ['🧥', '🔙', '🔍', '🧍'];
           const titles = ["01 // FRENTE STUDIO", "02 // ESPALDA STUDIO", "03 // DETALLE TEXTURA", "04 // PLANO LOOK GENERAL"];
