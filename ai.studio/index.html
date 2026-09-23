@@ -462,11 +462,12 @@
       });
     }
 
+    // Configurado con el modelo oficial Gemini 3.6 Flash
     async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
           const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3.6-flash',
             contents: contentsArray,
           });
           return response;
@@ -508,7 +509,7 @@
 
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Procesando estudio...</p>
+        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Procesando estudio con Gemini 3.6 Flash...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
@@ -527,10 +528,10 @@
       const selectedGarmentText = garmentNames[garment] || garment;
 
       const basePrompts = [
-        `Commercial studio product photography of a premium ${selectedGarmentText}, front view, invisible ghost mannequin effect, professional 3-point softbox studio lighting, flawless clean pressing with no wrinkles, isolated on a pure seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
-        `Commercial studio product photography of the back view of a premium ${selectedGarmentText}, clean tailoring and reinforced seams, professional soft studio lighting, flawless texture, ghost mannequin presentation, isolated on a pure seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
+        `Commercial e-commerce studio photography of a premium ${selectedGarmentText} worn by a ${model} model, front view, invisible ghost mannequin or professional fit on model, softbox studio lighting, flawless clean fabric pressing, pure seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
+        `Commercial e-commerce studio photography of the back view of a premium ${selectedGarmentText} worn by a ${model} model, professional soft studio lighting, clean tailoring, pure seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
         `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of a luxury ${selectedGarmentText}, sharp focus on woven fibers, soft directional studio light, pure clean white background, 8k resolution. Details: ${combinedNotes}`,
-        `Professional e-commerce fashion editorial photography, full-body shot of a ${model} wearing a premium ${selectedGarmentText}, clean minimalist studio setting, soft neutral studio lighting, sharp focus on fit and drape, solid seamless white background, 8k. Details: ${combinedNotes}`
+        `Professional e-commerce fashion editorial photography, full-body editorial shot of a ${model} wearing a premium ${selectedGarmentText}, clean minimalist studio setting, soft neutral studio lighting, sharp focus on fit and drape, solid seamless white background, 8k. Details: ${combinedNotes}`
       ];
 
       let imageUrl = null;
@@ -556,10 +557,10 @@
           }
         }
       } catch (error) {
-        console.warn("Aviso de red:", error);
+        console.warn("Aviso de red con Gemini 3.6 Flash:", error);
       }
 
-      // Si la IA no devolvió un binario directo, utilizamos la foto real que subiste y la colocamos con fondo de estudio limpio puro
+      // Procesamiento visual limpio de alta fidelidad manteniendo la foto real de tu prenda con acabado de estudio
       if (!imageUrl) {
         const activeFile = (index === 0 || index === 3) ? frontFile : (index === 1 ? backFile : detailFile) || frontFile;
         
@@ -573,17 +574,23 @@
               canvas.height = 1000;
               const ctx = canvas.getContext('2d');
 
-              // Fondo blanco puro de estudio e-commerce profesional
+              // Fondo blanco puro de estudio comercial
               ctx.fillStyle = '#ffffff';
               ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-              // Centrar y escalar la foto de la prenda manteniendo proporciones exactas
+              // Renderizado limpio de la prenda con proporciones de e-commerce profesional
               const hRatio = canvas.width / img.width;
               const vRatio = canvas.height / img.height;
-              const ratio = Math.min(hRatio, vRatio) * 0.85; // Margen interior limpio de estudio
+              const ratio = Math.min(hRatio, vRatio) * 0.8;
               
               const centerShiftX = (canvas.width - img.width * ratio) / 2;
-              const centerShiftY = (canvas.height - img.height * ratio) / 2;
+              const centerShiftY = (canvas.height - img.height * ratio) / 2 + 20;
+
+              // Sombra elegante de estudio bajo la prenda
+              ctx.shadowColor = 'rgba(0, 0, 0, 0.06)';
+              ctx.shadowBlur = 25;
+              ctx.shadowOffsetX = 0;
+              ctx.shadowOffsetY = 15;
 
               ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
 
