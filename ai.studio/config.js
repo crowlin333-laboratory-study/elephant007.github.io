@@ -1,4 +1,4 @@
-avaScript
+javaScript
 
 
 // config.js
