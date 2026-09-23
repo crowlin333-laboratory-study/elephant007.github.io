@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sapi Studio - AI E-commerce Studio Pro</title>
+  <title>Sapi Studio - AI E-commerce Studio Pro 2</title>
   <style>
     :root {
       --bg-color: #f8f9fa;
@@ -461,11 +461,12 @@
       });
     }
 
+    // Configurado con el modelo oficial dedicado gemini-3.1-flash-image (Nano Banana 2)
     async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
           const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3.1-flash-image',
             contents: contentsArray,
           });
           return response;
@@ -506,7 +507,7 @@
 
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Generando look completo con IA...</p>
+        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Generando render con Gemini Image IA...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
@@ -550,10 +551,10 @@
           }
         }
       } catch (error) {
-        console.warn("Aviso de red:", error);
+        console.warn("Aviso de red con el modelo de imagen:", error);
       }
 
-      // Procesamiento visual escalado a Alta Resolución Real (2000x2000 px)
+      // Respaldo optimizado en Alta Resolución Real (2000x2000 px) con suavizado de alta calidad
       if (!imageUrl) {
         const activeFile = (index === 0 || index === 3) ? frontFile : (index === 1 ? backFile : detailFile) || frontFile;
         
@@ -563,11 +564,10 @@
             const img = new Image();
             img.onload = function() {
               const canvas = document.createElement('canvas');
-              canvas.width = 2000;  // Alta resolución real
-              canvas.height = 2000; // Alta resolución real
+              canvas.width = 2000;
+              canvas.height = 2000;
               const ctx = canvas.getContext('2d');
 
-              // Suavizado de alta calidad para máxima nitidez
               ctx.imageSmoothingEnabled = true;
               ctx.imageSmoothingQuality = 'high';
 
