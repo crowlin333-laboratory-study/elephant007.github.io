@@ -26,35 +26,37 @@
       height: 100vh;
       overflow: hidden;
     }
+    /* Panel lateral más estilizado y esbelto (320px) */
     .sidebar {
-      width: 440px;
+      width: 320px;
       background-color: var(--panel-bg);
-      padding: 24px;
+      padding: 20px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       border-right: 1px solid var(--border-dark);
       overflow-y: auto;
       color: var(--text-sidebar);
+      flex-shrink: 0;
     }
     .brand-header h1 {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       margin: 0;
       color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 1px;
     }
     .brand-header p {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--subtext);
-      margin: 4px 0 0 0;
+      margin: 3px 0 0 0;
     }
     label { 
-      font-size: 0.75rem; 
+      font-size: 0.7rem; 
       color: var(--subtext); 
       display: block; 
-      margin-bottom: 4px; 
+      margin-bottom: 3px; 
       font-weight: 600; 
       text-transform: uppercase; 
     }
@@ -63,10 +65,10 @@
       background: #1f2937;
       border: 1px solid var(--border-dark);
       color: #fff;
-      padding: 8px 10px;
+      padding: 7px 9px;
       border-radius: 6px;
       box-sizing: border-box;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
     textarea:focus, select:focus, input:focus {
       border-color: var(--accent);
@@ -75,12 +77,12 @@
     .file-upload-group {
       background: #1f2937;
       border: 1px dashed var(--border-dark);
-      padding: 6px;
+      padding: 5px;
       border-radius: 6px;
       text-align: center;
     }
     .file-upload-group input[type="file"] {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--subtext);
       width: 100%;
     }
@@ -88,25 +90,26 @@
       background: linear-gradient(135deg, #e5c158, #b89728);
       color: #121214;
       border: none;
-      padding: 12px;
+      padding: 10px;
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       transition: opacity 0.2s;
-      font-size: 0.85rem;
-      margin-top: 5px;
+      font-size: 0.8rem;
+      margin-top: 4px;
     }
     .btn-generate:hover { opacity: 0.9; }
 
+    /* Lienzo principal con mayor amplitud y espacio para altura real */
     .main-canvas {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 16px;
       position: relative;
       background-color: var(--bg-color);
       overflow-y: auto;
@@ -115,11 +118,11 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: 16px;
+      gap: 12px;
       width: 100%;
-      max-width: 840px;
       height: 100%;
-      max-height: 840px;
+      max-width: 1100px;
+      max-height: 96vh;
     }
     .result-card {
       background: var(--card-bg);
@@ -127,7 +130,7 @@
       border-radius: 10px;
       display: flex;
       flex-direction: column;
-      padding: 16px;
+      padding: 12px;
       position: relative;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.03);
@@ -136,14 +139,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
     .card-label {
       background: rgba(17, 24, 39, 0.9);
       color: #fff;
-      padding: 4px 8px;
+      padding: 3px 6px;
       border-radius: 4px;
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-weight: 600;
       letter-spacing: 0.5px;
     }
@@ -156,30 +159,31 @@
       background: #f9fafb;
       border: 1px dashed var(--border);
       border-radius: 8px;
-      padding: 10px;
+      padding: 6px;
       text-align: center;
       position: relative;
       overflow: hidden;
+      min-height: 0; /* Permite que el flexbox se ajuste dinámicamente en altura real */
     }
     .card-body img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain; /* Mantiene la proporción real de la foto sin recortarla bruscamente */
       border-radius: 6px;
     }
     .card-footer-refine {
-      margin-top: 10px;
+      margin-top: 6px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
     .card-refine-input {
       background: #fff;
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 6px 8px;
+      padding: 5px 7px;
       border-radius: 4px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       width: 100%;
       box-sizing: border-box;
     }
@@ -189,16 +193,16 @@
     }
     .card-actions-row {
       display: flex;
-      gap: 6px;
+      gap: 4px;
     }
     .btn-card-render {
       flex: 1;
       background: var(--panel-bg);
       color: var(--accent);
       border: 1px solid var(--accent);
-      padding: 6px;
+      padding: 5px;
       border-radius: 4px;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
@@ -213,9 +217,9 @@
       background: #059669;
       color: #fff;
       border: none;
-      padding: 6px;
+      padding: 5px;
       border-radius: 4px;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
@@ -228,17 +232,17 @@
       border: 3px solid #e5e7eb;
       border-top: 3px solid var(--accent);
       border-radius: 50%;
-      width: 30px;
-      height: 30px;
+      width: 26px;
+      height: 26px;
       animation: spin 1s linear infinite;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
-  <!-- PANEL LATERAL CONFIGURADOR -->
+  <!-- PANEL LATERAL CONFIGURADOR (MÁS ESBELTO) -->
   <div class="sidebar">
     <div class="brand-header">
       <h1>Sapi Studio</h1>
@@ -288,13 +292,13 @@
 
     <div>
       <label>Prompt General de Acabados</label>
-      <textarea id="promptDetails" rows="2" placeholder="Ej. Algodón heavyweight, color negro mate..."></textarea>
+      <textarea id="promptDetails" rows="2" placeholder="Ej. Algodón heavyweight..."></textarea>
     </div>
 
     <button id="btnGenerateAll" class="btn-generate">Generar Set Completo (4 Ángulos)</button>
   </div>
 
-  <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS -->
+  <!-- LIENZO PRINCIPAL CON GRID AMPLIADO EN ALTURA REAL -->
   <div class="main-canvas">
     <div class="results-grid">
       
@@ -304,11 +308,11 @@
           <span class="card-label">01 // FRENTE STUDIO</span>
         </div>
         <div class="card-body" id="bodyFront">
-          <span style="font-size: 2rem;">🧥</span>
-          <p style="font-size: 0.75rem; color: var(--subtext); margin: 4px 0 0 0;">Vista frontal lista</p>
+          <span style="font-size: 1.8rem;">🧥</span>
+          <p style="font-size: 0.7rem; color: var(--subtext); margin: 3px 0 0 0;">Vista frontal lista</p>
         </div>
         <div class="card-footer-refine">
-          <input type="text" id="refineFront" class="card-refine-input" placeholder="Ajustar prompt específico (ej. más brillo)...">
+          <input type="text" id="refineFront" class="card-refine-input" placeholder="Ajustar prompt específico...">
           <div class="card-actions-row">
             <button class="btn-card-render" onclick="renderSingleCard(0)">✨ Generar</button>
             <button class="btn-card-download" id="dlFront" onclick="downloadCard(0)">📥 Descargar</button>
@@ -322,8 +326,8 @@
           <span class="card-label">02 // ESPALDA STUDIO</span>
         </div>
         <div class="card-body" id="bodyBack">
-          <span style="font-size: 2rem;">🔙</span>
-          <p style="font-size: 0.75rem; color: var(--subtext); margin: 4px 0 0 0;">Vista trasera lista</p>
+          <span style="font-size: 1.8rem;">🔙</span>
+          <p style="font-size: 0.7rem; color: var(--subtext); margin: 3px 0 0 0;">Vista trasera lista</p>
         </div>
         <div class="card-footer-refine">
           <input type="text" id="refineBack" class="card-refine-input" placeholder="Ajustar prompt específico...">
@@ -340,8 +344,8 @@
           <span class="card-label">03 // DETALLE TEXTURA</span>
         </div>
         <div class="card-body" id="bodyDetail">
-          <span style="font-size: 2rem;">🔍</span>
-          <p style="font-size: 0.75rem; color: var(--subtext); margin: 4px 0 0 0;">Detalle de textura listo</p>
+          <span style="font-size: 1.8rem;">🔍</span>
+          <p style="font-size: 0.7rem; color: var(--subtext); margin: 3px 0 0 0;">Detalle de textura listo</p>
         </div>
         <div class="card-footer-refine">
           <input type="text" id="refineDetail" class="card-refine-input" placeholder="Ajustar prompt específico...">
@@ -358,8 +362,8 @@
           <span class="card-label">04 // PLANO LOOK GENERAL</span>
         </div>
         <div class="card-body" id="bodyLook">
-          <span style="font-size: 2rem;">🧍</span>
-          <p style="font-size: 0.75rem; color: var(--subtext); margin: 4px 0 0 0;">Modelo completo listo</p>
+          <span style="font-size: 1.8rem;">🧍</span>
+          <p style="font-size: 0.7rem; color: var(--subtext); margin: 3px 0 0 0;">Modelo completo listo</p>
         </div>
         <div class="card-footer-refine">
           <input type="text" id="refineLook" class="card-refine-input" placeholder="Ajustar prompt específico...">
@@ -397,7 +401,6 @@
       });
     }
 
-    // Sistema de reintentos automáticos para manejar saturación temporal de la API
     async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
@@ -423,7 +426,7 @@
 
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.7rem; color: #6b7280; margin: 0;">Renderizando...</p>
+        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Renderizando...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
@@ -472,7 +475,6 @@
         console.warn("Aviso de cuota/red de Google, usando tarjeta visual de estudio.", error);
       }
 
-      // Si la API responde con imagen real de Google, la usamos; si está en límite gratuito, generamos la tarjeta visual limpia
       if (!imageUrl) {
         const canvas = document.createElement('canvas');
         canvas.width = 600;
@@ -506,7 +508,6 @@
         imageUrl = canvas.toDataURL('image/jpeg', 0.95);
       }
 
-      // Guardamos la imagen (sea de Google o la tarjeta visual) para que se muestre Y se pueda descargar
       generatedImagesData[index] = imageUrl;
       document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
       document.getElementById(downloadBtns[index]).style.display = 'block';
