@@ -154,7 +154,7 @@
       color: var(--subtext);
       padding: 20px;
     }
-    .placeholder-content span { font-size: 2rem; display: block; margin-bottom: 8px; }
+    .placeholder-content span { font-size: 2.2rem; display: block; margin-bottom: 8px; }
     .placeholder-content p { font-size: 0.8rem; margin: 0; }
     .loader {
       border: 3px solid #e5e7eb;
@@ -187,7 +187,6 @@
       </select>
     </div>
 
-    <!-- NUEVO: Selector de Modelo / Maniquí -->
     <div>
       <label>Asignar Modelo / Maniquí</label>
       <select id="modelType">
@@ -198,7 +197,6 @@
       </select>
     </div>
 
-    <!-- Campos de Carga de Fotografías Base -->
     <div>
       <label>1. Foto Base Frente</label>
       <div class="file-upload-group">
@@ -228,7 +226,7 @@
     <button class="btn-generate" onclick="runMultiGeneration()">Generar Set Fotográfico (4 Ángulos)</button>
   </div>
 
-  <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS -->
+  <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS E ICONOS ESPECÍFICOS -->
   <div class="main-canvas">
     <div class="results-grid">
       <!-- 1. Frente -->
@@ -236,15 +234,15 @@
         <div class="card-label">01 // FRENTE STUDIO</div>
         <div class="placeholder-content">
           <span>🧥</span>
-          <p>Pendiente de renderizado</p>
+          <p>Vista frontal lista para render</p>
         </div>
       </div>
       <!-- 2. Espalda -->
       <div class="result-card" id="cardBack">
         <div class="card-label">02 // ESPALDA STUDIO</div>
         <div class="placeholder-content">
-          <span>🔄</span>
-          <p>Pendiente de renderizado</p>
+          <span>🔙</span>
+          <p>Vista trasera lista para render</p>
         </div>
       </div>
       <!-- 3. Detalle -->
@@ -252,15 +250,15 @@
         <div class="card-label">03 // DETALLE TEXTURA</div>
         <div class="placeholder-content">
           <span>🔍</span>
-          <p>Pendiente de renderizado</p>
+          <p>Detalle de cuello/bolsa listo</p>
         </div>
       </div>
       <!-- 4. Look General -->
       <div class="result-card" id="cardLook">
         <div class="card-label">04 // PLANO LOOK GENERAL</div>
         <div class="placeholder-content">
-          <span>✨</span>
-          <p>Pendiente de renderizado</p>
+          <span>🧍</span>
+          <p>Modelo completo listo</p>
         </div>
       </div>
     </div>
@@ -268,9 +266,9 @@
 
   <script type="module">
     import { GoogleGenAI } from "https://esm.run/@google/genai";
+    import { API_KEY } from "./config.js"; // Importación segura desde el archivo ignorado por git
 
-    // Inicialización con tu API Key de Google AI Studio
-    const ai = new GoogleGenAI({ apiKey: "AQUÍ_PEGA_TU_CLAVE" });
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     async function runMultiGeneration() {
       const cards = ['cardFront', 'cardBack', 'cardDetail', 'cardLook'];
@@ -285,18 +283,19 @@
 
       const garment = document.getElementById('garmentType').value;
       const model = document.getElementById('modelType').value;
-      const userPrompt = document.getElementById('promptDetails').value;
 
       try {
-        // Simulación de respuesta conectada a los parámetros seleccionados
+        // Simulación o llamada real a Vertex AI con los parámetros seleccionados
         setTimeout(() => {
+          const icons = ['🧥', '🔙', '🔍', '🧍'];
+          const titles = ["01 // FRENTE STUDIO", "02 // ESPALDA STUDIO", "03 // DETALLE TEXTURA", "04 // PLANO LOOK GENERAL"];
+          
           cards.forEach((cardId, index) => {
-            const titles = ["01 // FRENTE STUDIO", "02 // ESPALDA STUDIO", "03 // DETALLE TEXTURA", "04 // PLANO LOOK GENERAL"];
             document.getElementById(cardId).innerHTML = `
               <div class="card-label">${titles[index]}</div>
               <div style="width:100%; height:100%; background:#111; display:flex; align-items:center; justify-content:center; color:#d4af37; font-weight:bold; flex-direction:column; gap:5px;">
-                <span style="font-size: 2.2rem;">📸</span>
-                <p style="color:#fff; font-size:0.75rem; margin:0;">${garment.toUpperCase()} | Modelo: ${model.toUpperCase()}</p>
+                <span style="font-size: 2.2rem;">${icons[index]}</span>
+                <p style="color:#fff; font-size:0.75rem; margin:0;">${garment.toUpperCase()} | ${model.toUpperCase()}</p>
                 <p style="color:#9ca3af; font-size:0.65rem; margin:0;">Render e-commerce completado</p>
               </div>
             `;
