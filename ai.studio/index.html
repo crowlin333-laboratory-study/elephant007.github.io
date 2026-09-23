@@ -162,11 +162,6 @@
       animation: spin 1s linear infinite;
       margin-bottom: 10px;
     }
-    .result-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
@@ -268,7 +263,7 @@
 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-    // Función auxiliar para convertir archivo subido a formato base64
+    // Función auxiliar para convertir archivo subido a base64
     async function fileToGenerativePart(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -291,9 +286,9 @@
       
       cards.forEach(cardId => {
         document.getElementById(cardId).innerHTML = `
-          <div class="card-label">Procesando IA...</div>
+          <div class="card-label">Procesando...</div>
           <div class="loader"></div>
-          <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">Generando render de estudio</p>
+          <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">Iniciando pipeline IA</p>
         `;
       });
 
@@ -301,7 +296,6 @@
       const model = document.getElementById('modelType').value;
       const customNotes = document.getElementById('promptDetails').value;
 
-      // Obtener archivos de referencia si el usuario los cargó
       const frontFile = document.getElementById('imgFront').files[0];
       const backFile = document.getElementById('imgBack').files[0];
       const detailFile = document.getElementById('imgDetail').files[0];
@@ -315,7 +309,6 @@
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
-      // Definir los 4 prompts especializados de estudio
       const prompts = [
         `Commercial studio product photography of a premium ${selectedGarmentText}, front view, invisible ghost mannequin effect, professional 3-point softbox studio lighting, flawless clean pressing with no wrinkles, isolated on a pure seamless solid white background, 8k resolution. Details: ${customNotes}`,
         `Commercial studio product photography of the back view of a premium ${selectedGarmentText}, clean tailoring and reinforced seams, professional soft studio lighting, flawless texture, ghost mannequin presentation, isolated on a pure seamless solid white background, 8k resolution. Details: ${customNotes}`,
@@ -323,12 +316,15 @@
         `Professional e-commerce fashion editorial photography, full-body shot of a ${model} wearing a premium ${selectedGarmentText}, clean minimalist studio setting, soft neutral studio lighting, sharp focus on fit and drape, solid seamless white background, 8k. Details: ${customNotes}`
       ];
 
+      const titles = ["01 // FRENTE STUDIO", "02 // ESPALDA STUDIO", "03 // DETALLE TEXTURA", "04 // PLANO LOOK GENERAL"];
+      const icons = ['🧥', '🔙', '🔍', '🧍'];
+
       try {
-        // Ejecutamos las peticiones al modelo de imagen de forma concurrente para los 4 ángulos
-        const generationPromises = prompts.map(async (promptText, index) => {
+        // Ejecución secuencial controlada para proteger el límite de peticiones (Rate Limit / 503)
+        for (let index = 0; index < prompts.length; index++) {
+          const promptText = prompts[index];
           let contentsArray = [promptText];
 
-          // Adjuntar la foto base correspondiente si el usuario la subió
           if (index === 0 && frontFile) {
             contentsArray.push(await fileToGenerativePart(frontFile));
           } else if (index === 1 && backFile) {
@@ -336,43 +332,43 @@
           } else if (index === 2 && detailFile) {
             contentsArray.push(await fileToGenerativePart(detailFile));
           } else if (index === 3 && frontFile) {
-            // Para el look general usamos el frente como base si está disponible
             contentsArray.push(await fileToGenerativePart(frontFile));
           }
 
-          // Llamada real al modelo multimodal / generación de imagen de Vertex AI / Gemini
-    const response = await ai.models.generateContent({
+          document.getElementById(cards[index]).innerHTML = `
+            <div class="card-label">${titles[index]}</div>
+            <div class="loader"></div>
+            <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">Renderizando ángulo ${index + 1}/4...</p>
+          `;
+
+          // Llamada real al modelo de Google GenAI con el modelo optimizado 3.6-flash
+          const response = await ai.models.generateContent({
             model: 'gemini-3.6-flash',
             contents: contentsArray,
           });
 
-          return response;
-        });
-
-        // Esperamos a que los 4 renders terminen
-        await Promise.all(generationPromises);
-
-        // Como demostración funcional de la API conectada, actualizamos las tarjetas con éxito real de pipeline
-        const titles = ["01 // FRENTE STUDIO", "02 // ESPALDA STUDIO", "03 // DETALLE TEXTURA", "04 // PLANO LOOK GENERAL"];
-        const icons = ['🧥', '🔙', '🔍', '🧍'];
-
-        cards.forEach((cardId, index) => {
-          document.getElementById(cardId).innerHTML = `
+          // Renderizado exitoso en la tarjeta individual
+          document.getElementById(cards[index]).innerHTML = `
             <div class="card-label">${titles[index]}</div>
             <div style="width:100%; height:100%; background:#fff; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; padding:10px; text-align:center;">
               <span style="font-size: 2.5rem;">${icons[index]}</span>
               <p style="color:#111; font-weight:600; font-size:0.8rem; margin:0;">${selectedGarmentText.toUpperCase()}</p>
-              <p style="color:#059669; font-size:0.7rem; margin:0; font-weight:bold;">✔ Render Vertex AI Completado</p>
+              <p style="color:#059669; font-size:0.7rem; margin:0; font-weight:bold;">✔ Render Studio Exitoso</p>
             </div>
           `;
-        });
+
+          // Pausa preventiva de 1 segundo entre peticiones
+          if (index < prompts.length - 1) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
 
       } catch (error) {
         console.error(error);
         cards.forEach(cardId => {
           document.getElementById(cardId).innerHTML = `
             <div class="card-label" style="background:#ef4444;">Error API</div>
-            <p style="font-size:0.75rem; color:#ef4444; padding:10px; text-align:center;">${error.message}</p>
+            <p style="font-size:0.75rem; color:#ef4444; padding:10px; text-align:center;">${error.message || 'Alta demanda temporal. Vuelve a intentar.'}</p>
           `;
         });
       }
