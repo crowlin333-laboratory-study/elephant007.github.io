@@ -138,14 +138,14 @@
     }
     .btn-generate:hover { opacity: 0.9; }
 
-    /* Lienzo principal con grid perfecto 2x2 */
+    /* Lienzo principal con grid amplio y elegante */
     .main-canvas {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
       position: relative;
       background-color: var(--bg-color);
       overflow-y: auto;
@@ -156,8 +156,8 @@
       grid-template-rows: repeat(2, 1fr);
       gap: 16px;
       width: 100%;
-      max-width: 1200px;
-      height: 94vh;
+      max-width: 1100px;
+      height: 96vh;
     }
     .result-card {
       background: var(--card-bg);
@@ -165,7 +165,7 @@
       border-radius: 12px;
       display: flex;
       flex-direction: column;
-      padding: 12px;
+      padding: 14px;
       position: relative;
       box-shadow: 0 4px 16px rgba(0,0,0,0.04);
       min-height: 0;
@@ -174,14 +174,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .card-label {
       background: rgba(17, 24, 39, 0.9);
       color: #fff;
-      padding: 3px 8px;
+      padding: 4px 8px;
       border-radius: 4px;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: 600;
       letter-spacing: 0.5px;
     }
@@ -201,20 +201,20 @@
     .card-body img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Ocupa todo el fotograma sin dejar marialuisas ni marcos blancos */
+      object-fit: cover; /* Ocupa todo el fotograma sin marcos blancos */
       border-radius: 6px;
     }
     .card-footer-refine {
-      margin-top: 8px;
+      margin-top: 10px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
     }
     .card-refine-input {
       background: #fff;
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 5px 8px;
+      padding: 6px 9px;
       border-radius: 4px;
       font-size: 0.75rem;
       width: 100%;
@@ -233,9 +233,9 @@
       background: var(--panel-bg);
       color: var(--accent);
       border: 1px solid var(--accent);
-      padding: 5px;
+      padding: 6px;
       border-radius: 4px;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
@@ -250,9 +250,9 @@
       background: #059669;
       color: #fff;
       border: none;
-      padding: 5px;
+      padding: 6px;
       border-radius: 4px;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
@@ -265,10 +265,10 @@
       border: 3px solid #e5e7eb;
       border-top: 3px solid var(--accent);
       border-radius: 50%;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       animation: spin 1s linear infinite;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
@@ -284,7 +284,7 @@
         <path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.636 5.636l2.475 2.475M15.889 15.889l2.475 2.475M5.636 18.364l2.475-2.475M15.889 8.111l2.475-2.475"></path>
       </svg>
       <div class="brand-header">
-        <h1>Sapi Studio</h1>
+        <h1>Sapi Studio 3</h1>
         <p>Pipeline Fotográfico e-commerce</p>
       </div>
     </div>
@@ -318,7 +318,7 @@
     </div>
 
     <div>
-      <label>2. Foto Base Espalda</label>
+      <label>2. Foto Base Espalda (Opcional)</label>
       <div class="file-upload-wrapper" id="wrapBack">
         <span class="file-upload-text" id="textBack">📁 Cargar imagen trasera...</span>
         <input type="file" id="imgBack" accept="image/*" onchange="updateFileName('imgBack', 'textBack', 'wrapBack')">
@@ -326,7 +326,7 @@
     </div>
 
     <div>
-      <label>3. Foto Detalle Textura / Costura</label>
+      <label>3. Foto Detalle Textura (Opcional)</label>
       <div class="file-upload-wrapper" id="wrapDetail">
         <span class="file-upload-text" id="textDetail">📁 Cargar detalle...</span>
         <input type="file" id="imgDetail" accept="image/*" onchange="updateFileName('imgDetail', 'textDetail', 'wrapDetail')">
@@ -484,26 +484,14 @@
       const backFile = document.getElementById('imgBack').files[0];
       const detailFile = document.getElementById('imgDetail').files[0];
 
-      if (index === 0 && !frontFile) {
-        alert("⚠️ Falta la foto base del Frente. Por favor súbela antes de generar.");
-        return;
-      }
-      if (index === 1 && !backFile) {
-        alert("⚠️ Falta la foto base de la Espalda. Por favor súbela antes de generar.");
-        return;
-      }
-      if (index === 2 && !detailFile) {
-        alert("⚠️ Falta la foto base de Detalle/Textura. Por favor súbela antes de generar.");
-        return;
-      }
-      if (index === 3 && !frontFile) {
-        alert("⚠️ El plano Look General requiere al menos la foto base del Frente cargada.");
+      if (!frontFile) {
+        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
         return;
       }
 
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Generando render profesional sin marcos...</p>
+        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Generando render profesional...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
@@ -521,19 +509,19 @@
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
-      // Prompts maestros optimizados: GUARDARROPA CONGELADO (Mismo pantalón chino azul marino y tenis blancos en todas las tomas de modelo) y sin marcos blancos
       const basePrompts = [
         `Professional e-commerce fashion studio photography, full-body shot of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image, paired with casual navy blue chino pants and clean white sneakers. Maintain exact color, collar style, and logo details. Edge-to-edge framing with no borders or white margins, pure solid seamless white background, 8k resolution. Details: ${combinedNotes}`,
         `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image, paired with casual navy blue chino pants and clean white sneakers, identical tailoring, edge-to-edge framing with no borders, pure seamless white background, 8k resolution. Details: ${combinedNotes}`,
         `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, edge-to-edge clean white background, 8k resolution. Details: ${combinedNotes}`,
-        `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image matched with casual navy blue chino pants and clean white sneakers, edge-to-edge framing with no borders or marialuisa, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
+        `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image matched with casual navy blue chino pants and clean white sneakers, edge-to-edge framing with no borders, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
       ];
 
       let imageUrl = null;
 
       try {
         let contentsArray = [basePrompts[index]];
-        if (frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
+        const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
+        contentsArray.push(await fileToGenerativePart(activeUpload));
 
         const response = await generateWithRetry(contentsArray);
         const candidate = response.candidates?.[0];
@@ -544,7 +532,6 @@
             if (part.inlineData) {
               const rawDataUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
               
-              // Ajuste de canvas a 2000x2000 sin márgenes internos (Edge-to-Edge puro) para eliminar la marialuisa
               imageUrl = await new Promise((resolve) => {
                 const img = new Image();
                 img.onload = function() {
@@ -561,7 +548,7 @@
 
                   const hRatio = canvas.width / img.width;
                   const vRatio = canvas.height / img.height;
-                  const ratio = Math.max(hRatio, vRatio); // Escala completa de borde a borde sin marcos
+                  const ratio = Math.max(hRatio, vRatio);
 
                   const centerShiftX = (canvas.width - img.width * ratio) / 2;
                   const centerShiftY = (canvas.height - img.height * ratio) / 2;
@@ -579,9 +566,8 @@
         console.warn("Aviso de red:", error);
       }
 
-      // Respaldo robusto en Alta Resolución Real (2000x2000 px) de borde a borde
       if (!imageUrl) {
-        const activeFile = (index === 0 || index === 3) ? frontFile : (index === 1 ? backFile : detailFile) || frontFile;
+        const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
         
         await new Promise((resolve) => {
           const reader = new FileReader();
@@ -613,7 +599,7 @@
             };
             img.src = event.target.result;
           };
-          reader.readAsDataURL(activeFile);
+          reader.readAsDataURL(activeUpload);
         });
       }
 
@@ -639,14 +625,11 @@
     async function runMultiGeneration() {
       const frontFile = document.getElementById('imgFront').files[0];
       if (!frontFile) {
-        alert("⚠️ Para generar el set completo se requiere al menos la Foto Base Frente.");
+        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
         return;
       }
 
       for (let i = 0; i < 4; i++) {
-        if (i === 1 && !document.getElementById('imgBack').files[0]) continue;
-        if (i === 2 && !document.getElementById('imgDetail').files[0]) continue;
-
         await renderSingleCard(i);
         if (i < 3) await new Promise(resolve => setTimeout(resolve, 3000));
       }
