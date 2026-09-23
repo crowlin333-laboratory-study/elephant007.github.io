@@ -462,11 +462,12 @@
       });
     }
 
+    // Usando el modelo especializado en generación de imágenes
     async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'imagen-3.0-generate-002',
             contents: contentsArray,
           });
           return response;
@@ -508,7 +509,7 @@
 
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Procesando IA...</p>
+        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Generando imagen con IA...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
@@ -564,12 +565,12 @@
       }
 
       if (imageUrl) {
-        // CASO A: Imagen binaria directa de la IA
+        // CASO A: Imagen generada por la IA
         generatedImagesData[index] = imageUrl;
         document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
         document.getElementById(downloadBtns[index]).style.display = 'block';
       } else {
-        // CASO B: Si la IA devuelve análisis de texto, generamos una tarjeta de estudio pulida integrando su reporte
+        // CASO B: Respaldo estructurado si la respuesta requirió texto técnico
         const canvas = document.createElement('canvas');
         canvas.width = 600;
         canvas.height = 600;
