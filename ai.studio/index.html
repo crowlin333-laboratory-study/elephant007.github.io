@@ -192,10 +192,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: #ffffff; /* Fondo completamente limpio sin bordes punteados internos */
+      background: #ffffff;
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 0px;
+      padding: 15px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -204,8 +204,8 @@
     .card-body img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Cambiado a cover para ocupar el 100% full sin márgenes blancos */
-      border-radius: 7px;
+      object-fit: contain;
+      border-radius: 6px;
     }
     .card-footer-refine {
       margin-top: 6px;
@@ -281,7 +281,6 @@
   <!-- PANEL LATERAL CONFIGURADOR -->
   <div class="sidebar">
     <div class="brand-header-container">
-      <!-- LOGOTIPO VECTORIAL: Diafragma de Lente Fotográfico Minimalista en Blanco -->
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
         <circle cx="12" cy="12" r="9" stroke-width="1.5"></circle>
         <circle cx="12" cy="12" r="3.5"></circle>
@@ -297,7 +296,7 @@
       <label>Tipo de Prenda</label>
       <select id="garmentType">
         <option value="hoodie">Sudadera / Hoodie Oversize</option>
-        <option value="tee">Playera / Basic Tee</option>
+        <option value="tee" selected>Playera / Basic Tee</option>
         <option value="jacket">Chamarra / Denim Jacket</option>
         <option value="pants">Pantalón / Jogger</option>
       </select>
@@ -306,10 +305,10 @@
     <div>
       <label>Asignar Modelo / Maniquí</label>
       <select id="modelType">
-        <option value="hombre-adulto">Adulto Hombre</option>
-        <option value="mujer-adulta">Adulto Mujer</option>
-        <option value="nino">Niño</option>
-        <option value="nina">Niña</option>
+        <option value="boy child model (approx 10 years old)">Niño</option>
+        <option value="girl child model (approx 10 years old)">Niña</option>
+        <option value="adult male model">Adulto Hombre</option>
+        <option value="adult female model">Adulto Mujer</option>
       </select>
     </div>
 
@@ -466,7 +465,7 @@
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-2.5-flash',
             contents: contentsArray,
           });
           return response;
@@ -482,7 +481,6 @@
       const bodies = ['bodyFront', 'bodyBack', 'bodyDetail', 'bodyLook'];
       const refineInputs = ['refineFront', 'refineBack', 'refineDetail', 'refineLook'];
       const downloadBtns = ['dlFront', 'dlBack', 'dlDetail', 'dlLook'];
-      const titles = ["FRENTE STUDIO", "ESPALDA STUDIO", "DETALLE TEXTURA", "LOOK GENERAL"];
       const bodyId = bodies[index];
 
       const frontFile = document.getElementById('imgFront').files[0];
@@ -508,18 +506,18 @@
 
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Procesando estudio...</p>
+        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Generando look completo con IA...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
-      const model = document.getElementById('modelType').value;
+      const modelDesc = document.getElementById('modelType').value;
       const globalNotes = document.getElementById('promptDetails').value;
       const specificNotes = document.getElementById(refineInputs[index]).value;
       const combinedNotes = `${globalNotes} ${specificNotes ? 'Refinement: ' + specificNotes : ''}`;
 
       const garmentNames = {
         'hoodie': 'oversized hoodie',
-        'tee': 'basic t-shirt',
+        'tee': 'basic polo t-shirt',
         'jacket': 'denim jacket',
         'pants': 'jogger pants'
       };
@@ -527,23 +525,19 @@
       const selectedGarmentText = garmentNames[garment] || garment;
 
       const basePrompts = [
-        `Commercial e-commerce studio photography of a premium ${selectedGarmentText} worn by a ${model} model, front view, invisible ghost mannequin or professional fit on model, softbox studio lighting, flawless clean fabric pressing, pure seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
-        `Commercial e-commerce studio photography of the back view of a premium ${selectedGarmentText} worn by a ${model} model, professional soft studio lighting, clean tailoring, pure seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
-        `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of a luxury ${selectedGarmentText}, sharp focus on woven fibers, soft directional studio light, pure clean white background, 8k resolution. Details: ${combinedNotes}`,
-        `Professional e-commerce fashion editorial photography, full-body editorial shot of a ${model} wearing a premium ${selectedGarmentText}, clean minimalist studio setting, soft neutral studio lighting, sharp focus on fit and drape, solid seamless white background, 8k. Details: ${combinedNotes}`
+        `Professional e-commerce fashion studio photography, full-body shot of a ${modelDesc} wearing the exact ${selectedGarmentText} shown in the reference image. Maintain the exact same color, collar style, and logo details. Clean minimalist studio setting, soft neutral softbox lighting, solid seamless neutral white background, 8k resolution. Details: ${combinedNotes}`,
+        `Professional e-commerce fashion studio photography, back view of a ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image, maintaining identical tailoring and details, professional soft studio lighting, solid seamless white background, 8k resolution. Details: ${combinedNotes}`,
+        `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, clean white background, 8k resolution. Details: ${combinedNotes}`,
+        `Professional e-commerce fashion editorial photography, medium-full shot of a ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image matched with casual navy blue pants and white sneakers, professional studio setting, soft lighting, sharp focus on fit and drape, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
       ];
 
       let imageUrl = null;
 
       try {
         let contentsArray = [basePrompts[index]];
-        if (index === 0 && frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
-        if (index === 1 && backFile) contentsArray.push(await fileToGenerativePart(backFile));
-        if (index === 2 && detailFile) contentsArray.push(await fileToGenerativePart(detailFile));
-        if (index === 3 && frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
+        if (frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
 
         const response = await generateWithRetry(contentsArray);
-
         const candidate = response.candidates?.[0];
         const parts = candidate?.content?.parts;
 
@@ -559,7 +553,7 @@
         console.warn("Aviso de red:", error);
       }
 
-      // Procesamiento visual 100% full (ocupando todo el contenedor de la tarjeta)
+      // Procesamiento visual escalado a Alta Resolución Real (2000x2000 px)
       if (!imageUrl) {
         const activeFile = (index === 0 || index === 3) ? frontFile : (index === 1 ? backFile : detailFile) || frontFile;
         
@@ -569,21 +563,27 @@
             const img = new Image();
             img.onload = function() {
               const canvas = document.createElement('canvas');
-              canvas.width = 1000;
-              canvas.height = 1000;
+              canvas.width = 2000;  // Alta resolución real
+              canvas.height = 2000; // Alta resolución real
               const ctx = canvas.getContext('2d');
 
-              // Fondo blanco puro de estudio comercial
+              // Suavizado de alta calidad para máxima nitidez
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+
               ctx.fillStyle = '#ffffff';
               ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-              // Renderizado full extendido para cubrir la tarjeta sin marcos vacíos
-              const hRatio = canvas.width / img.width;
-              const vRatio = canvas.height / img.height;
-              const ratio = Math.max(hRatio, vRatio); // Escala full cover
+              const margin = 30;
+              const drawWidth = canvas.width - (margin * 2);
+              const drawHeight = canvas.height - (margin * 2);
+
+              const hRatio = drawWidth / img.width;
+              const vRatio = drawHeight / img.height;
+              const ratio = Math.min(hRatio, vRatio);
               
-              const centerShiftX = (canvas.width - img.width * ratio) / 2;
-              const centerShiftY = (canvas.height - img.height * ratio) / 2;
+              const centerShiftX = margin + (drawWidth - img.width * ratio) / 2;
+              const centerShiftY = margin + (drawHeight - img.height * ratio) / 2;
 
               ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
 
