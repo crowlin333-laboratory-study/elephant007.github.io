@@ -1,4 +1,262 @@
-<script type="module">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sapi Studio - AI E-commerce Studio Pro</title>
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --panel-bg: #111827;
+      --accent: #d4af37; 
+      --text-main: #1f2937;
+      --text-sidebar: #f3f4f6;
+      --subtext: #9ca3af;
+      --border: #e5e7eb;
+      --border-dark: #374151;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 440px;
+      background-color: var(--panel-bg);
+      padding: 24px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border-right: 1px solid var(--border-dark);
+      overflow-y: auto;
+      color: var(--text-sidebar);
+    }
+    .brand-header h1 {
+      font-size: 1.2rem;
+      margin: 0;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .brand-header p {
+      font-size: 0.75rem;
+      color: var(--subtext);
+      margin: 4px 0 0 0;
+    }
+    label { 
+      font-size: 0.75rem; 
+      color: var(--subtext); 
+      display: block; 
+      margin-bottom: 4px; 
+      font-weight: 600; 
+      text-transform: uppercase; 
+    }
+    textarea, select, input[type="text"] {
+      width: 100%;
+      background: #1f2937;
+      border: 1px solid var(--border-dark);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 0.85rem;
+    }
+    textarea:focus, select:focus, input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    .file-upload-group {
+      background: #1f2937;
+      border: 1px dashed var(--border-dark);
+      padding: 6px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .file-upload-group input[type="file"] {
+      font-size: 0.75rem;
+      color: var(--subtext);
+      width: 100%;
+    }
+    .btn-generate {
+      background: linear-gradient(135deg, #e5c158, #b89728);
+      color: #121214;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s;
+      font-size: 0.85rem;
+      margin-top: 5px;
+    }
+    .btn-generate:hover { opacity: 0.9; }
+
+    .main-canvas {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      background-color: var(--bg-color);
+      overflow-y: auto;
+    }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 800px;
+      height: 100%;
+      max-height: 800px;
+    }
+    .result-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .card-label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(17, 24, 39, 0.8);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .placeholder-content {
+      text-align: center;
+      color: var(--subtext);
+      padding: 20px;
+    }
+    .placeholder-content span { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+    .placeholder-content p { font-size: 0.8rem; margin: 0; }
+    .loader {
+      border: 3px solid #e5e7eb;
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- PANEL LATERAL CONFIGURADOR -->
+  <div class="sidebar">
+    <div class="brand-header">
+      <h1>Sapi Studio</h1>
+      <p>Pipeline Fotográfico e-commerce con Vertex AI</p>
+    </div>
+
+    <div>
+      <label>Tipo de Prenda</label>
+      <select id="garmentType">
+        <option value="hoodie">Sudadera / Hoodie Oversize</option>
+        <option value="tee">Playera / Basic Tee</option>
+        <option value="jacket">Chamarra / Denim Jacket</option>
+        <option value="pants">Pantalón / Jogger</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Asignar Modelo / Maniquí</label>
+      <select id="modelType">
+        <option value="hombre-adulto">Adulto Hombre</option>
+        <option value="mujer-adulta">Adulto Mujer</option>
+        <option value="nino">Niño</option>
+        <option value="nina">Niña</option>
+      </select>
+    </div>
+
+    <div>
+      <label>1. Foto Base Frente</label>
+      <div class="file-upload-group">
+        <input type="file" id="imgFront" accept="image/*">
+      </div>
+    </div>
+
+    <div>
+      <label>2. Foto Base Espalda</label>
+      <div class="file-upload-group">
+        <input type="file" id="imgBack" accept="image/*">
+      </div>
+    </div>
+
+    <div>
+      <label>3. Foto Detalle Textura / Costura</label>
+      <div class="file-upload-group">
+        <input type="file" id="imgDetail" accept="image/*">
+      </div>
+    </div>
+
+    <div>
+      <label>Prompt Descriptivo de Acabados</label>
+      <textarea id="promptDetails" rows="2" placeholder="Ej. Algodón heavyweight, color negro mate..."></textarea>
+    </div>
+
+    <button class="btn-generate" onclick="runMultiGeneration()">Generar Set Fotográfico (4 Ángulos)</button>
+  </div>
+
+  <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS E ICONOS -->
+  <div class="main-canvas">
+    <div class="results-grid">
+      <div class="result-card" id="cardFront">
+        <div class="card-label">01 // FRENTE STUDIO</div>
+        <div class="placeholder-content">
+          <span>🧥</span>
+          <p>Vista frontal lista para render</p>
+        </div>
+      </div>
+      <div class="result-card" id="cardBack">
+        <div class="card-label">02 // ESPALDA STUDIO</div>
+        <div class="placeholder-content">
+          <span>🔙</span>
+          <p>Vista trasera lista para render</p>
+        </div>
+      </div>
+      <div class="result-card" id="cardDetail">
+        <div class="card-label">03 // DETALLE TEXTURA</div>
+        <div class="placeholder-content">
+          <span>🔍</span>
+          <p>Detalle de cuello/bolsa listo</p>
+        </div>
+      </div>
+      <div class="result-card" id="cardLook">
+        <div class="card-label">04 // PLANO LOOK GENERAL</div>
+        <div class="placeholder-content">
+          <span>🧍</span>
+          <p>Modelo completo listo</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
     import { GoogleGenAI } from "https://esm.run/@google/genai";
     import { API_KEY } from "./config.js";
 
@@ -65,3 +323,5 @@
     // EXPONEMOS LA FUNCIÓN GLOBALMENTE PARA QUE EL BOTÓN LA RECONOZCA
     window.runMultiGeneration = runMultiGeneration;
   </script>
+</body>
+</html>
