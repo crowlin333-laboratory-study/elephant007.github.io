@@ -445,7 +445,7 @@
         if (index === 2 && detailFile) contentsArray.push(await fileToGenerativePart(detailFile));
         if (index === 3 && frontFile) contentsArray.push(await fileToGenerativePart(frontFile));
 
-        // Llamada real utilizando el modelo gemini-3.6-flash
+        // Llamada real con el modelo configurado correctamente
         const response = await ai.models.generateContent({
           model: 'gemini-3.6-flash',
           contents: contentsArray,
@@ -463,12 +463,12 @@
           }
         }
       } catch (error) {
-        // Captura silenciosa de cualquier error de cuota (429) o red para evitar texto roto en la UI
+        // Captura el error de cuota o red de forma limpia
         console.warn("Aviso de cuota/red detectado, activando modo resiliente de estudio.");
         imageUrl = null; 
       }
 
-      // Bloque de respaldo visual blindado (Garantiza que la tarjeta se pinte impecable si la API está saturada)
+      // Respaldo visual limpio si la API está en límite gratuito
       if (!imageUrl) {
         const canvas = document.createElement('canvas');
         canvas.width = 600;
