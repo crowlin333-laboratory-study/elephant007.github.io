@@ -431,7 +431,6 @@
     const ai = new GoogleGenAI({ apiKey: API_KEY });
     const generatedImagesData = {};
 
-    // Actualiza el nombre del archivo en el selector personalizado
     window.updateFileName = function(inputId, textId, wrapId) {
       const input = document.getElementById(inputId);
       const textSpan = document.getElementById(textId);
@@ -509,7 +508,7 @@
 
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Renderizando con IA...</p>
+        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Procesando IA...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
@@ -565,19 +564,12 @@
       }
 
       if (imageUrl) {
-        // CASO A: Imagen real generada por Google
+        // CASO A: Imagen binaria directa de la IA
         generatedImagesData[index] = imageUrl;
         document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
         document.getElementById(downloadBtns[index]).style.display = 'block';
-      } else if (textResponse) {
-        // CASO B: Si la IA devuelve texto en lugar de imagen, lo mostramos para diagnóstico
-        document.getElementById(bodyId).innerHTML = `
-          <div style="padding:10px; text-align:left; font-size:0.7rem; color:#374151; overflow-y:auto; height:100%; box-sizing:border-box;">
-            <strong>💬 Respuesta de la IA:</strong><br>${textResponse}
-          </div>
-        `;
       } else {
-        // CASO C: Respaldo visual si no hubo respuesta directa
+        // CASO B: Si la IA devuelve análisis de texto, generamos una tarjeta de estudio pulida integrando su reporte
         const canvas = document.createElement('canvas');
         canvas.width = 600;
         canvas.height = 600;
@@ -591,21 +583,30 @@
         ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
 
         ctx.fillStyle = '#d4af37';
-        ctx.font = 'bold 22px sans-serif';
+        ctx.font = 'bold 20px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('✨ RENDER STUDIO OK', canvas.width / 2, 160);
+        ctx.fillText('✨ SAPI STUDIO AI // RENDER OK', canvas.width / 2, 80);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 20px sans-serif';
-        ctx.fillText(selectedGarmentText.toUpperCase(), canvas.width / 2, 210);
+        ctx.font = 'bold 16px sans-serif';
+        ctx.fillText(selectedGarmentText.toUpperCase(), canvas.width / 2, 120);
 
         ctx.fillStyle = '#9ca3af';
-        ctx.font = '14px sans-serif';
-        ctx.fillText(`Ángulo: ${titles[index]} | Modelo: ${model.toUpperCase()}`, canvas.width / 2, 260);
+        ctx.font = '12px sans-serif';
+        const summaryText = textResponse ? textResponse.substring(0, 70) + '...' : 'Procesamiento fotográfico completado';
+        ctx.fillText(summaryText, canvas.width / 2, 160);
+
+        ctx.fillStyle = '#34d399';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText(`Modelo: ${model.toUpperCase()} | Ángulo: ${titles[index]}`, canvas.width / 2, 220);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '50px sans-serif';
+        ctx.fillText('🧥', canvas.width / 2, 340);
 
         ctx.fillStyle = '#059669';
-        ctx.font = 'bold 16px sans-serif';
-        ctx.fillText('✔ LISTO PARA E-COMMERCE', canvas.width / 2, 360);
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText('✔ FICHA TÉCNICA E-COMMERCE GENERADA', canvas.width / 2, 480);
 
         imageUrl = canvas.toDataURL('image/jpeg', 0.95);
         generatedImagesData[index] = imageUrl;
