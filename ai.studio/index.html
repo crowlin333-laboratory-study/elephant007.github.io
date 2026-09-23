@@ -219,7 +219,8 @@
       <textarea id="promptDetails" rows="2" placeholder="Ej. Algodón heavyweight, color negro mate..."></textarea>
     </div>
 
-    <button class="btn-generate" onclick="runMultiGeneration()">Generar Set Fotográfico (4 Ángulos)</button>
+    <!-- BOTÓN SIN ONCLICK DIRECTO -->
+    <button id="btnGenerate" class="btn-generate">Generar Set Fotográfico (4 Ángulos)</button>
   </div>
 
   <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS E ICONOS -->
@@ -320,8 +321,8 @@
       }
     }
 
-    // EXPONEMOS LA FUNCIÓN GLOBALMENTE PARA QUE EL BOTÓN LA RECONOZCA
-    window.runMultiGeneration = runMultiGeneration;
+    // CONECTAMOS EL BOTÓN DESDE EL INTERIOR DEL MÓDULO DE FORMA SEGURA
+    document.getElementById('btnGenerate').addEventListener('click', runMultiGeneration);
   </script>
 </body>
 </html>
