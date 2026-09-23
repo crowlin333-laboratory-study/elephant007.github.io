@@ -138,13 +138,13 @@
     }
     .btn-generate:hover { opacity: 0.9; }
 
-    /* Lienzo principal con grid corregido para lucir amplio y proporcionado sin aplastarse */
+    /* Lienzo principal con grid perfecto 2x2 */
     .main-canvas {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       padding: 20px;
       position: relative;
       background-color: var(--bg-color);
@@ -153,9 +153,11 @@
     .results-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      grid-template-rows: repeat(2, 1fr);
+      gap: 16px;
       width: 100%;
       max-width: 1200px;
+      height: 94vh;
     }
     .result-card {
       background: var(--card-bg);
@@ -163,29 +165,30 @@
       border-radius: 12px;
       display: flex;
       flex-direction: column;
-      padding: 14px;
+      padding: 12px;
       position: relative;
       box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      min-height: 0;
     }
     .card-header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .card-label {
       background: rgba(17, 24, 39, 0.9);
       color: #fff;
-      padding: 4px 8px;
+      padding: 3px 8px;
       border-radius: 4px;
       font-size: 0.65rem;
       font-weight: 600;
       letter-spacing: 0.5px;
     }
     .card-body {
-      width: 100%;
-      height: 420px; /* Altura generosa para que la toma completa respire y luzca profesional */
+      flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       background: #ffffff;
@@ -193,24 +196,25 @@
       border-radius: 8px;
       position: relative;
       overflow: hidden;
+      min-height: 0;
     }
     .card-body img {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* Garantiza que la imagen completa jamás se corte y se vea nítida */
+      object-fit: cover; /* Ocupa todo el fotograma sin dejar marialuisas ni marcos blancos */
       border-radius: 6px;
     }
     .card-footer-refine {
-      margin-top: 10px;
+      margin-top: 8px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
     .card-refine-input {
       background: #fff;
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 6px 9px;
+      padding: 5px 8px;
       border-radius: 4px;
       font-size: 0.75rem;
       width: 100%;
@@ -229,9 +233,9 @@
       background: var(--panel-bg);
       color: var(--accent);
       border: 1px solid var(--accent);
-      padding: 6px;
+      padding: 5px;
       border-radius: 4px;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
@@ -246,9 +250,9 @@
       background: #059669;
       color: #fff;
       border: none;
-      padding: 6px;
+      padding: 5px;
       border-radius: 4px;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
@@ -261,10 +265,10 @@
       border: 3px solid #e5e7eb;
       border-top: 3px solid var(--accent);
       border-radius: 50%;
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       animation: spin 1s linear infinite;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
@@ -499,7 +503,7 @@
 
       document.getElementById(bodyId).innerHTML = `
         <div class="loader"></div>
-        <p style="font-size: 0.7rem; color: #6b7280; margin: 0;">Generando render profesional...</p>
+        <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Generando render profesional sin marcos...</p>
       `;
 
       const garment = document.getElementById('garmentType').value;
@@ -517,11 +521,12 @@
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
+      // Prompts maestros optimizados: GUARDARROPA CONGELADO (Mismo pantalón chino azul marino y tenis blancos en todas las tomas de modelo) y sin marcos blancos
       const basePrompts = [
-        `Professional e-commerce fashion studio photography, full-body shot of a ${modelDesc} wearing the exact ${selectedGarmentText} shown in the reference image. Maintain exact color, collar style, and logo details. Clean minimalist setup, soft studio lighting without visible light fixtures or softboxes, seamless pure solid white background, 8k resolution. Details: ${combinedNotes}`,
-        `Professional e-commerce fashion studio photography, back view of a ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image, identical tailoring, soft studio lighting without visible light fixtures, seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
-        `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, clean white background, 8k resolution. Details: ${combinedNotes}`,
-        `Professional e-commerce fashion editorial photography, medium-full shot of a ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image matched with casual navy blue pants and white sneakers, professional clean studio setting without visible lights, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
+        `Professional e-commerce fashion studio photography, full-body shot of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image, paired with casual navy blue chino pants and clean white sneakers. Maintain exact color, collar style, and logo details. Edge-to-edge framing with no borders or white margins, pure solid seamless white background, 8k resolution. Details: ${combinedNotes}`,
+        `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image, paired with casual navy blue chino pants and clean white sneakers, identical tailoring, edge-to-edge framing with no borders, pure seamless white background, 8k resolution. Details: ${combinedNotes}`,
+        `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, edge-to-edge clean white background, 8k resolution. Details: ${combinedNotes}`,
+        `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image matched with casual navy blue chino pants and clean white sneakers, edge-to-edge framing with no borders or marialuisa, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
       ];
 
       let imageUrl = null;
@@ -539,7 +544,7 @@
             if (part.inlineData) {
               const rawDataUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
               
-              // Ajuste de canvas cuadrado 2000x2000 con contención simétrica limpia (sin recortar nada)
+              // Ajuste de canvas a 2000x2000 sin márgenes internos (Edge-to-Edge puro) para eliminar la marialuisa
               imageUrl = await new Promise((resolve) => {
                 const img = new Image();
                 img.onload = function() {
@@ -554,16 +559,12 @@
                   ctx.fillStyle = '#ffffff';
                   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                  const margin = 40;
-                  const drawWidth = canvas.width - (margin * 2);
-                  const drawHeight = canvas.height - (margin * 2);
+                  const hRatio = canvas.width / img.width;
+                  const vRatio = canvas.height / img.height;
+                  const ratio = Math.max(hRatio, vRatio); // Escala completa de borde a borde sin marcos
 
-                  const hRatio = drawWidth / img.width;
-                  const vRatio = drawHeight / img.height;
-                  const ratio = Math.min(hRatio, vRatio); // Contain exacto para evitar cualquier corte
-
-                  const centerShiftX = margin + (drawWidth - img.width * ratio) / 2;
-                  const centerShiftY = margin + (drawHeight - img.height * ratio) / 2;
+                  const centerShiftX = (canvas.width - img.width * ratio) / 2;
+                  const centerShiftY = (canvas.height - img.height * ratio) / 2;
 
                   ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
                   resolve(canvas.toDataURL('image/jpeg', 0.98));
@@ -578,7 +579,7 @@
         console.warn("Aviso de red:", error);
       }
 
-      // Respaldo robusto en Alta Resolución Real (2000x2000 px) adaptado a visualización full
+      // Respaldo robusto en Alta Resolución Real (2000x2000 px) de borde a borde
       if (!imageUrl) {
         const activeFile = (index === 0 || index === 3) ? frontFile : (index === 1 ? backFile : detailFile) || frontFile;
         
@@ -598,16 +599,12 @@
               ctx.fillStyle = '#ffffff';
               ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-              const margin = 40;
-              const drawWidth = canvas.width - (margin * 2);
-              const drawHeight = canvas.height - (margin * 2);
-
-              const hRatio = drawWidth / img.width;
-              const vRatio = drawHeight / img.height;
-              const ratio = Math.min(hRatio, vRatio);
+              const hRatio = canvas.width / img.width;
+              const vRatio = canvas.height / img.height;
+              const ratio = Math.max(hRatio, vRatio);
               
-              const centerShiftX = margin + (drawWidth - img.width * ratio) / 2;
-              const centerShiftY = margin + (drawHeight - img.height * ratio) / 2;
+              const centerShiftX = (canvas.width - img.width * ratio) / 2;
+              const centerShiftY = (canvas.height - img.height * ratio) / 2;
 
               ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
 
