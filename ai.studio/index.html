@@ -23,10 +23,10 @@
       background-color: var(--bg-color);
       color: var(--text-main);
       display: flex;
-      height: 100vh;
-      overflow: hidden;
+      height: 100vh; /* Ocupa todo el alto de la ventana */
+      overflow: hidden; /* Bloquea cualquier scroll general del body */
     }
-    /* Panel lateral */
+    /* Panel lateral esbelto (fijo) */
     .sidebar {
       width: 320px;
       background-color: var(--panel-bg);
@@ -36,7 +36,7 @@
       flex-direction: column;
       gap: 12px;
       border-right: 1px solid var(--border-dark);
-      overflow-y: auto;
+      overflow-y: auto; /* Scroll solo para el panel si hay muchas opciones */
       color: var(--text-sidebar);
       flex-shrink: 0;
     }
@@ -152,31 +152,30 @@
       font-size: 0.8rem;
       margin-top: 10px;
       width: 100%;
-      display: none; /* Oculto hasta que haya imágenes */
+      display: none; /* Se muestra solo cuando están las 4 imágenes listas */
     }
     .btn-zip:hover { opacity: 0.9; }
-    .btn-zip:disabled { background: #6b7280; cursor: not-allowed; }
 
-    /* Lienzo principal con grid vertical (1x4) */
+    /* LIENZO PRINCIPAL INTEGRAL (Sin scroll) */
     .main-canvas {
-      flex: 1;
+      flex: 1; /* Ocupa todo el espacio restante del body */
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center; /* Centra el contenido verticalmente */
       padding: 20px;
       position: relative;
       background-color: var(--bg-color);
-      overflow-y: auto;
+      overflow: hidden; /* Garantiza que no haya scroll interno en el lienzo */
     }
     .results-grid {
       display: grid;
-      grid-template-columns: 1fr; /* Una sola columna */
-      grid-template-rows: repeat(4, auto); /* Cuatro filas */
-      gap: 16px;
-      width: 100%;
-      max-width: 800px; /* Más angosto para formato vertical */
-      padding-bottom: 40px;
+      grid-template-columns: repeat(4, 1fr); /* 4 columnas exactas que se reparten el espacio */
+      gap: 1.5vw; /* Gap responsivo basado en el ancho de la ventana */
+      width: 96%;
+      max-width: 1800px; /* Límite máximo de ancho para pantallas grandes */
+      height: 88vh; /* Altura relativa para integrarse en la pantalla */
+      align-items: center;
     }
     .result-card {
       background: var(--card-bg);
@@ -184,16 +183,18 @@
       border-radius: 12px;
       display: flex;
       flex-direction: column;
-      padding: 14px;
+      padding: 1vw; /* Padding responsivo */
       position: relative;
       box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-      min-height: 460px; /* Altura base generosa para cada tarjeta vertical */
+      height: 100%; /* La tarjeta se ajusta al 100% del alto del grid */
+      min-height: 0; /* Permite que flexbox funcione dentro del grid */
+      box-sizing: border-box;
     }
     .card-header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 0.5vw;
     }
     .card-label {
       background: rgba(17, 24, 39, 0.9);
@@ -205,7 +206,7 @@
       letter-spacing: 0.5px;
     }
     .card-body {
-      flex: 1; /* La imagen ocupa el espacio disponible */
+      flex: 1; /* La imagen ocupa el espacio restante */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -214,16 +215,16 @@
       border-radius: 8px;
       position: relative;
       overflow: hidden;
-      min-height: 380px; /* Altura mínima para la zona de imagen */
+      min-height: 0;
     }
     .card-body img {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* Garantiza que la imagen completa jamás se corte */
+      object-fit: contain; /* Garantiza que la foto completa jamás se corte */
       border-radius: 6px;
     }
     .card-footer-refine {
-      margin-top: 10px;
+      margin-top: 0.7vw;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -274,7 +275,7 @@
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
-      display: none; /* Oculto por defecto */
+      display: none;
       transition: opacity 0.2s;
     }
     .btn-card-download:hover { opacity: 0.9; }
@@ -302,7 +303,7 @@
         <path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.636 5.636l2.475 2.475M15.889 15.889l2.475 2.475M5.636 18.364l2.475-2.475M15.889 8.111l2.475-2.475"></path>
       </svg>
       <div class="brand-header">
-        <h1>Sapi Studio Pro</h1>
+        <h1>Sapi Studio</h1>
         <p>Pipeline Fotográfico e-commerce</p>
       </div>
     </div>
@@ -356,12 +357,11 @@
       <textarea id="promptDetails" rows="2" placeholder="Ej. Algodón heavyweight..."></textarea>
     </div>
 
-    <button id="btnGenerateAll" class="btn-action">Generar Set Completo (4 Ángulos)</button>
-    <!-- NUEVO BOTÓN DE DESCARGA ZIP -->
+    <button id="btnGenerateAll" class="btn-action" onclick="runMultiGeneration()">Generar Set Completo (4 Ángulos)</button>
     <button id="btnDownloadAllZip" class="btn-zip" onclick="downloadAllAsZip()">📥 Descargar Set Completo (ZIP)</button>
   </div>
 
-  <!-- LIENZO PRINCIPAL (Grid vertical 1x4) -->
+  <!-- LIENZO PRINCIPAL INTEGRAL (Grid horizontal 4x1 adaptativo) -->
   <div class="main-canvas">
     <div class="results-grid">
       
@@ -429,25 +429,25 @@
           <p style="font-size: 0.7rem; color: var(--subtext); margin: 3px 0 0 0;">Requiere foto frontal</p>
         </div>
         <div class="card-footer-refine">
-            <input type="text" id="refineLook" class="card-refine-input" placeholder="Ajustar prompt específico...">
-            <div class="card-actions-row">
-                <button class="btn-card-render" onclick="renderSingleCard(3)">✨ Generar</button>
-                <button class="btn-card-download" id="dlLook" onclick="downloadCard(3)">📥 Descargar</button>
-            </div>
+          <input type="text" id="refineLook" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(3)">✨ Generar</button>
+            <button class="btn-card-download" id="dlLook" onclick="downloadCard(3)">📥 Descargar</button>
+          </div>
         </div>
       </div>
 
     </div>
   </div>
 
-  <!-- Incluimos la librería JSZip desde un CDN -->
+  <!-- Librería JSZip para descarga del archivo comprimido -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script type="module">
     import { GoogleGenAI } from "https://esm.run/@google/genai";
     import { API_KEY } from "./config.js";
 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
-    const generatedImagesData = {}; // Almacena los DataURLs de las imágenes generadas
+    const generatedImagesData = {}; // Almacena las imágenes en DataURL
 
     window.updateFileName = function(inputId, textId, wrapId) {
       const input = document.getElementById(inputId);
@@ -506,20 +506,8 @@
       const backFile = document.getElementById('imgBack').files[0];
       const detailFile = document.getElementById('imgDetail').files[0];
 
-      if (index === 0 && !frontFile) {
-        alert("⚠️ Falta la foto base del Frente. Por favor súbela antes de generar.");
-        return;
-      }
-      if (index === 1 && !backFile) {
-        alert("⚠️ Falta la foto base de la Espalda. Por favor súbela antes de generar.");
-        return;
-      }
-      if (index === 2 && !detailFile) {
-        alert("⚠️ Falta la foto base de Detalle/Textura. Por favor súbela antes de generar.");
-        return;
-      }
-      if (index === 3 && !frontFile) {
-        alert("⚠️ El plano Look General requiere al menos la foto base del Frente cargada.");
+      if (!frontFile) {
+        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
         return;
       }
 
@@ -543,7 +531,7 @@
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
-      // Prompts maestros optimizados: GUARDARROPA CONGELADO (Mismo pantalón chino azul marino y tenis blancos en todas las tomas de modelo)
+      // Prompts maestros actualizados
       const basePrompts = [
         `Professional e-commerce fashion studio photography, full-body shot of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} shown in the reference image, paired with casual navy blue chino pants and clean white sneakers. Maintain exact color, collar style, and logo details. Clean minimalist setup, soft studio lighting without visible light fixtures, seamless pure solid white background, 8k resolution. Details: ${combinedNotes}`,
         `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image, paired with casual navy blue chino pants and clean white sneakers, identical tailoring, soft studio lighting, seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
@@ -571,8 +559,9 @@
                 const img = new Image();
                 img.onload = function() {
                   const canvas = document.createElement('canvas');
-                  canvas.width = 2000;
-                  canvas.height = 2000;
+                  // RESOLUCIÓN DE DESCARGA EXACTA: 1880x2420px
+                  canvas.width = 1880;
+                  canvas.height = 2420;
                   const ctx = canvas.getContext('2d');
 
                   ctx.imageSmoothingEnabled = true;
@@ -581,15 +570,12 @@
                   ctx.fillStyle = '#ffffff';
                   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                  const drawWidth = canvas.width;
-                  const drawHeight = canvas.height;
+                  const hRatio = canvas.width / img.width;
+                  const vRatio = canvas.height / img.height;
+                  const ratio = Math.min(hRatio, vRatio); // Mantiene la proporción 'contain'
 
-                  const hRatio = drawWidth / img.width;
-                  const vRatio = drawHeight / img.height;
-                  const ratio = Math.min(hRatio, vRatio); // Ajuste 'contain' exacto
-
-                  const centerShiftX = (drawWidth - img.width * ratio) / 2;
-                  const centerShiftY = (drawHeight - img.height * ratio) / 2;
+                  const centerShiftX = (canvas.width - img.width * ratio) / 2;
+                  const centerShiftY = (canvas.height - img.height * ratio) / 2;
 
                   ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
                   resolve(canvas.toDataURL('image/jpeg', 0.98));
@@ -604,6 +590,7 @@
         console.warn("Aviso de red:", error);
       }
 
+      // Respaldo en Alta Resolución
       if (!imageUrl) {
         const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
         await new Promise((resolve) => {
@@ -612,8 +599,8 @@
             const img = new Image();
             img.onload = function() {
               const canvas = document.createElement('canvas');
-              canvas.width = 2000;
-              canvas.height = 2000;
+              canvas.width = 1880;
+              canvas.height = 2420;
               const ctx = canvas.getContext('2d');
               ctx.imageSmoothingEnabled = true;
               ctx.imageSmoothingQuality = 'high';
@@ -637,62 +624,79 @@
       generatedImagesData[index] = imageUrl;
       document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
       document.getElementById(downloadBtns[index]).style.display = 'block';
-      checkAllGenerated(); // Comprobamos si ya tenemos todas para activar el botón ZIP
+      checkAllGenerated();
     }
 
     function downloadCard(index) {
-      const titles = ["Frente_Studio", "Espalda_Studio", "Detalle_Textura", "Look_General"];
+      const titles = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
       const imgData = generatedImagesData[index];
       if (imgData) {
         const link = document.createElement('a');
         link.href = imgData;
-        link.download = `SapiStudio_${titles[index]}_Final.jpg`;
+        link.download = `SapiStudio_${titles[index]}_1880x2420.jpg`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       }
     }
 
-    async function runMultiGeneration() {
+    window.renderSingleCard = renderSingleCard;
+    window.downloadCard = downloadCard;
+
+    window.runMultiGeneration = async function() {
       const frontFile = document.getElementById('imgFront').files[0];
       if (!frontFile) {
-        alert("⚠️ Para generar el set completo se requiere al menos la Foto Base Frente.");
+        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
         return;
       }
-      // Deshabilitamos el botón principal mientras genera
+
       document.getElementById('btnGenerateAll').textContent = "Generando set...";
       document.getElementById('btnGenerateAll').disabled = true;
 
       for (let i = 0; i < 4; i++) {
-        if (i === 1 && !document.getElementById('imgBack').files[0]) continue;
-        if (i === 2 && !document.getElementById('imgDetail').files[0]) continue;
         await renderSingleCard(i);
         if (i < 3) await new Promise(resolve => setTimeout(resolve, 3000));
       }
-      // Restauramos el botón principal
+
       document.getElementById('btnGenerateAll').textContent = "Generar Set Completo (4 Ángulos)";
       document.getElementById('btnGenerateAll').disabled = false;
     }
 
     function checkAllGenerated() {
       const btnZip = document.getElementById('btnDownloadAllZip');
-      // Si las 4 imágenes tienen datos, habilitamos el botón de descarga ZIP
       if (generatedImagesData[0] && generatedImagesData[1] && generatedImagesData[2] && generatedImagesData[3]) {
         btnZip.style.display = 'block';
       } else {
-        btnZip.style.display = 'none'; // Oculto si falta alguna
+        btnZip.style.display = 'none';
       }
     }
 
-    async function downloadAllAsZip() {
+    window.downloadAllAsZip = async function() {
       const zip = new JSZip();
       const titles = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
       const btnZip = document.getElementById('btnDownloadAllZip');
 
-      btnZip.textContent = "Creando ZIP...";
+      btnZip.textContent = "Comprimiendo ZIP...";
       btnZip.disabled = true;
 
-      // Agregamos cada imagen al archivo ZIP
       for (let i = 0; i < 4; i++) {
         if (generatedImagesData[i]) {
-          const base64Data =
+          const base64Data = generatedImagesData[i].split(',')[1];
+          zip.file(`SapiStudio_${titles[i]}_1880x2420.jpg`, base64Data, { base64: true });
+        }
+      }
+
+      const content = await zip.generateAsync({ type: "blob" });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = "SapiStudio_Set_Completo_1880x2420.zip";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      btnZip.textContent = "📥 Descargar Set Completo (ZIP)";
+      btnZip.disabled = false;
+    }
+  </script>
+</body>
+</html>
