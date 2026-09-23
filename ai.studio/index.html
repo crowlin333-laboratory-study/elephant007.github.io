@@ -341,8 +341,8 @@
           }
 
           // Llamada real al modelo multimodal / generación de imagen de Vertex AI / Gemini
-          const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash', // O el modelo de imagen configurado en tu entorno
+    const response = await ai.models.generateContent({
+            model: 'gemini-3.6-flash',
             contents: contentsArray,
           });
 
