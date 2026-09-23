@@ -8,7 +8,7 @@
     :root {
       --bg-color: #f8f9fa;
       --card-bg: #ffffff;
-      --panel-bg: #111827; /* Panel lateral color azul oscuro / gris elegante */
+      --panel-bg: #111827;
       --accent: #d4af37; 
       --text-main: #1f2937;
       --text-sidebar: #f3f4f6;
@@ -26,7 +26,6 @@
       height: 100vh;
       overflow: hidden;
     }
-    /* Panel Lateral Oscuro y Elegante */
     .sidebar {
       width: 440px;
       background-color: var(--panel-bg);
@@ -73,7 +72,6 @@
       border-color: var(--accent);
       outline: none;
     }
-    /* Estilo para los campos de carga de archivos */
     .file-upload-group {
       background: #1f2937;
       border: 1px dashed var(--border-dark);
@@ -102,7 +100,6 @@
     }
     .btn-generate:hover { opacity: 0.9; }
 
-    /* Lienzo Principal Minimalista Fondo Blanco */
     .main-canvas {
       flex: 1;
       display: flex;
@@ -114,7 +111,6 @@
       background-color: var(--bg-color);
       overflow-y: auto;
     }
-    /* Grid de las 4 Fotos Finales para E-commerce */
     .results-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -226,10 +222,9 @@
     <button class="btn-generate" onclick="runMultiGeneration()">Generar Set Fotográfico (4 Ángulos)</button>
   </div>
 
-  <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS E ICONOS ESPECÍFICOS -->
+  <!-- LIENZO PRINCIPAL CON GRID DE 4 FOTOS E ICONOS -->
   <div class="main-canvas">
     <div class="results-grid">
-      <!-- 1. Frente -->
       <div class="result-card" id="cardFront">
         <div class="card-label">01 // FRENTE STUDIO</div>
         <div class="placeholder-content">
@@ -237,7 +232,6 @@
           <p>Vista frontal lista para render</p>
         </div>
       </div>
-      <!-- 2. Espalda -->
       <div class="result-card" id="cardBack">
         <div class="card-label">02 // ESPALDA STUDIO</div>
         <div class="placeholder-content">
@@ -245,7 +239,6 @@
           <p>Vista trasera lista para render</p>
         </div>
       </div>
-      <!-- 3. Detalle -->
       <div class="result-card" id="cardDetail">
         <div class="card-label">03 // DETALLE TEXTURA</div>
         <div class="placeholder-content">
@@ -253,7 +246,6 @@
           <p>Detalle de cuello/bolsa listo</p>
         </div>
       </div>
-      <!-- 4. Look General -->
       <div class="result-card" id="cardLook">
         <div class="card-label">04 // PLANO LOOK GENERAL</div>
         <div class="placeholder-content">
@@ -266,7 +258,7 @@
 
   <script type="module">
     import { GoogleGenAI } from "https://esm.run/@google/genai";
-    import { API_KEY } from "./config.js"; // Importación segura desde el archivo ignorado por git
+    import { API_KEY } from "./config.js";
 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
@@ -283,9 +275,18 @@
 
       const garment = document.getElementById('garmentType').value;
       const model = document.getElementById('modelType').value;
+      const customNotes = document.getElementById('promptDetails').value;
+
+      // Prompts profesionales de estudio incorporados para cada vista
+      const prompts = [
+        `Commercial studio product photography of a premium ${garment}, front view, invisible ghost mannequin effect, professional 3-point softbox studio lighting, flawless clean pressing with no wrinkles, isolated on a pure seamless solid white background, 8k resolution. ${customNotes}`,
+        `Commercial studio product photography of the back view of a premium ${garment}, clean tailoring and reinforced seams, professional soft studio lighting, flawless texture, ghost mannequin presentation, isolated on a pure seamless solid white background, 8k resolution. ${customNotes}`,
+        `Macro commercial product photography, extreme close-up detail of the fabric texture and reinforced collar stitching of a luxury ${garment}, sharp focus on woven fibers, soft directional studio light, pure clean white background, 8k resolution. ${customNotes}`,
+        `Professional e-commerce fashion editorial photography, full-body shot of a ${model} wearing a premium ${garment}, clean minimalist studio setting, soft neutral studio lighting, sharp focus on garment fit and drape, solid seamless white background, 8k. ${customNotes}`
+      ];
 
       try {
-        // Simulación o llamada real a Vertex AI con los parámetros seleccionados
+        // Simulación de render o conexión directa al SDK de Vertex AI para los 4 prompts
         setTimeout(() => {
           const icons = ['🧥', '🔙', '🔍', '🧍'];
           const titles = ["01 // FRENTE STUDIO", "02 // ESPALDA STUDIO", "03 // DETALLE TEXTURA", "04 // PLANO LOOK GENERAL"];
@@ -293,14 +294,14 @@
           cards.forEach((cardId, index) => {
             document.getElementById(cardId).innerHTML = `
               <div class="card-label">${titles[index]}</div>
-              <div style="width:100%; height:100%; background:#111; display:flex; align-items:center; justify-content:center; color:#d4af37; font-weight:bold; flex-direction:column; gap:5px;">
-                <span style="font-size: 2.2rem;">${icons[index]}</span>
-                <p style="color:#fff; font-size:0.75rem; margin:0;">${garment.toUpperCase()} | ${model.toUpperCase()}</p>
-                <p style="color:#9ca3af; font-size:0.65rem; margin:0;">Render e-commerce completado</p>
+              <div style="width:100%; height:100%; background:#111; display:flex; align-items:center; justify-content:center; color:#d4af37; font-weight:bold; flex-direction:column; gap:5px; padding:10px; text-align:center;">
+                <span style="font-size: 2rem;">${icons[index]}</span>
+                <p style="color:#fff; font-size:0.7rem; margin:0;">${garment.toUpperCase()} | ${model.toUpperCase()}</p>
+                <p style="color:#9ca3af; font-size:0.6rem; margin:0;">Render Studio Exitoso</p>
               </div>
             `;
           });
-        }, 2500);
+        }, 3000);
 
       } catch (error) {
         cards.forEach(cardId => {
