@@ -21,7 +21,7 @@
       background-color: #0b0f19;
     }
 
-    /* CONTENEDOR DEL VIDEO DE FONDO CON MAPA DE DEGRADADO Y SUPERPOSICIÓN */
+    /* CONTENEDOR DEL VIDEO DE FONDO CINEMATOGRÁFICO */
     .bg-video-container {
       position: absolute;
       top: 0;
@@ -35,28 +35,17 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: contrast(120%) brightness(40%) grayscale(40%);
+      filter: contrast(120%) brightness(35%) grayscale(50%);
     }
-    /* Capa de degradado y tinte azul corporativo (Overlays / Mapas de degradado) */
     .bg-overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, rgba(17, 24, 39, 0.88), rgba(11, 15, 25, 0.95));
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(11, 15, 25, 0.92));
       mix-blend-mode: multiply;
       z-index: 2;
-    }
-    .bg-grain {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 80%);
-      z-index: 3;
-      pointer-events: none;
     }
 
     /* CONTENEDOR CENTRAL DEL LOGIN */
@@ -76,27 +65,20 @@
       border-radius: 14px;
       width: 100%;
       max-width: 380px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
       box-sizing: border-box;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(8px);
     }
     .login-header {
       text-align: center;
       margin-bottom: 25px;
     }
     .login-header h1 {
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       color: var(--accent);
-      margin: 0 0 5px 0;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-    }
-    .login-header p {
-      font-size: 0.7rem;
-      color: var(--subtext);
       margin: 0;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 1.5px;
     }
 
     .form-group {
@@ -156,23 +138,20 @@
 </head>
 <body>
 
-  <!-- FONDO CINEMATOGRÁFICO HOMENAJE (FLASHBACK) -->
+  <!-- FONDO CINEMATOGRÁFICO EN VIDEO -->
   <div class="bg-video-container">
-    <!-- Reemplaza el src con un enlace a un video MP4 en bucle de sets fotográficos antiguos / analógicos -->
-    <video autoplay muted loop playsinline>
+    <video autoplay muted loop playsinline preload="auto">
       <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-photographer-adjusting-a-camera-42999-large.mp4" type="video/mp4">
       Tu navegador no soporta video HTML5.
     </video>
   </div>
   <div class="bg-overlay"></div>
-  <div class="bg-grain"></div>
 
   <!-- TARJETA DE ACCESO CENTRAL -->
   <div class="login-wrapper">
     <div class="login-card">
       <div class="login-header">
         <h1>Sapi Studio 5.1</h1>
-        <p>Homenaje a la Época de Oro Fotográfica</p>
       </div>
 
       <form id="loginForm" onsubmit="handleLogin(event)">
@@ -205,24 +184,26 @@
 
     function handleLogin(event) {
       event.preventDefault();
+      const user = document.getElementById('username').value.trim().toLowerCase();
+      const pass = document.getElementById('password').value.trim();
       const btn = document.getElementById('submitBtn');
       const otpGroup = document.getElementById('otpGroup');
       const infoText = document.getElementById('infoText');
 
       if (step === 1) {
-        // Simulación de envío de código al WhatsApp
-        btn.textContent = "Verificar Código y Acceder";
-        otpGroup.style.display = "block";
-        infoText.innerHTML = "💬 Código enviado con éxito a tu WhatsApp. Ingrésalo para entrar.";
-        
-        // Aquí puedes programar la integración real con tu API de WhatsApp o Webhook
-        alert("¡Código de seguridad simulado enviado a tu WhatsApp!");
-        step = 2;
+        // Validamos usuario 'salamandra' y contraseña 'Pachi37'
+        if(user === "salamandra" && pass === "Pachi37") {
+          btn.textContent = "Verificar Código y Acceder";
+          otpGroup.style.display = "block";
+          infoText.innerHTML = "💬 Código de verificación simulado enviado a tu WhatsApp. (Ingresa cualquier número para entrar).";
+          step = 2;
+        } else {
+          alert("Usuario o contraseña incorrectos. (Usa usuario: salamandra / contraseña: Pachi37)");
+        }
       } else {
-        // Validación final y acceso al estudio
         const code = document.getElementById('otpCode').value;
         if(code) {
-          window.location.href = "index.html"; // Redirige a tu interfaz principal de Sapi Studio
+          window.location.href = "index.html"; // Entra directo al estudio principal
         } else {
           alert("Por favor ingresa el código de confirmación.");
         }
