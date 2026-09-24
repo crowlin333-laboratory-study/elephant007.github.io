@@ -94,15 +94,15 @@
                 // Endpoint oficial para Gemini 3.5 Flash / Pro
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
 
-                // Prompt maestro con regla blindada para gráficos y prendas lisas
+                // Prompt maestro actualizado con la regla estricta anti-espalda-lisa
                 const promptMaestro = `
 Actúa como un director de arte y fotógrafo de moda profesional para e-commerce.
 Analiza la prenda de ropa original provista (frente y espalda/detalles) y la fotografía base del modelo en estudio.
 
 Instrucciones estrictas de procesamiento para la categoría (${tipoPrenda}):
 1. Integra la prenda en el modelo manteniendo fielmente el color, el corte, la caída, el volumen y la textura del tejido.
-2. REGLA CRÍTICA DE ESTAMPADOS: Si la prenda original cuenta con un logotipo, gráfico o estampado en el frente, en la espalda o en cualquier sección visible, DEBES proyectarlo obligatoriamente de forma precisa, adaptándolo de manera realista a la curvatura de la tela, pliegues y volúmenes del cuerpo. No dejes la espalda lisa si la prenda original incluye un gráfico dorsal.
-3. Si la prenda original es completamente lisa (sin gráficos), deja la zona correspondiente limpia, sin inventar ni agregar elementos ajenos a la prenda base.
+2. REGLA CRÍTICA DE GRÁFICOS Y ESPALDAS: Examina detalladamente si la prenda original contiene un logotipo, gráfico o estampado (como el gráfico grande trasero o la calavera de referencia). Si la prenda cuenta con diseño en la espalda, DEBES proyectarlo obligatoriamente de forma exacta y nítida sobre la vista dorsal del modelo, adaptándolo de manera realista a los pliegues y curvaturas de la tela. Prohibido dejar la espalda lisa si la prenda original incluye un gráfico posterior.
+3. Si la prenda original es completamente lisa por delante o por detrás, mantén esas zonas limpias sin inventar elementos ajenos.
 4. Mantén absoluta consistencia visual de iluminación de estudio profesional y estilo en la sesión resultante.
                 `;
 
