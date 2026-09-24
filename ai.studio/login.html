@@ -21,7 +21,7 @@
       background-color: #0b0f19;
     }
 
-    /* CONTENEDOR DEL VIDEO DE FONDO CINEMATOGRÁFICO CORREGIDO */
+    /* FONDO DE VIDEO ESTABLE Y FLUIDO */
     .bg-video-container {
       position: fixed;
       top: 0;
@@ -48,7 +48,7 @@
       z-index: 0;
     }
 
-    /* CONTENEDOR CENTRAL DEL LOGIN */
+    /* TARJETA DE ACCESO CENTRAL */
     .login-wrapper {
       position: relative;
       z-index: 10;
@@ -138,10 +138,10 @@
 </head>
 <body>
 
-  <!-- FONDO CINEMATOGRÁFICO EN VIDEO -->
+  <!-- FONDO CINEMATOGRÁFICO DE VIDEO OPTIMIZADO -->
   <div class="bg-video-container">
     <video autoplay muted loop playsinline preload="auto">
-      <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-photographer-adjusting-a-camera-42999-large.mp4" type="video/mp4">
+      <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
       Tu navegador no soporta video HTML5.
     </video>
   </div>
@@ -192,12 +192,12 @@
       const infoText = document.getElementById('infoText');
 
       if (step === 1) {
-        // Validamos usuario 'salamandra' y contraseña 'Pachi37'
+        // Validación exacta: usuario 'salamandra' y contraseña 'Pachi37'
         if(user === "salamandra" && pass === "Pachi37") {
           generatedOtp = Math.floor(100000 + Math.random() * 900000);
           
-          // REEMPLAZA ESTE NÚMERO POR TU WHATSAPP (código de país + número, ej: 52155...)
-          const tuNumeroWhatsApp = "5215560681662"; 
+          // Reemplaza con tu número real de WhatsApp (ej: 52155...)
+          const tuNumeroWhatsApp = "5215500000000"; 
           const mensaje = `🔑 Tu código de acceso a Sapi Studio 5.1 es: *${generatedOtp}*`;
           const whatsappUrl = `https://wa.me/${tuNumeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
           
