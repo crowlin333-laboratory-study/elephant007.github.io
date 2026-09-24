@@ -1,30 +1,227 @@
 /* ==========================================
-   SECCIÓN SAPI STUDIO (INTEGRADA A ESTILOS GLOBALES)
+   1. VARIABLES Y ESTILOS GLOBALES
    ========================================== */
-.ai-studio-demo {
-  margin-top: 48px;
+:root {
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --bg-card: #161618;
+  --text-primary: #f5f5f7;
+  --text-secondary: #86868b;
+  --accent-blue: #0071e3;
+  --accent-blue-hover: #0077ed;
+  --border-color: #27272a;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body.portfolio-body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  padding-bottom: 80px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ==========================================
+   2. ENCABEZADO Y MAC DOCK
+   ========================================== */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  height: 32px;
+  width: auto;
+}
+
+.brand {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.brand span {
+  color: var(--accent-blue);
+}
+
+.mac-dock {
+  display: flex;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  padding: 6px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  gap: 4px;
+}
+
+.dock-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.dock-btn:hover, .dock-btn.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+}
+
+/* ==========================================
+   3. CONTENEDOR PRINCIPAL Y HERO
+   ========================================== */
+.portfolio-container {
+  max-width: 1100px;
+  margin: 40px auto 0 auto;
+  padding: 0 24px;
+}
+
+.profile-summary {
+  margin-bottom: 60px;
+}
+
+.hero-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+  line-height: 1.15;
+}
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  max-width: 850px;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+/* REJILLA DE 3 COLUMNAS */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
   margin-bottom: 48px;
 }
 
-.ai-studio-demo .hero-subtitle {
-  margin-top: 8px;
-  max-width: 850px;
+.profile-col {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 24px;
+  border-radius: 16px;
 }
 
-/* Ventana estilo macOS para el Video */
+.profile-col h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.profile-col ul {
+  list-style: none;
+}
+
+.profile-col li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  position: relative;
+  padding-left: 16px;
+}
+
+.profile-col li::before {
+  content: "•";
+  color: var(--accent-blue);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.profile-col p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* MARCAS */
+.brands-section {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+}
+
+.brands-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 16px;
+}
+
+.brands-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.brand-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+/* ==========================================
+   4. SECCIÓN DEMO: SAPI STUDIO / IA
+   ========================================== */
+.ai-studio-demo {
+  margin: 60px 0;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-color);
+}
+
 .video-preview-card {
   margin: 28px 0;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
   background: #1c1c1e;
 }
 
 .mac-window-bar {
   display: flex;
   align-items: center;
-  padding: 10px 16px;
+  padding: 12px 18px;
   background: #2c2c2e;
   border-bottom: 1px solid #38383a;
   position: relative;
@@ -32,12 +229,12 @@
 
 .mac-dots {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
 }
 .dot.red { background: #ff5f56; }
@@ -48,7 +245,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: #a1a1a6;
   font-family: monospace;
 }
@@ -58,15 +255,238 @@
   display: block;
 }
 
-/* Indicadores técnicos de las 3 columnas */
 .ai-features-grid {
-  margin-top: 28px;
+  margin-top: 32px;
 }
 
 .feature-code {
   font-size: 0.8rem;
   font-family: monospace;
-  opacity: 0.65;
+  color: var(--accent-blue);
   display: block;
+  margin-bottom: 6px;
+}
+
+/* ==========================================
+   5. CATEGORÍA Y TARJETAS DE SERVICIO
+   ========================================== */
+.portfolio-category {
+  margin-top: 60px;
+}
+
+.category-header {
+  margin-bottom: 32px;
+}
+
+.category-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.flat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 28px 24px;
+  cursor: pointer;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flat-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-blue);
+  box-shadow: 0 12px 30px rgba(0, 113, 227, 0.15);
+}
+
+.card-icon-wrapper {
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.draw-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.card-content h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.card-content p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.btn-more {
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ==========================================
+   6. MODAL DE INFORMACIÓN Y WHATSAPP
+   ========================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: #1d1d1f;
+  border: 1px solid #333336;
+  border-radius: 20px;
+  padding: 36px;
+  width: 90%;
+  max-width: 550px;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.elephant-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 0;
+}
+
+.walking-elephant {
+  height: 48px;
+  animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+.modal-info-body h2 {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+}
+
+.modal-info-body p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+
+.modal-specs h4 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+.modal-specs ul {
+  list-style: none;
+  margin-bottom: 28px;
+}
+
+.modal-specs li {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  padding-left: 14px;
+  position: relative;
+}
+
+.modal-specs li::before {
+  content: "•";
+  color: var(--accent-blue);
+  position: absolute;
+  left: 0;
+}
+
+.quote-form {
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quote-form h4 {
+  font-size: 1rem;
   margin-bottom: 4px;
+}
+
+.quote-form input, .quote-form textarea {
+  background: #111113;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.modal-cta-btn {
+  background: var(--accent-blue);
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modal-cta-btn:hover {
+  background: var(--accent-blue-hover);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.1rem;
+  }
+  .top-header {
+    padding: 16px 20px;
+  }
 }
