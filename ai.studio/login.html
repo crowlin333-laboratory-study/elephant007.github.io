@@ -21,31 +21,31 @@
       background-color: #0b0f19;
     }
 
-    /* CONTENEDOR DEL VIDEO DE FONDO CINEMATOGRÁFICO */
+    /* CONTENEDOR DEL VIDEO DE FONDO CINEMATOGRÁFICO CORREGIDO */
     .bg-video-container {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
-      z-index: 1;
+      z-index: -1;
     }
     .bg-video-container video {
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       object-fit: cover;
-      filter: contrast(120%) brightness(35%) grayscale(50%);
+      filter: contrast(120%) brightness(40%) grayscale(40%);
     }
     .bg-overlay {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(11, 15, 25, 0.92));
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.82), rgba(11, 15, 25, 0.90));
       mix-blend-mode: multiply;
-      z-index: 2;
+      z-index: 0;
     }
 
     /* CONTENEDOR CENTRAL DEL LOGIN */
@@ -181,6 +181,7 @@
 
   <script>
     let step = 1;
+    let generatedOtp = "";
 
     function handleLogin(event) {
       event.preventDefault();
@@ -193,19 +194,28 @@
       if (step === 1) {
         // Validamos usuario 'salamandra' y contraseña 'Pachi37'
         if(user === "salamandra" && pass === "Pachi37") {
+          generatedOtp = Math.floor(100000 + Math.random() * 900000);
+          
+          // REEMPLAZA ESTE NÚMERO POR TU WHATSAPP (código de país + número, ej: 52155...)
+          const tuNumeroWhatsApp = "5215560681662"; 
+          const mensaje = `🔑 Tu código de acceso a Sapi Studio 5.1 es: *${generatedOtp}*`;
+          const whatsappUrl = `https://wa.me/${tuNumeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+          
+          window.open(whatsappUrl, '_blank');
+
           btn.textContent = "Verificar Código y Acceder";
           otpGroup.style.display = "block";
-          infoText.innerHTML = "💬 Código de verificación simulado enviado a tu WhatsApp. (Ingresa cualquier número para entrar).";
+          infoText.innerHTML = "💬 Se abrió WhatsApp. Envía el mensaje con tu código e ingrésalo aquí.";
           step = 2;
         } else {
           alert("Usuario o contraseña incorrectos. (Usa usuario: salamandra / contraseña: Pachi37)");
         }
       } else {
-        const code = document.getElementById('otpCode').value;
-        if(code) {
-          window.location.href = "index.html"; // Entra directo al estudio principal
+        const inputCode = document.getElementById('otpCode').value.trim();
+        if(inputCode === generatedOtp.toString()) {
+          window.location.href = "index.html"; // Entra directo al estudio
         } else {
-          alert("Por favor ingresa el código de confirmación.");
+          alert("❌ Código incorrecto. Revisa el código que enviaste a tu WhatsApp.");
         }
       }
     }
