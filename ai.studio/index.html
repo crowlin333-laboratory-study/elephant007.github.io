@@ -156,25 +156,24 @@
     }
     .btn-zip:hover { opacity: 0.9; }
 
-    /* Lienzo principal integral 4x1 adaptado a la altura exacta de la proporción */
+    /* LIENZO PRINCIPAL INTEGRAL (Proporción exacta 1880x2420 sin estiramientos) */
     .main-canvas {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 20px;
       position: relative;
       background-color: var(--bg-color);
       overflow: hidden;
     }
     .results-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 1.2vw;
       width: 98%;
-      max-width: 1650px;
-      height: 82vh; /* Altura optimizada para que las tarjetas tengan la proporción vertical exacta 1880x2420 */
+      max-width: 1600px;
       align-items: center;
     }
     .result-card {
@@ -186,9 +185,9 @@
       padding: 12px;
       position: relative;
       box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-      height: 100%;
-      min-height: 0;
       box-sizing: border-box;
+      /* Forzamos la relación de aspecto exacta de las fotos descargadas (1880x2420) */
+      aspect-ratio: 1880 / 2580; 
     }
     .card-header-row {
       display: flex;
@@ -210,7 +209,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #ffffff;
+      background: #fafafa;
       border: 1px solid var(--border);
       border-radius: 8px;
       position: relative;
@@ -220,7 +219,7 @@
     .card-body img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* LLena la tarjeta por completo sin espacios en blanco */
+      object-fit: cover;
       border-radius: 6px;
     }
     .card-footer-refine {
@@ -252,7 +251,7 @@
       background: var(--panel-bg);
       color: var(--accent);
       border: 1px solid var(--accent);
-      padding: 5px;
+      padding: 6px;
       border-radius: 4px;
       font-size: 0.7rem;
       font-weight: bold;
@@ -269,7 +268,7 @@
       background: #059669;
       color: #fff;
       border: none;
-      padding: 5px;
+      padding: 6px;
       border-radius: 4px;
       font-size: 0.7rem;
       font-weight: bold;
@@ -361,7 +360,7 @@
     <button id="btnDownloadAllZip" class="btn-zip" onclick="downloadAllAsZip()">📥 Descargar Set Completo (ZIP)</button>
   </div>
 
-  <!-- LIENZO PRINCIPAL (Grid horizontal 4x1) -->
+  <!-- LIENZO PRINCIPAL (Grid horizontal 4x1 limpio y proporcionado) -->
   <div class="main-canvas">
     <div class="results-grid">
       
@@ -371,8 +370,7 @@
           <span class="card-label">01 // FRENTE STUDIO</span>
         </div>
         <div class="card-body" id="bodyFront">
-          <span style="font-size: 1.8rem;">🧥</span>
-          <p style="font-size: 0.7rem; color: var(--subtext); margin: 3px 0 0 0;">Carga la foto frontal</p>
+          <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
         </div>
         <div class="card-footer-refine">
           <input type="text" id="refineFront" class="card-refine-input" placeholder="Ajustar prompt específico...">
@@ -389,8 +387,7 @@
           <span class="card-label">02 // ESPALDA STUDIO</span>
         </div>
         <div class="card-body" id="bodyBack">
-          <span style="font-size: 1.8rem;">🔙</span>
-          <p style="font-size: 0.7rem; color: var(--subtext); margin: 3px 0 0 0;">Carga la foto trasera</p>
+          <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
         </div>
         <div class="card-footer-refine">
           <input type="text" id="refineBack" class="card-refine-input" placeholder="Ajustar prompt específico...">
@@ -407,8 +404,7 @@
           <span class="card-label">03 // DETALLE TEXTURA</span>
         </div>
         <div class="card-body" id="bodyDetail">
-          <span style="font-size: 1.8rem;">🔍</span>
-          <p style="font-size: 0.7rem; color: var(--subtext); margin: 3px 0 0 0;">Carga la foto de detalle</p>
+          <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
         </div>
         <div class="card-footer-refine">
           <input type="text" id="refineDetail" class="card-refine-input" placeholder="Ajustar prompt específico...">
@@ -425,8 +421,7 @@
           <span class="card-label">04 // PLANO LOOK GENERAL</span>
         </div>
         <div class="card-body" id="bodyLook">
-          <span style="font-size: 1.8rem;">🧍</span>
-          <p style="font-size: 0.7rem; color: var(--subtext); margin: 3px 0 0 0;">Requiere foto frontal</p>
+          <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
         </div>
         <div class="card-footer-refine">
           <input type="text" id="refineLook" class="card-refine-input" placeholder="Ajustar prompt específico...">
@@ -450,7 +445,7 @@
 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
     const generatedImagesData = {};
-    let establishedModelReference = null; // Almacena el resultado exacto de la tarjeta 01 para consistencia
+    let establishedModelReference = null;
 
     window.updateFileName = function(inputId, textId, wrapId) {
       const input = document.getElementById(inputId);
@@ -545,7 +540,6 @@
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
-      // Prompts con guardarropa sincronizado
       let basePrompts = [];
       if (index === 0 || !establishedModelReference) {
         basePrompts = [
@@ -568,7 +562,6 @@
       try {
         let contentsArray = [basePrompts[index]];
         
-        // Si ya existe la tarjeta 01, la usamos como referencia cruzada estricta para mantener al mismo niño
         if (index > 0 && establishedModelReference) {
           contentsArray.push(dataURLToGenerativePart(establishedModelReference));
         } else {
@@ -589,7 +582,6 @@
                 const img = new Image();
                 img.onload = function() {
                   const canvas = document.createElement('canvas');
-                  // Resolución exacta de exportación: 1880x2420 px
                   canvas.width = 1880;
                   canvas.height = 2420;
                   const ctx = canvas.getContext('2d');
@@ -600,7 +592,6 @@
                   ctx.fillStyle = '#ffffff';
                   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                  // USO DE Math.max (object-fit: cover) para llenar por completo el lienzo sin márgenes blancos
                   const hRatio = canvas.width / img.width;
                   const vRatio = canvas.height / img.height;
                   const ratio = Math.max(hRatio, vRatio);
@@ -653,7 +644,6 @@
 
       generatedImagesData[index] = imageUrl;
 
-      // Fijar el modelo de la tarjeta 01 como maestro absoluto para las demás tarjetas
       if (index === 0 && imageUrl) {
         establishedModelReference = imageUrl;
       }
@@ -685,7 +675,7 @@
         return;
       }
 
-      establishedModelReference = null; // Reiniciar referencia para nuevo set
+      establishedModelReference = null;
 
       document.getElementById('btnGenerateAll').textContent = "Generando set...";
       document.getElementById('btnGenerateAll').disabled = true;
