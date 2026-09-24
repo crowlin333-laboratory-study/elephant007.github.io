@@ -22,7 +22,7 @@
     }
 
     /* CONTENEDOR DE VIDEO LOCAL O FONDO CINEMATOGRÁFICO */
-    .bg-video-container {
+   .bg-video-container {
       position: fixed;
       top: 0;
       left: 0;
@@ -31,20 +31,22 @@
       overflow: hidden;
       z-index: 1;
     }
-  .bg-video-container video {
+    .bg-video-container video {
       width: 100vw;
       height: 100vh;
       object-fit: cover;
-      filter: contrast(110%) brightness(80%) grayscale(30%); /* Subimos el brillo al 80% */
+      filter: contrast(120%) brightness(65%) grayscale(20%); /* Brillo equilibrado para que no se oscurezca de más */
     }
+
+    /* CAPA DE MAPA DE DEGRADADO Y AZUL CORPORATIVO */
     .bg-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: linear-gradient(135deg, rgba(17, 24, 39, 0.35), rgba(11, 15, 25, 0.5)); /* Reducimos la opacidad del filtro oscuro */
-      mix-blend-mode: multiply;
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.75), rgba(11, 15, 25, 0.85)); /* Tono azul elegante */
+      mix-blend-mode: multiply; /* Fusiona el color con el video con estilo cinematográfico */
       z-index: 2;
     }
 
