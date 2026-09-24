@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso - Sapi Studio Pro</title>
+  <style>
+    :root {
+      --panel-bg: #111827;
+      --accent: #d4af37;
+      --subtext: #9ca3af;
+      --border-dark: #374151;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      background-color: #0b0f19;
+    }
+
+    /* CONTENEDOR DEL VIDEO DE FONDO CON MAPA DE DEGRADADO Y SUPERPOSICIÓN */
+    .bg-video-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .bg-video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(120%) brightness(40%) grayscale(40%);
+    }
+    /* Capa de degradado y tinte azul corporativo (Overlays / Mapas de degradado) */
+    .bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.88), rgba(11, 15, 25, 0.95));
+      mix-blend-mode: multiply;
+      z-index: 2;
+    }
+    .bg-grain {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 80%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* CONTENEDOR CENTRAL DEL LOGIN */
+    .login-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-card {
+      background-color: var(--panel-bg);
+      border: 1px solid var(--border-dark);
+      padding: 35px 30px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      box-sizing: border-box;
+      backdrop-filter: blur(10px);
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .login-header h1 {
+      font-size: 1.25rem;
+      color: var(--accent);
+      margin: 0 0 5px 0;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    .login-header p {
+      font-size: 0.7rem;
+      color: var(--subtext);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      font-size: 0.7rem;
+      color: var(--subtext);
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    input[type="text"], input[type="password"], input[type="number"] {
+      width: 100%;
+      background: #1f2937;
+      border: 1px solid var(--border-dark);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 0.85rem;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #e5c158, #b89728);
+      color: #121214;
+      border: none;
+      padding: 11px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      width: 100%;
+      font-size: 0.8rem;
+      margin-top: 10px;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover {
+      opacity: 0.9;
+    }
+
+    .whatsapp-info {
+      font-size: 0.68rem;
+      color: var(--subtext);
+      text-align: center;
+      margin-top: 14px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- FONDO CINEMATOGRÁFICO HOMENAJE (FLASHBACK) -->
+  <div class="bg-video-container">
+    <!-- Reemplaza el src con un enlace a un video MP4 en bucle de sets fotográficos antiguos / analógicos -->
+    <video autoplay muted loop playsinline>
+      <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-photographer-adjusting-a-camera-42999-large.mp4" type="video/mp4">
+      Tu navegador no soporta video HTML5.
+    </video>
+  </div>
+  <div class="bg-overlay"></div>
+  <div class="bg-grain"></div>
+
+  <!-- TARJETA DE ACCESO CENTRAL -->
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Sapi Studio 5.1</h1>
+        <p>Homenaje a la Época de Oro Fotográfica</p>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Usuario</label>
+          <input type="text" id="username" placeholder="Ingresa tu usuario..." required>
+        </div>
+
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="password" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group" id="otpGroup" style="display: none;">
+          <label>Código de Seguridad (WhatsApp)</label>
+          <input type="number" id="otpCode" placeholder="Ej. 482910">
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">Solicitar Código WhatsApp</button>
+      </form>
+
+      <div class="whatsapp-info" id="infoText">
+        Por seguridad, enviaremos un código de confirmación directo a tu WhatsApp autorizado.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let step = 1;
+
+    function handleLogin(event) {
+      event.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const otpGroup = document.getElementById('otpGroup');
+      const infoText = document.getElementById('infoText');
+
+      if (step === 1) {
+        // Simulación de envío de código al WhatsApp
+        btn.textContent = "Verificar Código y Acceder";
+        otpGroup.style.display = "block";
+        infoText.innerHTML = "💬 Código enviado con éxito a tu WhatsApp. Ingrésalo para entrar.";
+        
+        // Aquí puedes programar la integración real con tu API de WhatsApp o Webhook
+        alert("¡Código de seguridad simulado enviado a tu WhatsApp!");
+        step = 2;
+      } else {
+        // Validación final y acceso al estudio
+        const code = document.getElementById('otpCode').value;
+        if(code) {
+          window.location.href = "index.html"; // Redirige a tu interfaz principal de Sapi Studio
+        } else {
+          alert("Por favor ingresa el código de confirmación.");
+        }
+      }
+    }
+  </script>
+</body>
+</html>
