@@ -24,7 +24,7 @@
       color: var(--text-main);
       display: flex;
       height: 100vh;
-      overflow: hidden; /* Evita scroll general en la página */
+      overflow: hidden;
     }
     /* Panel lateral esbelto (fijo) */
     .sidebar {
@@ -152,18 +152,18 @@
       font-size: 0.8rem;
       margin-top: 10px;
       width: 100%;
-      display: none; /* Se muestra al generar las 4 imágenes */
+      display: none;
     }
     .btn-zip:hover { opacity: 0.9; }
 
-    /* Lienzo principal integral 4x1 (menos largo y proporcionado) */
+    /* Lienzo principal integral 4x1 adaptado a la altura exacta de la proporción */
     .main-canvas {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
       position: relative;
       background-color: var(--bg-color);
       overflow: hidden;
@@ -173,8 +173,8 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 1.2vw;
       width: 98%;
-      max-width: 1700px;
-      height: 78vh; /* Altura optimizada para que no se vea excesivamente largo */
+      max-width: 1650px;
+      height: 82vh; /* Altura optimizada para que las tarjetas tengan la proporción vertical exacta 1880x2420 */
       align-items: center;
     }
     .result-card {
@@ -220,7 +220,7 @@
     .card-body img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover; /* LLena la tarjeta por completo sin espacios en blanco */
       border-radius: 6px;
     }
     .card-footer-refine {
@@ -450,6 +450,7 @@
 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
     const generatedImagesData = {};
+    let establishedModelReference = null; // Almacena el resultado exacto de la tarjeta 01 para consistencia
 
     window.updateFileName = function(inputId, textId, wrapId) {
       const input = document.getElementById(inputId);
@@ -480,6 +481,17 @@
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
+    }
+
+    function dataURLToGenerativePart(dataUrl) {
+      const base64Data = dataUrl.split(',')[1];
+      const mimeType = dataUrl.split(';')[0].replace('data:', '');
+      return {
+        inlineData: {
+          data: base64Data,
+          mimeType: mimeType
+        }
+      };
     }
 
     async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
@@ -522,7 +534,7 @@
       const modelDesc = document.getElementById('modelType').value;
       const globalNotes = document.getElementById('promptDetails').value;
       const specificNotes = document.getElementById(refineInputs[index]).value;
-      const combinedNotes = `${globalNotes} ${specificNotes ? 'Refinement: ' + specificNotes : ''}`;
+      const combinedNotes = `${globalNotes}${specificNotes ? 'Refinement: ' + specificNotes : ''}`;
 
       const garmentNames = {
         'hoodie': 'oversized hoodie',
@@ -533,20 +545,36 @@
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
-      // Prompts con guardarropa sincronizado (pantalón chino azul marino y tenis blancos)
-      const basePrompts = [
-        `Professional e-commerce fashion studio photography, full-body shot of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} shown in the reference image, paired with casual navy blue chino pants and clean white sneakers. Maintain exact color, collar style, and logo details. Clean minimalist setup, soft studio lighting without visible light fixtures, seamless pure solid white background, 8k resolution. Details: ${combinedNotes}`,
-        `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image, paired with casual navy blue chino pants and clean white sneakers, identical tailoring, soft studio lighting, seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
-        `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, clean white background, 8k resolution. Details: ${combinedNotes}`,
-        `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image matched with casual navy blue chino pants and clean white sneakers, professional clean studio setting, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
-      ];
+      // Prompts con guardarropa sincronizado
+      let basePrompts = [];
+      if (index === 0 || !establishedModelReference) {
+        basePrompts = [
+          `Professional e-commerce fashion studio photography, full-body shot of a ${modelDesc} wearing the exact${selectedGarmentText} shown in the reference image, paired with casual navy blue chino pants and clean white sneakers. Maintain exact color, collar style, and logo details. Clean minimalist setup, soft studio lighting, seamless pure solid white background, 8k resolution. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image, paired with casual navy blue chino pants and clean white sneakers, identical tailoring, soft studio lighting, seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
+          `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, clean white background, 8k resolution. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image matched with casual navy blue chino pants and clean white sneakers, professional clean studio setting, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
+        ];
+      } else {
+        basePrompts = [
+          ``,
+          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion studio photography, back view of the exact same model wearing the exact ${selectedGarmentText}, paired with casual navy blue chino pants and clean white sneakers, seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
+          `Maintaining the exact same garment texture and color from the reference image: Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText}, clean white background, 8k resolution. Details: ${combinedNotes}`,
+          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same model wearing the exact ${selectedGarmentText} matched with casual navy blue chino pants and clean white sneakers, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
+        ];
+      }
 
       let imageUrl = null;
 
       try {
         let contentsArray = [basePrompts[index]];
-        const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
-        contentsArray.push(await fileToGenerativePart(activeUpload));
+        
+        // Si ya existe la tarjeta 01, la usamos como referencia cruzada estricta para mantener al mismo niño
+        if (index > 0 && establishedModelReference) {
+          contentsArray.push(dataURLToGenerativePart(establishedModelReference));
+        } else {
+          const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
+          contentsArray.push(await fileToGenerativePart(activeUpload));
+        }
 
         const response = await generateWithRetry(contentsArray);
         const candidate = response.candidates?.[0];
@@ -561,7 +589,7 @@
                 const img = new Image();
                 img.onload = function() {
                   const canvas = document.createElement('canvas');
-                  // Resolución exacta de exportación de alta calidad: 1880x2420 px
+                  // Resolución exacta de exportación: 1880x2420 px
                   canvas.width = 1880;
                   canvas.height = 2420;
                   const ctx = canvas.getContext('2d');
@@ -572,9 +600,10 @@
                   ctx.fillStyle = '#ffffff';
                   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+                  // USO DE Math.max (object-fit: cover) para llenar por completo el lienzo sin márgenes blancos
                   const hRatio = canvas.width / img.width;
                   const vRatio = canvas.height / img.height;
-                  const ratio = Math.min(hRatio, vRatio);
+                  const ratio = Math.max(hRatio, vRatio);
 
                   const centerShiftX = (canvas.width - img.width * ratio) / 2;
                   const centerShiftY = (canvas.height - img.height * ratio) / 2;
@@ -609,7 +638,7 @@
               ctx.fillRect(0, 0, canvas.width, canvas.height);
               const hRatio = canvas.width / img.width;
               const vRatio = canvas.height / img.height;
-              const ratio = Math.min(hRatio, vRatio);
+              const ratio = Math.max(hRatio, vRatio);
               const centerShiftX = (canvas.width - img.width * ratio) / 2;
               const centerShiftY = (canvas.height - img.height * ratio) / 2;
               ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
@@ -623,6 +652,12 @@
       }
 
       generatedImagesData[index] = imageUrl;
+
+      // Fijar el modelo de la tarjeta 01 como maestro absoluto para las demás tarjetas
+      if (index === 0 && imageUrl) {
+        establishedModelReference = imageUrl;
+      }
+
       document.getElementById(bodyId).innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
       document.getElementById(downloadBtns[index]).style.display = 'block';
       checkAllGenerated();
@@ -649,6 +684,8 @@
         alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
         return;
       }
+
+      establishedModelReference = null; // Reiniciar referencia para nuevo set
 
       document.getElementById('btnGenerateAll').textContent = "Generando set...";
       document.getElementById('btnGenerateAll').disabled = true;
