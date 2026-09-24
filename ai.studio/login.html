@@ -21,46 +21,44 @@
       background-color: #0b0f19;
     }
 
-    /* FONDO CINEMATOGRÁFICO ANIMADO (ESTILO MAPA DE DEGRADADO Y SOBREEXPOSICIÓN) */
-    .cinematic-bg {
+    /* CONTENEDOR DE VIDEO LOCAL O FONDO CINEMATOGRÁFICO */
+    .bg-video-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: linear-gradient(135deg, #0b0f19, #111827, #1f2937, #0b0f19);
-      background-size: 400% 400%;
-      animation: gradientAnimation 12s ease infinite;
+      overflow: hidden;
       z-index: 1;
     }
-
-    @keyframes gradientAnimation {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    .bg-video-container video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      filter: contrast(120%) brightness(35%) grayscale(40%);
     }
-
-    /* Capa de destello y grano cinematográfico sutil */
-    .cinematic-glow {
+    .bg-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: radial-gradient(circle at 50% 35%, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.82), rgba(11, 15, 25, 0.90));
+      mix-blend-mode: multiply;
       z-index: 2;
-      pointer-events: none;
     }
 
-    /* TARJETA DE ACCESO CENTRAL */
+    /* TARJETA DE ACCESO CENTRAL CORREGIDA Y PERFECTAMENTE CENTRADA */
     .login-wrapper {
       position: relative;
       z-index: 10;
-      width: 100%;
+      width: 100vw;
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-sizing: border-box;
+      padding: 20px;
     }
     .login-card {
       background-color: var(--panel-bg);
@@ -142,15 +140,15 @@
 </head>
 <body>
 
-  <!-- FONDO CINEMATOGRÁFICO ANIMADO -->
-  <div class="cinematic-bg"></div>
-  <div class="cinematic-glow"></div>
-<div class="bg-video-container">
-  <video autoplay muted loop playsinline preload="auto">
-    <source src="studio-bg.mp4" type="video/mp4">
-    Tu navegador no soporta video HTML5.
-  </video>
-</div>
+  <!-- FONDO DE VIDEO (Reemplaza "studio-bg.mp4" con el nombre de tu archivo descargado de Pixabay) -->
+  <div class="bg-video-container">
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="studio-bg.mp4" type="video/mp4">
+      Tu navegador no soporta video HTML5.
+    </video>
+  </div>
+  <div class="bg-overlay"></div>
+
   <!-- TARJETA DE ACCESO CENTRAL -->
   <div class="login-wrapper">
     <div class="login-card">
@@ -196,12 +194,12 @@
       const infoText = document.getElementById('infoText');
 
       if (step === 1) {
-        // Validamos tus credenciales exactas: salamandra / Pachi37
+        // Credenciales: salamandra / Pachi37
         if(user === "salamandra" && pass === "Pachi37") {
           generatedOtp = Math.floor(100000 + Math.random() * 900000);
           
-          // ENVIAR CODIGO WHATSSAPP
-          const tuNumeroWhatsApp = "5215560681662"; 
+          // Reemplaza con tu número real de WhatsApp con código de país (ej: 52155...)
+          const tuNumeroWhatsApp = "5215500000000"; 
           const mensaje = `🔑 Tu código de acceso a Sapi Studio 5.1 es: *${generatedOtp}*`;
           const whatsappUrl = `https://wa.me/${tuNumeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
           
@@ -217,7 +215,7 @@
       } else {
         const inputCode = document.getElementById('otpCode').value.trim();
         if(inputCode === generatedOtp.toString()) {
-          window.location.href = "index.html"; // Entra directo al estudio principal
+          window.location.href = "index.html"; // Entra directo al estudio
         } else {
           alert("❌ Código incorrecto. Revisa el código que enviaste a tu WhatsApp.");
         }
