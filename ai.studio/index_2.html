@@ -22,11 +22,6 @@
         <h1>Sapi Studio 5.1</h1>
         
         <div class="form-group">
-            <label for="apiKey">API Key de Gemini:</label>
-            <input type="text" id="apiKey" placeholder="Pega tu API Key de Google AI Studio aquí">
-        </div>
-
-        <div class="form-group">
             <label for="tipoPrenda">Selecciona el tipo de prenda / categoría:</label>
             <select id="tipoPrenda">
                 <option value="playera">Playera / Basic Tee</option>
@@ -67,16 +62,12 @@
         }
 
         async function ejecutarPipeline() {
-            const apiKey = document.getElementById('apiKey').value.trim();
+            // Tu API Key fija o como la tenías configurada originalmente
+            const apiKey = "TU_API_KEY_AQUI"; 
             const tipoPrenda = document.getElementById('tipoPrenda').value;
             const filePrenda = document.getElementById('imagenPrenda').files[0];
             const fileModelo = document.getElementById('imagenModelo').files[0];
             const logArea = document.getElementById('logArea');
-
-            if (!apiKey) {
-                alert("Por favor ingresa tu API Key de Gemini.");
-                return;
-            }
 
             if (!filePrenda || !fileModelo) {
                 alert("Por favor selecciona tanto la imagen de la prenda como la del modelo base.");
