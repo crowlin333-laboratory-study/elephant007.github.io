@@ -226,7 +226,7 @@
     .card-body-content img {
       max-width: 100%;
       max-height: 100%;
-      object-fit: contain; 
+      object-fit: cover; /* Llena el espacio sin dejar márgenes blancos */
       display: block;
     }
 
@@ -310,7 +310,7 @@
         <path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.636 5.636l2.475 2.475M15.889 15.889l2.475 2.475M5.636 18.364l2.475-2.475M15.889 8.111l2.475-2.475"></path>
       </svg>
       <div class="brand-header">
-        <h1>Sapi Studio</h1>
+        <h1>Sapi Studio 5.1</h1>
         <p>Pipeline Fotográfico e-commerce</p>
       </div>
     </div>
@@ -559,21 +559,21 @@
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
-      // Prompts actualizados: Tarjeta 01 configurada estrictamente como Medium Shot (de la cintura/cadera a la cabeza)
+      // Prompts blindados sin texto superpuesto, etiquetas ni marcas flotantes
       let basePrompts = [];
       if (index === 0 || !establishedModelReference) {
         basePrompts = [
-          `Professional e-commerce fashion studio photography, medium shot / waist-up framing of a ${modelDesc} wearing the exact${selectedGarmentText} shown in the reference image, paired with casual navy blue chino pants. Maintain exact color, collar style, and logo details. Clean minimalist setup, soft studio lighting, seamless pure solid white background, 8k resolution. Details: ${combinedNotes}`,
-          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image, paired with casual navy blue chino pants and clean white sneakers, identical tailoring, soft studio lighting, seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
-          `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, clean white background, 8k resolution. Details: ${combinedNotes}`,
-          `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image matched with casual navy blue chino pants and clean white sneakers, professional clean studio setting, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
+          `Professional e-commerce fashion studio photography, medium shot / waist-up framing of a ${modelDesc} wearing the exact${selectedGarmentText} shown in the reference image, paired with casual navy blue chino pants. Maintain exact color, collar style, and logo details. Clean minimalist setup, soft studio lighting, seamless pure solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image, paired with casual navy blue chino pants and clean white sneakers, identical tailoring, soft studio lighting, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, clean white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image matched with casual navy blue chino pants and clean white sneakers, professional clean studio setting, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`
         ];
       } else {
         basePrompts = [
           ``,
-          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion studio photography, back view of the exact same model wearing the exact ${selectedGarmentText}, paired with casual navy blue chino pants and clean white sneakers, seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
-          `Maintaining the exact same garment texture and color from the reference image: Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText}, clean white background, 8k resolution. Details: ${combinedNotes}`,
-          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same model wearing the exact ${selectedGarmentText} matched with casual navy blue chino pants and clean white sneakers, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
+          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion studio photography, back view of the exact same model wearing the exact ${selectedGarmentText}, paired with casual navy blue chino pants and clean white sneakers, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Maintaining the exact same garment texture and color from the reference image: Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText}, clean white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same model wearing the exact ${selectedGarmentText} matched with casual navy blue chino pants and clean white sneakers, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`
         ];
       }
 
@@ -609,9 +609,12 @@
                   ctx.imageSmoothingQuality = 'high';
                   ctx.fillStyle = '#ffffff';
                   ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                  // CORRECCIÓN: Uso de Math.max (cover) para eliminar por completo las franjas blancas
                   const hRatio = canvas.width / img.width;
                   const vRatio = canvas.height / img.height;
-                  const ratio = Math.min(hRatio, vRatio);
+                  const ratio = Math.max(hRatio, vRatio);
+
                   const centerShiftX = (canvas.width - img.width * ratio) / 2;
                   const centerShiftY = (canvas.height - img.height * ratio) / 2;
                   ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
@@ -644,7 +647,7 @@
               ctx.fillRect(0, 0, canvas.width, canvas.height);
               const hRatio = canvas.width / img.width;
               const vRatio = canvas.height / img.height;
-              const ratio = Math.min(hRatio, vRatio);
+              const ratio = Math.max(hRatio, vRatio);
               const centerShiftX = (canvas.width - img.width * ratio) / 2;
               const centerShiftY = (canvas.height - img.height * ratio) / 2;
               ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
