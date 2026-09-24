@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sapi Studio 5.1 - Pipeline Fotográfico E-commerce</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #111827; color: #F3F4F6; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #1F2937; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h1 { color: #60A5FA; text-align: center; margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #9CA3AF; }
+        select, input[type="text"], input[type="file"] { width: 100%; padding: 12px; background: #374151; border: 1px solid #4B5563; border-radius: 6px; color: #FFF; font-size: 14px; }
+        button { background: #2563EB; color: #FFF; border: none; padding: 14px 20px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; transition: background 0.2s; }
+        button:hover { background: #1D4ED8; }
+        #logArea { margin-top: 20px; background: #111827; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 13px; color: #34D399; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sapi Studio 5.1</h1>
+        
+        <div class="form-group">
+            <label for="apiKey">API Key de Gemini:</label>
+            <input type="text" id="apiKey" placeholder="Pega tu API Key de Google AI Studio aquí">
+        </div>
+
+        <div class="form-group">
+            <label for="tipoPrenda">Selecciona el tipo de prenda / categoría:</label>
+            <select id="tipoPrenda">
+                <option value="playera">Playera / Basic Tee</option>
+                <option value="sudadera">Sudadera / Hoodie Oversize</option>
+                <option value="chamarra">Chamarra / Denim Jacket</option>
+                <option value="pantalon">Pantalón / Jogger</option>
+                <option value="short">Short / Bermuda</option>
+                <option value="vestido">Vestido / Falda</option>
+                <option value="conjunto">Conjunto (2 piezas)</option>
+                <option value="bebe">Ropa de Bebé / Body / Pañalero</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="imagenPrenda">Imagen de Referencia de la Prenda (Frente / Espalda):</label>
+            <input type="file" id="imagenPrenda" accept="image/*">
+        </div>
+
+        <div class="form-group">
+            <label for="imagenModelo">Fotografía Base del Modelo en Estudio:</label>
+            <input type="file" id="imagenModelo" accept="image/*">
+        </div>
+
+        <button onclick="ejecutarPipeline()">Generar Estudio Fotográfico</button>
+
+        <div id="logArea">Estado del sistema: Listo para procesar catálogo...</div>
+    </div>
+
+    <script>
+        // Función auxiliar para convertir archivo local a Base64
+        function convertirBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        async function ejecutarPipeline() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const tipoPrenda = document.getElementById('tipoPrenda').value;
+            const filePrenda = document.getElementById('imagenPrenda').files[0];
+            const fileModelo = document.getElementById('imagenModelo').files[0];
+            const logArea = document.getElementById('logArea');
+
+            if (!apiKey) {
+                alert("Por favor ingresa tu API Key de Gemini.");
+                return;
+            }
+
+            if (!filePrenda || !fileModelo) {
+                alert("Por favor selecciona tanto la imagen de la prenda como la del modelo base.");
+                return;
+            }
+
+            logArea.innerHTML += `<br>Procesando categoría: [${tipoPrenda.toUpperCase()}]. Codificando imágenes...`;
+
+            try {
+                const base64Prenda = await convertirBase64(filePrenda);
+                const base64Modelo = await convertirBase64(fileModelo);
+
+                logArea.innerHTML += `<br>Enviando datos a Gemini 3.5...`;
+
+                // Endpoint oficial para Gemini 3.5 Flash / Pro
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
+
+                // Prompt maestro con regla blindada para gráficos y prendas lisas
+                const promptMaestro = `
+Actúa como un director de arte y fotógrafo de moda profesional para e-commerce.
+Analiza la prenda de ropa original provista (frente y espalda/detalles) y la fotografía base del modelo en estudio.
+
+Instrucciones estrictas de procesamiento para la categoría (${tipoPrenda}):
+1. Integra la prenda en el modelo manteniendo fielmente el color, el corte, la caída, el volumen y la textura del tejido.
+2. REGLA CRÍTICA DE ESTAMPADOS: Si la prenda original cuenta con un logotipo, gráfico o estampado en el frente, en la espalda o en cualquier sección visible, DEBES proyectarlo obligatoriamente de forma precisa, adaptándolo de manera realista a la curvatura de la tela, pliegues y volúmenes del cuerpo. No dejes la espalda lisa si la prenda original incluye un gráfico dorsal.
+3. Si la prenda original es completamente lisa (sin gráficos), deja la zona correspondiente limpia, sin inventar ni agregar elementos ajenos a la prenda base.
+4. Mantén absoluta consistencia visual de iluminación de estudio profesional y estilo en la sesión resultante.
+                `;
+
+                const payload = {
+                    contents: [
+                        {
+                            parts: [
+                                { text: promptMaestro },
+                                {
+                                    inline_data: {
+                                        mime_type: filePrenda.type,
+                                        data: base64Prenda
+                                    }
+                                },
+                                {
+                                    inline_data: {
+                                        mime_type: fileModelo.type,
+                                        data: base64Modelo
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                };
+
+                let response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                let data = await response.json();
+                
+                if(data.error) {
+                    logArea.innerHTML += `<br><span style="color: #EF4444;">Error de API: ${data.error.message}</span>`;
+                } else {
+                    logArea.innerHTML += `<br><span style="color: #34D399;">¡Procesamiento exitoso! Revisa la consola o respuesta del modelo.</span>`;
+                    console.log("Respuesta completa de Gemini 3.5:", data);
+                }
+
+            } catch (error) {
+                logArea.innerHTML += `<br><span style="color: #EF4444;">Error crítico: ${error.message}</span>`;
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
