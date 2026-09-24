@@ -429,3 +429,78 @@ body.portfolio-body {
     font-size: 28px;
   }
 }
+CSS
+
+
+/* ==========================================
+   SECCIÓN DEMO: SAPI STUDIO / IA E-COMMERCE
+   ========================================== */
+.ai-studio-demo {
+  margin-top: 48px;
+  margin-bottom: 48px;
+}
+
+.ai-studio-demo .hero-subtitle {
+  margin-top: 12px;
+  max-width: 800px;
+}
+
+/* Reproductor tipo Ventana macOS */
+.video-preview-card {
+  margin: 28px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  background: #1c1c1e;
+}
+
+.mac-window-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  background: #2c2c2e;
+  border-bottom: 1px solid #38383a;
+  position: relative;
+}
+
+.mac-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.dot.red { background: #ff5f56; }
+.dot.yellow { background: #ffbd2e; }
+.dot.green { background: #27c93f; }
+
+.window-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: #a1a1a6;
+  font-family: monospace;
+}
+
+.video-wrapper video {
+  width: 100%;
+  display: block;
+}
+
+/* Indicadores técnicos de las columnas */
+.ai-features-grid {
+  margin-top: 32px;
+}
+
+.feature-code {
+  font-size: 0.8rem;
+  font-family: monospace;
+  opacity: 0.65;
+  display: block;
+  margin-bottom: 4px;
+}
