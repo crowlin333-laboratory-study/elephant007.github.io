@@ -1,144 +1,754 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sapi Studio 5.1 - Pipeline Fotográfico E-commerce</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #111827; color: #F3F4F6; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: #1F2937; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        h1 { color: #60A5FA; text-align: center; margin-bottom: 25px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #9CA3AF; }
-        select, input[type="text"], input[type="file"] { width: 100%; padding: 12px; background: #374151; border: 1px solid #4B5563; border-radius: 6px; color: #FFF; font-size: 14px; }
-        button { background: #2563EB; color: #FFF; border: none; padding: 14px 20px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; transition: background 0.2s; }
-        button:hover { background: #1D4ED8; }
-        #logArea { margin-top: 20px; background: #111827; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 13px; color: #34D399; max-height: 200px; overflow-y: auto; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sapi Studio - AI E-commerce Studio Pro</title>
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --panel-bg: #111827;
+      --accent: #d4af37; 
+      --text-main: #1f2937;
+      --text-sidebar: #f3f4f6;
+      --subtext: #9ca3af;
+      --border: #e5e7eb;
+      --border-dark: #374151;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    /* Panel lateral esbelto (fijo) */
+    .sidebar {
+      width: 320px;
+      background-color: var(--panel-bg);
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-right: 1px solid var(--border-dark);
+      overflow-y: auto;
+      color: var(--text-sidebar);
+      flex-shrink: 0;
+    }
+    .brand-header-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .brand-header h1 {
+      font-size: 1.1rem;
+      margin: 0;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .brand-header p {
+      font-size: 0.7rem;
+      color: var(--subtext);
+      margin: 2px 0 0 0;
+    }
+    label { 
+      font-size: 0.7rem; 
+      color: var(--subtext); 
+      display: block; 
+      margin-bottom: 3px; 
+      font-weight: 600; 
+      text-transform: uppercase; 
+    }
+    textarea, select, input[type="text"] {
+      width: 100%;
+      background: #1f2937;
+      border: 1px solid var(--border-dark);
+      color: #fff;
+      padding: 7px 9px;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 0.8rem;
+    }
+    textarea:focus, select:focus, input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    
+    .file-upload-wrapper {
+      position: relative;
+      background: #1f2937;
+      border: 1px dashed var(--border-dark);
+      border-radius: 6px;
+      padding: 8px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .file-upload-wrapper:hover {
+      border-color: var(--accent);
+      background: #1a2332;
+    }
+    .file-upload-wrapper input[type="file"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .file-upload-text {
+      font-size: 0.75rem;
+      color: var(--subtext);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+    .file-upload-wrapper.has-file {
+      border-color: #059669;
+      background: rgba(5, 150, 105, 0.1);
+    }
+    .file-upload-wrapper.has-file .file-upload-text {
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    .btn-action {
+      background: linear-gradient(135deg, #e5c158, #b89728);
+      color: #121214;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s;
+      font-size: 0.8rem;
+      margin-top: 4px;
+      width: 100%;
+    }
+    .btn-action:hover { opacity: 0.9; }
+
+    .btn-zip {
+      background: #059669;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s;
+      font-size: 0.8rem;
+      margin-top: 10px;
+      width: 100%;
+      display: none;
+    }
+    .btn-zip:hover { opacity: 0.9; }
+
+    /* LIENZO PRINCIPAL INTEGRAL */
+    .main-canvas {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      position: relative;
+      background-color: var(--bg-color);
+      overflow: hidden;
+    }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1vw;
+      width: 98%;
+      max-width: 1600px;
+      align-items: center;
+    }
+    .result-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      padding: 8px;
+      position: relative;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      box-sizing: border-box;
+    }
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .card-label {
+      background: rgba(17, 24, 39, 0.9);
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* PADDING HACK PARA PROPORCIÓN ESTRICTA SIN CORTES */
+    .card-body-wrapper {
+      position: relative;
+      width: 100%;
+      padding-bottom: 137.23%; /* Proporción 1880x2580 */
+      background: #fafafa;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .card-body-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-body-content img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-footer-refine {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .card-refine-input {
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .card-refine-input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    .card-actions-row {
+      display: flex;
+      gap: 4px;
+    }
+    .btn-card-render {
+      flex: 1;
+      background: var(--panel-bg);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 5px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .btn-card-render:hover {
+      background: var(--accent);
+      color: var(--panel-bg);
+    }
+    .btn-card-download {
+      flex: 1;
+      background: #059669;
+      color: #fff;
+      border: none;
+      padding: 5px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      display: none;
+      transition: opacity 0.2s;
+    }
+    .btn-card-download:hover { opacity: 0.9; }
+
+    .loader {
+      border: 3px solid #e5e7eb;
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 2px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
 
-    <div class="container">
+  <!-- PANEL LATERAL CONFIGURADOR -->
+  <div class="sidebar">
+    <div class="brand-header-container">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+        <circle cx="12" cy="12" r="9" stroke-width="1.5"></circle>
+        <circle cx="12" cy="12" r="3.5"></circle>
+        <path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.636 5.636l2.475 2.475M15.889 15.889l2.475 2.475M5.636 18.364l2.475-2.475M15.889 8.111l2.475-2.475"></path>
+      </svg>
+      <div class="brand-header">
         <h1>Sapi Studio 5.1</h1>
-        
-        <div class="form-group">
-            <label for="tipoPrenda">Selecciona el tipo de prenda / categoría:</label>
-            <select id="tipoPrenda">
-                <option value="playera">Playera / Basic Tee</option>
-                <option value="sudadera">Sudadera / Hoodie Oversize</option>
-                <option value="chamarra">Chamarra / Denim Jacket</option>
-                <option value="pantalon">Pantalón / Jogger</option>
-                <option value="short">Short / Bermuda</option>
-                <option value="vestido">Vestido / Falda</option>
-                <option value="conjunto">Conjunto (2 piezas)</option>
-                <option value="bebe">Ropa de Bebé / Body / Pañalero</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="imagenPrenda">Imagen de Referencia de la Prenda (Frente / Espalda):</label>
-            <input type="file" id="imagenPrenda" accept="image/*">
-        </div>
-
-        <div class="form-group">
-            <label for="imagenModelo">Fotografía Base del Modelo en Estudio:</label>
-            <input type="file" id="imagenModelo" accept="image/*">
-        </div>
-
-        <button onclick="ejecutarPipeline()">Generar Estudio Fotográfico</button>
-
-        <div id="logArea">Estado del sistema: Listo para procesar catálogo...</div>
+        <p>Pipeline Fotográfico e-commerce</p>
+      </div>
     </div>
 
-    <script>
-        // Función auxiliar para convertir archivo local a Base64
-        function convertirBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = error => reject(error);
-            });
+    <div>
+      <label>Tipo de Prenda</label>
+      <select id="garmentType">
+        <option value="hoodie">Sudadera / Hoodie Oversize</option>
+        <option value="tee" selected>Playera / Basic Tee</option>
+        <option value="jacket">Chamarra / Denim Jacket</option>
+        <option value="pants">Pantalón / Jogger</option>
+        <option value="short">Short / Bermuda</option>
+        <option value="dress">Vestido / Falda</option>
+        <option value="suit">Conjunto (2 piezas)</option>
+        <option value="baby">Ropa de Bebé / Body</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Asignar Modelo / Maniquí</label>
+      <select id="modelType">
+        <option value="boy child model (approx 10 years old)">Niño</option>
+        <option value="girl child model (approx 10 years old)">Niña</option>
+        <option value="adult male model">Adulto Hombre</option>
+        <option value="adult female model">Adulto Mujer</option>
+      </select>
+    </div>
+
+    <div>
+      <label>1. Foto Base Frente (Requerida)</label>
+      <div class="file-upload-wrapper" id="wrapFront">
+        <span class="file-upload-text" id="textFront">📁 Cargar imagen frontal...</span>
+        <input type="file" id="imgFront" accept="image/*" onchange="updateFileName('imgFront', 'textFront', 'wrapFront')">
+      </div>
+    </div>
+
+    <div>
+      <label>2. Foto Base Espalda (Opcional)</label>
+      <div class="file-upload-wrapper" id="wrapBack">
+        <span class="file-upload-text" id="textBack">📁 Cargar imagen trasera...</span>
+        <input type="file" id="imgBack" accept="image/*" onchange="updateFileName('imgBack', 'textBack', 'wrapBack')">
+      </div>
+    </div>
+
+    <div>
+      <label>3. Foto Detalle Textura (Opcional)</label>
+      <div class="file-upload-wrapper" id="wrapDetail">
+        <span class="file-upload-text" id="textDetail">📁 Cargar detalle...</span>
+        <input type="file" id="imgDetail" accept="image/*" onchange="updateFileName('imgDetail', 'textDetail', 'wrapDetail')">
+      </div>
+    </div>
+
+    <div>
+      <label>Prompt General de Acabados</label>
+      <textarea id="promptDetails" rows="2" placeholder="Ej. Algodón heavyweight..."></textarea>
+    </div>
+
+    <button id="btnGenerateAll" class="btn-action" onclick="runMultiGeneration()">Generar Set Completo (4 Ángulos)</button>
+    <button id="btnDownloadAllZip" class="btn-zip" onclick="downloadAllAsZip()">📥 Descargar Set Completo (ZIP)</button>
+  </div>
+
+  <!-- LIENZO PRINCIPAL (Grid horizontal 4x1) -->
+  <div class="main-canvas">
+    <div class="results-grid">
+      
+      <!-- TARJETA 01: FRENTE -->
+      <div class="result-card">
+        <div class="card-header-row">
+          <span class="card-label">01 // FRENTE STUDIO</span>
+        </div>
+        <div class="card-body-wrapper" id="bodyFront">
+          <div class="card-body-content">
+             <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
+          </div>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineFront" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(0)">✨ Generar</button>
+            <button class="btn-card-download" id="dlFront" onclick="downloadCard(0)">📥 Descargar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARJETA 02: ESPALDA -->
+      <div class="result-card">
+        <div class="card-header-row">
+          <span class="card-label">02 // ESPALDA STUDIO</span>
+        </div>
+        <div class="card-body-wrapper" id="bodyBack">
+          <div class="card-body-content">
+            <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
+          </div>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineBack" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(1)">✨ Generar</button>
+            <button class="btn-card-download" id="dlBack" onclick="downloadCard(1)">📥 Descargar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARJETA 03: DETALLE -->
+      <div class="result-card">
+        <div class="card-header-row">
+          <span class="card-label">03 // DETALLE TEXTURA</span>
+        </div>
+        <div class="card-body-wrapper" id="bodyDetail">
+          <div class="card-body-content">
+            <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
+          </div>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineDetail" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(2)">✨ Generar</button>
+            <button class="btn-card-download" id="dlDetail" onclick="downloadCard(2)">📥 Descargar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARJETA 04: LOOK GENERAL -->
+      <div class="result-card">
+        <div class="card-header-row">
+          <span class="card-label">04 // PLANO LOOK GENERAL</span>
+        </div>
+        <div class="card-body-wrapper" id="bodyLook">
+          <div class="card-body-content">
+             <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
+          </div>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineLook" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(3)">✨ Generar</button>
+            <button class="btn-card-download" id="dlLook" onclick="downloadCard(3)">📥 Descargar</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Librería JSZip para descarga del archivo comprimido -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  
+  <!-- LÓGICA DE API Y CONFIG -->
+  <script type="module">
+    import { GoogleGenAI } from "https://esm.run/@google/genai";
+    import { API_KEY } from "./config.js";
+
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
+    const generatedImagesData = {};
+    let establishedModelReference = null;
+
+    window.updateFileName = function(inputId, textId, wrapId) {
+      const input = document.getElementById(inputId);
+      const textSpan = document.getElementById(textId);
+      const wrapper = document.getElementById(wrapId);
+
+      if (input.files && input.files.length > 0) {
+        const fileName = input.files[0].name;
+        textSpan.textContent = `✔ ${fileName}`;
+        wrapper.classList.add('has-file');
+      } else {
+        wrapper.classList.remove('has-file');
+      }
+    }
+
+    async function fileToGenerativePart(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Data = reader.result.split(',')[1];
+          resolve({
+            inlineData: {
+              data: base64Data,
+              mimeType: file.type
+            },
+          });
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function dataURLToGenerativePart(dataUrl) {
+      const base64Data = dataUrl.split(',')[1];
+      const mimeType = dataUrl.split(';')[0].replace('data:', '');
+      return {
+        inlineData: {
+          data: base64Data,
+          mimeType: mimeType
+        }
+      };
+    }
+
+    async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          const response = await ai.models.generateContent({
+            model: 'gemini-3.1-flash-image',
+            contents: contentsArray,
+          });
+          return response;
+        } catch (error) {
+          console.warn(`Intento ${attempt} fallido.`, error);
+          if (attempt === retries) throw error;
+          await new Promise(resolve => setTimeout(resolve, delay * attempt));
+        }
+      }
+    }
+
+    async function renderSingleCard(index) {
+      const bodiesContent = ['bodyFront', 'bodyBack', 'bodyDetail', 'bodyLook'].map(id => document.getElementById(id).querySelector('.card-body-content'));
+      const refineInputs = ['refineFront', 'refineBack', 'refineDetail', 'refineLook'];
+      const downloadBtns = ['dlFront', 'dlBack', 'dlDetail', 'dlLook'];
+      
+      const bodyContentEl = bodiesContent[index];
+
+      const frontFile = document.getElementById('imgFront').files[0];
+      const backFile = document.getElementById('imgBack').files[0];
+      const detailFile = document.getElementById('imgDetail').files[0];
+
+      if (!frontFile) {
+        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
+        return;
+      }
+
+      bodyContentEl.innerHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <div class="loader"></div>
+            <p style="font-size: 0.65rem; color: #6b7280; margin: 3px 0 0 0;">Generando render...</p>
+        </div>
+      `;
+
+      const garment = document.getElementById('garmentType').value;
+      const modelDesc = document.getElementById('modelType').value;
+      const globalNotes = document.getElementById('promptDetails').value;
+      const specificNotes = document.getElementById(refineInputs[index]).value;
+      const combinedNotes = `${globalNotes}${specificNotes ? 'Refinement: ' + specificNotes : ''}`;
+
+      const garmentNames = {
+        'hoodie': 'oversized hoodie',
+        'tee': 'basic polo t-shirt',
+        'jacket': 'denim jacket',
+        'pants': 'jogger pants',
+        'short': 'casual shorts',
+        'dress': 'fashion dress / skirt',
+        'suit': 'matching two-piece set outfit',
+        'baby': 'infant baby bodysuit / romper'
+      };
+
+      const selectedGarmentText = garmentNames[garment] || garment;
+
+      // Prompts blindados con la regla estricta anti-espalda-lisa incorporada
+      let basePrompts = [];
+      if (index === 0 || !establishedModelReference) {
+        basePrompts = [
+          `Professional e-commerce fashion studio photography, medium shot / waist-up framing of a ${modelDesc} wearing the exact${selectedGarmentText} shown in the reference image, paired with casual companion pants. Maintain exact color, style, and logo details. Clean minimalist setup, soft studio lighting, seamless pure solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image. CRITICAL REQUIREMENT: If the original garment reference contains a back graphic, logo, or artwork (such as a large skull or back print), you MUST faithfully project it onto the back of the garment, adapting it realistically to the fabric curves. Do not leave the back plain if a back graphic exists. Soft studio lighting, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, clean white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image matched with casual clothing, professional clean studio setting, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`
+        ];
+      } else {
+        basePrompts = [
+          ``,
+          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion studio photography, back view of the exact same model wearing the exact ${selectedGarmentText}. CRITICAL REQUIREMENT: If the original garment reference contains a back graphic or logo, you MUST faithfully project it onto the back view, adapting it realistically to the fabric curves. Seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Maintaining the exact same garment texture and color from the reference image: Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText}, clean white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same model wearing the exact ${selectedGarmentText}, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`
+        ];
+      }
+
+      let imageUrl = null;
+
+      try {
+        let contentsArray = [basePrompts[index]];
+        
+        if (index > 0 && establishedModelReference) {
+          contentsArray.push(dataURLToGenerativePart(establishedModelReference));
+        } else {
+          const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
+          contentsArray.push(await fileToGenerativePart(activeUpload));
         }
 
-        async function ejecutarPipeline() {
-            // Tu API Key fija o como la tenías configurada originalmente
-            const apiKey = "TU_API_KEY_AQUI"; 
-            const tipoPrenda = document.getElementById('tipoPrenda').value;
-            const filePrenda = document.getElementById('imagenPrenda').files[0];
-            const fileModelo = document.getElementById('imagenModelo').files[0];
-            const logArea = document.getElementById('logArea');
+        const response = await generateWithRetry(contentsArray);
+        const candidate = response.candidates?.[0];
+        const parts = candidate?.content?.parts;
 
-            if (!filePrenda || !fileModelo) {
-                alert("Por favor selecciona tanto la imagen de la prenda como la del modelo base.");
-                return;
-            }
+        if (parts) {
+          for (const part of parts) {
+            if (part.inlineData) {
+              const rawDataUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+              
+              imageUrl = await new Promise((resolve) => {
+                const img = new Image();
+                img.onload = function() {
+                  const canvas = document.createElement('canvas');
+                  canvas.width = 1880;
+                  canvas.height = 2580;
+                  const ctx = canvas.getContext('2d');
+                  ctx.imageSmoothingEnabled = true;
+                  ctx.imageSmoothingQuality = 'high';
+                  ctx.fillStyle = '#ffffff';
+                  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            logArea.innerHTML += `<br>Procesando categoría: [${tipoPrenda.toUpperCase()}]. Codificando imágenes...`;
+                  const hRatio = canvas.width / img.width;
+                  const vRatio = canvas.height / img.height;
+                  const ratio = Math.max(hRatio, vRatio);
 
-            try {
-                const base64Prenda = await convertirBase64(filePrenda);
-                const base64Modelo = await convertirBase64(fileModelo);
-
-                logArea.innerHTML += `<br>Enviando datos a Gemini 3.5...`;
-
-                // Endpoint oficial para Gemini 3.5 Flash / Pro
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
-
-                // Prompt maestro actualizado con la regla estricta anti-espalda-lisa
-                const promptMaestro = `
-Actúa como un director de arte y fotógrafo de moda profesional para e-commerce.
-Analiza la prenda de ropa original provista (frente y espalda/detalles) y la fotografía base del modelo en estudio.
-
-Instrucciones estrictas de procesamiento para la categoría (${tipoPrenda}):
-1. Integra la prenda en el modelo manteniendo fielmente el color, el corte, la caída, el volumen y la textura del tejido.
-2. REGLA CRÍTICA DE GRÁFICOS Y ESPALDAS: Examina detalladamente si la prenda original contiene un logotipo, gráfico o estampado (como el gráfico grande trasero o la calavera de referencia). Si la prenda cuenta con diseño en la espalda, DEBES proyectarlo obligatoriamente de forma exacta y nítida sobre la vista dorsal del modelo, adaptándolo de manera realista a los pliegues y curvaturas de la tela. Prohibido dejar la espalda lisa si la prenda original incluye un gráfico posterior.
-3. Si la prenda original es completamente lisa por delante o por detrás, mantén esas zonas limpias sin inventar elementos ajenos.
-4. Mantén absoluta consistencia visual de iluminación de estudio profesional y estilo en la sesión resultante.
-                `;
-
-                const payload = {
-                    contents: [
-                        {
-                            parts: [
-                                { text: promptMaestro },
-                                {
-                                    inline_data: {
-                                        mime_type: filePrenda.type,
-                                        data: base64Prenda
-                                    }
-                                },
-                                {
-                                    inline_data: {
-                                        mime_type: fileModelo.type,
-                                        data: base64Modelo
-                                    }
-                                }
-                            ]
-                        }
-                    ]
+                  const centerShiftX = (canvas.width - img.width * ratio) / 2;
+                  const centerShiftY = (canvas.height - img.height * ratio) / 2;
+                  ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
+                  resolve(canvas.toDataURL('image/jpeg', 0.98));
                 };
-
-                let response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                let data = await response.json();
-                
-                if(data.error) {
-                    logArea.innerHTML += `<br><span style="color: #EF4444;">Error de API: ${data.error.message}</span>`;
-                } else {
-                    logArea.innerHTML += `<br><span style="color: #34D399;">¡Procesamiento exitoso! Revisa la consola o respuesta del modelo.</span>`;
-                    console.log("Respuesta completa de Gemini 3.5:", data);
-                }
-
-            } catch (error) {
-                logArea.innerHTML += `<br><span style="color: #EF4444;">Error crítico: ${error.message}</span>`;
-                console.error(error);
+                img.src = rawDataUrl;
+              });
+              break;
             }
+          }
         }
-    </script>
+      } catch (error) {
+        console.warn("Aviso de red:", error);
+      }
+
+      if (!imageUrl) {
+        const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
+        await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+              const canvas = document.createElement('canvas');
+              canvas.width = 1880;
+              canvas.height = 2580;
+              const ctx = canvas.getContext('2d');
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              const hRatio = canvas.width / img.width;
+              const vRatio = canvas.height / img.height;
+              const ratio = Math.max(hRatio, vRatio);
+              const centerShiftX = (canvas.width - img.width * ratio) / 2;
+              const centerShiftY = (canvas.height - img.height * ratio) / 2;
+              ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
+              imageUrl = canvas.toDataURL('image/jpeg', 0.98);
+              resolve();
+            };
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(activeUpload);
+        });
+      }
+
+      generatedImagesData[index] = imageUrl;
+
+      if (index === 0 && imageUrl) {
+        establishedModelReference = imageUrl;
+      }
+
+      bodyContentEl.innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
+      document.getElementById(downloadBtns[index]).style.display = 'block';
+      checkAllGenerated();
+    }
+
+    function downloadCard(index) {
+      const titles = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
+      const imgData = generatedImagesData[index];
+      if (imgData) {
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = `SapiStudio_${titles[index]}_1880x2580.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+
+    window.renderSingleCard = renderSingleCard;
+
+    window.runMultiGeneration = async function() {
+      const frontFile = document.getElementById('imgFront').files[0];
+      if (!frontFile) {
+        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
+        return;
+      }
+
+      establishedModelReference = null;
+
+      document.getElementById('btnGenerateAll').textContent = "Generando set...";
+      document.getElementById('btnGenerateAll').disabled = true;
+
+      for (let i = 0; i < 4; i++) {
+        await renderSingleCard(i);
+        if (i < 3) await new Promise(resolve => setTimeout(resolve, 3000));
+      }
+
+      document.getElementById('btnGenerateAll').textContent = "Generar Set Completo (4 Ángulos)";
+      document.getElementById('btnGenerateAll').disabled = false;
+    }
+
+    function checkAllGenerated() {
+      const btnZip = document.getElementById('btnDownloadAllZip');
+      if (generatedImagesData[0] && generatedImagesData[1] && generatedImagesData[2] && generatedImagesData[3]) {
+        btnZip.style.display = 'block';
+      } else {
+        btnZip.style.display = 'none';
+      }
+    }
+
+    window.downloadAllAsZip = async function() {
+      const zip = new JSZip();
+      const titles = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
+      const btnZip = document.getElementById('btnDownloadAllZip');
+
+      btnZip.textContent = "Comprimiendo ZIP...";
+      btnZip.disabled = true;
+
+      for (let i = 0; i < 4; i++) {
+        if (generatedImagesData[i]) {
+          const base64Data = generatedImagesData[i].split(',')[1];
+          zip.file(`SapiStudio_${titles[i]}_1880x2580.jpg`, base64Data, { base64: true });
+        }
+      }
+
+      const content = await zip.generateAsync({ type: "blob" });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = "SapiStudio_Set_Completo_1880x2580.zip";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      btnZip.textContent = "📥 Descargar Set Completo (ZIP)";
+      btnZip.disabled = false;
+    }
+  </script>
 </body>
 </html>
