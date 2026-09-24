@@ -31,11 +31,11 @@
       overflow: hidden;
       z-index: 1;
     }
-    .bg-video-container video {
+  .bg-video-container video {
       width: 100vw;
       height: 100vh;
       object-fit: cover;
-      filter: contrast(120%) brightness(35%) grayscale(40%);
+      filter: contrast(110%) brightness(80%) grayscale(30%); /* Subimos el brillo al 80% */
     }
     .bg-overlay {
       position: fixed;
@@ -43,7 +43,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: linear-gradient(135deg, rgba(17, 24, 39, 0.82), rgba(11, 15, 25, 0.90));
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.35), rgba(11, 15, 25, 0.5)); /* Reducimos la opacidad del filtro oscuro */
       mix-blend-mode: multiply;
       z-index: 2;
     }
