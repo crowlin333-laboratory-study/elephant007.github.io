@@ -116,6 +116,7 @@
       outline: none;
     }
 
+    /* CONTENEDORES DE CARGA CON MINIATURA DE PREVIEW */
     .file-upload-wrapper {
       position: relative;
       background: #1f2937;
@@ -206,6 +207,7 @@
     }
     .btn-zip:hover { opacity: 0.9; }
 
+    /* LIENZO PRINCIPAL INTEGRAL CORREGIDO */
     .main-canvas {
       flex: 1;
       display: flex;
@@ -640,10 +642,9 @@
       });
     }
 
-    async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
+    async function generateWithRetry(contentsArray, retries = 3, delay = 2000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
-          // Utilizando modelo multimodal de baja latencia gemini-2.5-flash
           const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: contentsArray,
@@ -795,12 +796,12 @@
 
       for (let i = 0; i < 4; i++) {
         await renderSingleCard(i);
-        if (i < 3) await new Promise(resolve => setTimeout(resolve, 3000));
+        if (i < 3) await new Promise(resolve => setTimeout(resolve, 2000));
       }
 
       document.getElementById('btnGenerateAll').textContent = "Generar Set Completo (4 Ángulos)";
       document.getElementById('btnGenerateAll').disabled = false;
-    }
+    };
 
     function checkAllGenerated() {
       const btnZip = document.getElementById('btnDownloadAllZip');
@@ -839,7 +840,7 @@
 
       btnZip.textContent = "📥 Descargar Set Completo (ZIP)";
       btnZip.disabled = false;
-    }
+    };
 
     setModule('caps');
   </script>
