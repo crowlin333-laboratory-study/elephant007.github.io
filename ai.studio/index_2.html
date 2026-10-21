@@ -430,7 +430,6 @@
           <option value="3D raised puff embroidery" selected>Bordado 3D en Relieve (Puff)</option>
           <option value="flat high-density embroidery patch">Parche Bordado Plano</option>
           <option value="screen-printed graphic logo">Estampado / Screen Print</option>
-
           <option value="woven label patch with stitched borders">Etiqueta Tejida Cosida</option>
           <option value="blank plain minimal style">Sin Arte / Lisa</option>
         </select>
@@ -570,23 +569,15 @@
   <!-- Librería JSZip para descarga del archivo comprimido -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
-  <!-- LÓGICA DE APLICACIÓN Y RENDER -->
+  <!-- LÓGICA DE API Y CONFIG (Restaurada importación exacta) -->
   <script type="module">
     import { GoogleGenAI } from "https://esm.run/@google/genai";
-    
-    // Intenta cargar la API_KEY si config.js existe localmente
-    let API_KEY = "";
-    try {
-      const configModule = await import("./config.js");
-      API_KEY = configModule.API_KEY || "";
-    } catch (e) {
-      console.log("Modo autónomo/demostración (config.js no presente o API KEY no definida).");
-    }
+    import { API_KEY } from "./config.js";
 
-    const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
     const generatedImagesData = {};
     let establishedModelReference = null;
-    let currentModule = 'caps'; // 'caps' o 'apparel'
+    let currentModule = 'caps';
 
     window.setModule = function(moduleName) {
       currentModule = moduleName;
@@ -601,7 +592,6 @@
         controlsCaps.style.display = 'block';
         controlsApparel.style.display = 'none';
 
-        // Actualizar Etiquetas de Tarjetas
         document.getElementById('cardLabel0').textContent = "01 // FRENTE 3/4";
         document.getElementById('cardLabel1').textContent = "02 // PERFIL LATERAL";
         document.getElementById('cardLabel2').textContent = "03 // TRASERA / CIERRE";
@@ -615,7 +605,6 @@
         controlsApparel.style.display = 'block';
         controlsCaps.style.display = 'none';
 
-        // Actualizar Etiquetas de Tarjetas
         document.getElementById('cardLabel0').textContent = "01 // FRENTE STUDIO";
         document.getElementById('cardLabel1').textContent = "02 // ESPALDA STUDIO";
         document.getElementById('cardLabel2').textContent = "03 // DETALLE TEXTURA";
@@ -669,7 +658,6 @@
     }
 
     async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
-      if (!ai) throw new Error("No API Key configured");
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
           const response = await ai.models.generateContent({
@@ -683,70 +671,6 @@
           await new Promise(resolve => setTimeout(resolve, delay * attempt));
         }
       }
-    }
-
-    // Generador de simulación visual sobre canvas para pruebas locales sin API Key o fallback
-    function generateFallbackCanvas(index, sourceImgFile) {
-      return new Promise((resolve) => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 1880;
-        canvas.height = 2580;
-        const ctx = canvas.getContext('2d');
-
-        // Fondo Gradiente limpio de Estudio
-        const gradient = ctx.createRadialGradient(940, 1290, 100, 940, 1290, 1400);
-        gradient.addColorStop(0, '#ffffff');
-        gradient.addColorStop(1, '#f0f2f5');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        const renderImage = (img) => {
-          const hRatio = canvas.width / img.width;
-          const vRatio = canvas.height / img.height;
-          const ratio = Math.max(hRatio, vRatio);
-
-          const centerShiftX = (canvas.width - img.width * ratio) / 2;
-          const centerShiftY = (canvas.height - img.height * ratio) / 2;
-
-          ctx.save();
-          ctx.filter = 'contrast(102%) brightness(99%)';
-          ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
-          ctx.restore();
-
-          // Retórica fotográfica de estudio
-          ctx.fillStyle = 'rgba(17, 24, 39, 0.85)';
-          ctx.fillRect(40, canvas.height - 120, 560, 60);
-          ctx.font = 'bold 22px "Segoe UI", sans-serif';
-          ctx.fillStyle = '#d4af37';
-          const titlesCaps = ["01 // FRENTE 3/4", "02 // PERFIL LATERAL", "03 // TRASERA / CIERRE", "04 // DETALLE BORDADO"];
-          const titlesApparel = ["01 // FRENTE STUDIO", "02 // ESPALDA STUDIO", "03 // DETALLE TEXTURA", "04 // PLANO LOOK GENERAL"];
-          const title = currentModule === 'caps' ? titlesCaps[index] : titlesApparel[index];
-          ctx.fillText(`SAPI STUDIO 5.1 - ${title}`, 60, canvas.height - 82);
-
-          resolve(canvas.toDataURL('image/jpeg', 0.98));
-        };
-
-        if (sourceImgFile) {
-          const reader = new FileReader();
-          reader.onload = function(event) {
-            const img = new Image();
-            img.onload = () => renderImage(img);
-            img.src = event.target.result;
-          };
-          reader.readAsDataURL(sourceImgFile);
-        } else {
-          // Dibujo sintético si no hay imagen
-          ctx.fillStyle = '#111827';
-          ctx.beginPath();
-          ctx.arc(940, 1290, 400, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 36px "Segoe UI", sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText("SAPI STUDIO RENDER", 940, 1290);
-          resolve(canvas.toDataURL('image/jpeg', 0.98));
-        }
-      });
     }
 
     async function renderSingleCard(index) {
@@ -768,7 +692,7 @@
       bodyContentEl.innerHTML = `
         <div style="display:flex; flex-direction:column; align-items:center;">
             <div class="loader"></div>
-            <p style="font-size: 0.65rem; color: #6b7280; margin: 3px 0 0 0;">Procesando render E-commerce...</p>
+            <p style="font-size: 0.65rem; color: #6b7280; margin: 3px 0 0 0;">Generando render...</p>
         </div>
       `;
 
@@ -783,184 +707,4 @@
         const visor = document.getElementById('capVisor').value;
         const closure = document.getElementById('capClosure').value;
         const embroidery = document.getElementById('capEmbroidery').value;
-        const headform = document.getElementById('capHeadform').value;
-
-        basePrompts = [
-          `Professional e-commerce commercial headwear photography. Front 3/4 angled view of a premium ${style} with ${visor} and ${embroidery}, mounted on a ${headform}. Ultra crisp detail on fabric texture, eyelets, and top button. Soft commercial studio lighting, pure solid white background, 8k resolution, absolutely NO text, NO logos, NO watermarks. Details: ${combinedNotes}`,
-          `Professional e-commerce commercial headwear photography. Side profile view showing the curve of the ${visor}, side panel crown structure, and lateral stitching of the exact same ${style}, mounted on a ${headform}. Directional studio lighting, pure solid white background, 8k resolution, absolutely NO text, NO watermarks. Details: ${combinedNotes}`,
-          `Professional e-commerce commercial headwear photography. Rear close-up view highlighting the ${closure}, ventilation eyelets, and rear interior sweatband detailing of the exact same ${style}. Clean seamless white studio backdrop, 8k resolution, absolutely NO text, NO watermarks. Details: ${combinedNotes}`,
-          `Macro commercial product photography. Extreme close-up shot focused on the ${embroidery} details, woven cotton-twill texture, topstitching on visor, and fabric grain of the luxury cap. Soft diffused studio lighting, pure solid white background, 8k resolution, absolutely NO text, NO watermarks. Details: ${combinedNotes}`
-        ];
-      } else {
-        const garment = document.getElementById('garmentType').value;
-        const modelDesc = document.getElementById('modelTypeApparel').value;
-        const garmentNames = {
-          'hoodie': 'oversized hoodie',
-          'tee': 'basic polo t-shirt',
-          'jacket': 'denim jacket',
-          'pants': 'jogger pants'
-        };
-        const selectedGarmentText = garmentNames[garment] || garment;
-
-        basePrompts = [
-          `Professional e-commerce fashion studio photography, medium shot / waist-up framing of a ${modelDesc} wearing the exact ${selectedGarmentText} shown in the reference image, paired with casual navy blue chino pants. Clean minimalist setup, soft studio lighting, seamless pure solid white background, 8k resolution, absolutely NO text, NO labels. Details: ${combinedNotes}`,
-          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image, seamless solid white background, 8k resolution, absolutely NO text. Details: ${combinedNotes}`,
-          `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText}, clean white background, 8k resolution. Details: ${combinedNotes}`,
-          `Professional e-commerce fashion editorial photography, medium-full shot of the exact same ${modelDesc} wearing the exact ${selectedGarmentText}, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
-        ];
-      }
-
-      let imageUrl = null;
-
-      if (ai) {
-        try {
-          let contentsArray = [basePrompts[index]];
-          
-          if (index > 0 && establishedModelReference) {
-            contentsArray.push(dataURLToGenerativePart(establishedModelReference));
-          } else {
-            const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
-            contentsArray.push(await fileToGenerativePart(activeUpload));
-          }
-
-          const response = await generateWithRetry(contentsArray);
-          const candidate = response.candidates?.[0];
-          const parts = candidate?.content?.parts;
-
-          if (parts) {
-            for (const part of parts) {
-              if (part.inlineData) {
-                const rawDataUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-                
-                imageUrl = await new Promise((resolve) => {
-                  const img = new Image();
-                  img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 1880;
-                    canvas.height = 2580;
-                    const ctx = canvas.getContext('2d');
-                    ctx.imageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = 'high';
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    const hRatio = canvas.width / img.width;
-                    const vRatio = canvas.height / img.height;
-                    const ratio = Math.max(hRatio, vRatio);
-
-                    const centerShiftX = (canvas.width - img.width * ratio) / 2;
-                    const centerShiftY = (canvas.height - img.height * ratio) / 2;
-                    ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
-                    resolve(canvas.toDataURL('image/jpeg', 0.98));
-                  };
-                  img.src = rawDataUrl;
-                });
-                break;
-              }
-            }
-          }
-        } catch (error) {
-          console.warn("Aviso API Gemini (ejecutando fallback canvas):", error);
-        }
-      }
-
-      if (!imageUrl) {
-        const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
-        imageUrl = await generateFallbackCanvas(index, activeUpload);
-      }
-
-      generatedImagesData[index] = imageUrl;
-
-      if (index === 0 && imageUrl) {
-        establishedModelReference = imageUrl;
-      }
-
-      bodyContentEl.innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
-      document.getElementById(downloadBtns[index]).style.display = 'block';
-      checkAllGenerated();
-    }
-
-    function downloadCard(index) {
-      const titlesCaps = ["01_Frente_3-4", "02_Perfil_Lateral", "03_Trasera_Cierre", "04_Detalle_Bordado"];
-      const titlesApparel = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
-      const titles = currentModule === 'caps' ? titlesCaps : titlesApparel;
-      
-      const imgData = generatedImagesData[index];
-      if (imgData) {
-        const link = document.createElement('a');
-        link.href = imgData;
-        link.download = `SapiStudio_${currentModule.toUpperCase()}_${titles[index]}_1880x2580.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    }
-
-    window.renderSingleCard = renderSingleCard;
-    window.downloadCard = downloadCard;
-
-    window.runMultiGeneration = async function() {
-      const frontFile = document.getElementById('imgFront').files[0];
-      if (!frontFile) {
-        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
-        return;
-      }
-
-      establishedModelReference = null;
-
-      document.getElementById('btnGenerateAll').textContent = "Generando set...";
-      document.getElementById('btnGenerateAll').disabled = true;
-
-      for (let i = 0; i < 4; i++) {
-        await renderSingleCard(i);
-        if (i < 3) await new Promise(resolve => setTimeout(resolve, 2000));
-      }
-
-      document.getElementById('btnGenerateAll').textContent = "Generar Set Completo (4 Ángulos)";
-      document.getElementById('btnGenerateAll').disabled = false;
-    }
-
-    function checkAllGenerated() {
-      const btnZip = document.getElementById('btnDownloadAllZip');
-      if (generatedImagesData[0] && generatedImagesData[1] && generatedImagesData[2] && generatedImagesData[3]) {
-        btnZip.style.display = 'block';
-      } else {
-        btnZip.style.display = 'none';
-      }
-    }
-
-    window.downloadAllAsZip = async function() {
-      const zip = new JSZip();
-      const titlesCaps = ["01_Frente_3-4", "02_Perfil_Lateral", "03_Trasera_Cierre", "04_Detalle_Bordado"];
-      const titlesApparel = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
-      const titles = currentModule === 'caps' ? titlesCaps : titlesApparel;
-
-      const btnZip = document.getElementById('btnDownloadAllZip');
-
-      btnZip.textContent = "Comprimiendo ZIP...";
-      btnZip.disabled = true;
-
-      for (let i = 0; i < 4; i++) {
-        if (generatedImagesData[i]) {
-          const base64Data = generatedImagesData[i].split(',')[1];
-          zip.file(`SapiStudio_${currentModule.toUpperCase()}_${titles[i]}_1880x2580.jpg`, base64Data, { base64: true });
-        }
-      }
-
-      const content = await zip.generateAsync({ type: "blob" });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(content);
-      link.download = `SapiStudio_${currentModule.toUpperCase()}_Set_Completo_1880x2580.zip`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      btnZip.textContent = "📥 Descargar Set Completo (ZIP)";
-      btnZip.disabled = false;
-    }
-
-    // Inicializar módulo predeterminado (Gorras)
-    setModule('caps');
-  </script>
-</body>
-</html>
+        const headform = document.getElementById('capHeadform').value
