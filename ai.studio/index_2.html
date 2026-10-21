@@ -116,7 +116,6 @@
       outline: none;
     }
 
-    /* CONTENEDORES DE CARGA CON MINIATURA DE PREVIEW */
     .file-upload-wrapper {
       position: relative;
       background: #1f2937;
@@ -207,7 +206,6 @@
     }
     .btn-zip:hover { opacity: 0.9; }
 
-    /* LIENZO PRINCIPAL */
     .main-canvas {
       flex: 1;
       display: flex;
@@ -642,7 +640,6 @@
       });
     }
 
-    // Peticiones optimizadas apuntando al modelo dedicado
     async function generateWithRetry(contentsArray, retries = 3, delay = 2000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
@@ -782,8 +779,9 @@
       }
     }
 
+    // VINCULACIÓN CORRECTA A WINDOW SIN ERRORES DE SINTAXIS
     window.renderSingleCard = renderSingleCard;
-    window.downloadCard(index) = downloadCard;
+    window.downloadCard = downloadCard;
 
     window.runMultiGeneration = async function() {
       const frontFile = document.getElementById('imgFront').files[0];
