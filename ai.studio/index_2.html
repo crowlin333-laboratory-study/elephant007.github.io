@@ -116,7 +116,6 @@
       outline: none;
     }
 
-    /* CONTENEDORES DE CARGA CON PREVISUALIZACIÓN */
     .file-upload-wrapper {
       position: relative;
       background: #1f2937;
@@ -207,7 +206,6 @@
     }
     .btn-zip:hover { opacity: 0.9; }
 
-    /* LIENZO PRINCIPAL */
     .main-canvas {
       flex: 1;
       display: flex;
@@ -638,4 +636,200 @@
           });
         };
         reader.onerror = reject;
-        reader
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Petición corregida invocando de forma compatible las capacidades multimodales de sapistudio
+    async function generateWithRetry(contentsArray, retries = 3, delay = 2000) {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: contentsArray,
+            config: {
+              responseMimeType: "image/jpeg"
+            }
+          });
+          return response;
+        } catch (error) {
+          // Si responde error de tipo mime, hace la invocación estándar de respaldo
+          try {
+            const fallbackResponse = await ai.models.generateContent({
+              model: 'gemini-2.5-flash',
+              contents: contentsArray,
+            });
+            return fallbackResponse;
+          } catch (fallbackErr) {
+            console.warn(`Intento ${attempt} fallido:`, fallbackErr);
+            if (attempt === retries) throw fallbackErr;
+            await new Promise(resolve => setTimeout(resolve, delay * attempt));
+          }
+        }
+      }
+    }
+
+    async function renderSingleCard(index) {
+      const bodiesContent = ['bodyFront', 'bodyBack', 'bodyDetail', 'bodyLook'].map(id => document.getElementById(id).querySelector('.card-body-content'));
+      const refineInputs = ['refineFront', 'refineBack', 'refineDetail', 'refineLook'];
+      const downloadBtns = ['dlFront', 'dlBack', 'dlDetail', 'dlLook'];
+      
+      const bodyContentEl = bodiesContent[index];
+
+      const frontFile = document.getElementById('imgFront').files[0];
+      const backFile = document.getElementById('imgBack').files[0];
+      const detailFile = document.getElementById('imgDetail').files[0];
+
+      if (!frontFile) {
+        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
+        return;
+      }
+
+      bodyContentEl.innerHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <div class="loader"></div>
+            <p style="font-size: 0.65rem; color: #6b7280; margin: 3px 0 0 0;">Generando render con SapiStudio...</p>
+        </div>
+      `;
+
+      const globalNotes = document.getElementById('promptDetails').value;
+      const specificNotes = document.getElementById(refineInputs[index]).value;
+      const combinedNotes = `${globalNotes}${specificNotes ? ' Refinement: ' + specificNotes : ''}`;
+
+      let basePrompts = [];
+
+      if (currentModule === 'caps') {
+        const style = document.getElementById('capStyle').value;
+        const closure = document.getElementById('capClosure').value;
+        const headform = document.getElementById('capHeadform').value;
+
+        basePrompts = [
+          `Commercial studio product photograph of a ${style} cap. Recreate the EXACT cap from the reference image maintaining 100% fidelity to the original custom embroidery, patch design, artwork, colors and logo placement without adding or changing any graphic. Position the cap cleanly using a ${headform} setup at a 3/4 front angle. Professional soft lighting, seamless pure white background, high-resolution e-commerce catalog image, crisp focus on stitching and visor, 8k, no background clutter, no box, no text, no watermarks. Details: ${combinedNotes}`,
+          `Commercial studio product photograph showing a clean side profile shot of the EXACT cap from the input reference photo. Maintain 100% fidelity to the custom embroidery, side patch, visor curve and construction. Displayed with a ${headform}. Bright professional studio lighting, pure solid white background, 8k e-commerce photo, no background clutter, no box, no text, no watermarks. Details: ${combinedNotes}`,
+          `Commercial studio product photograph showing a rear close-up shot of the EXACT cap from the input reference photo. Highlight the ${closure} strap, eyelets, and rear panels. Seamless pure white background, studio lighting setup, 8k resolution, no background clutter, no box, no text. Details: ${combinedNotes}`,
+          `Macro product photograph extreme close-up shot focusing on the exact embroidery threads, 3D stitched artwork, and woven fabric texture of the custom cap from the input reference photo. High detail on thread texture and material grain, soft studio lighting, clean solid white background, 8k resolution, no text. Details: ${combinedNotes}`
+        ];
+      } else {
+        const garment = document.getElementById('garmentType').value;
+        const modelDesc = document.getElementById('modelTypeApparel').value;
+        basePrompts = [
+          `Professional e-commerce fashion studio photography, medium shot framing of a ${modelDesc} wearing the exact ${garment} shown in the reference image. Seamless pure solid white background, 8k resolution. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact ${garment} from the reference image, seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
+          `Macro commercial product photography, extreme close-up detail of the fabric texture of the garment from the reference image, clean white background, 8k resolution. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion editorial photography of the exact same ${modelDesc} wearing the exact ${garment}, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
+        ];
+      }
+
+      let imageUrl = null;
+
+      try {
+        const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
+        const contentsArray = [basePrompts[index], await fileToGenerativePart(activeUpload)];
+
+        const response = await generateWithRetry(contentsArray);
+        
+        const candidate = response.candidates?.[0];
+        const parts = candidate?.content?.parts;
+
+        if (parts) {
+          for (const part of parts) {
+            if (part.inlineData) {
+              const rawDataUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+              
+              imageUrl = await new Promise((resolve) => {
+                const img = new Image();
+                img.onload = function() {
+                  const canvas = document.createElement('canvas');
+                  canvas.width = 1880;
+                  canvas.height = 2580;
+                  const ctx = canvas.getContext('2d');
+                  ctx.imageSmoothingEnabled = true;
+                  ctx.imageSmoothingQuality = 'high';
+                  ctx.fillStyle = '#ffffff';
+                  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                  const hRatio = canvas.width / img.width;
+                  const vRatio = canvas.height / img.height;
+                  const ratio = Math.max(hRatio, vRatio);
+
+                  const centerShiftX = (canvas.width - img.width * ratio) / 2;
+                  const centerShiftY = (canvas.height - img.height * ratio) / 2;
+                  ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
+                  resolve(canvas.toDataURL('image/jpeg', 0.98));
+                };
+                img.src = rawDataUrl;
+              });
+              break;
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error en la ejecución:", error);
+      }
+
+      if (imageUrl) {
+        generatedImagesData[index] = imageUrl;
+        bodyContentEl.innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
+        document.getElementById(downloadBtns[index]).style.display = 'block';
+        checkAllGenerated();
+      } else {
+        bodyContentEl.innerHTML = `<p style="font-size: 0.65rem; color: #ef4444; margin: 0; text-align: center;">Error al generar render con IA.</p>`;
+      }
+    }
+
+    function downloadCard(index) {
+      const titlesCaps = ["01_Frente_3-4", "02_Perfil_Lateral", "03_Trasera_Cierre", "04_Detalle_Bordado"];
+      const titlesApparel = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
+      const titles = currentModule === 'caps' ? titlesCaps : titlesApparel;
+      
+      const imgData = generatedImagesData[index];
+      if (imgData) {
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = `SapiStudio_${currentModule.toUpperCase()}_${titles[index]}_1880x2580.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+
+    window.renderSingleCard = renderSingleCard;
+    window.downloadCard = downloadCard;
+
+    window.runMultiGeneration = async function() {
+      const frontFile = document.getElementById('imgFront').files[0];
+      if (!frontFile) {
+        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
+        return;
+      }
+
+      document.getElementById('btnGenerateAll').textContent = "Generando set...";
+      document.getElementById('btnGenerateAll').disabled = true;
+
+      for (let i = 0; i < 4; i++) {
+        await renderSingleCard(i);
+        if (i < 3) await new Promise(resolve => setTimeout(resolve, 1500));
+      }
+
+      document.getElementById('btnGenerateAll').textContent = "Generar Set Completo (4 Ángulos)";
+      document.getElementById('btnGenerateAll').disabled = false;
+    };
+
+    function checkAllGenerated() {
+      const btnZip = document.getElementById('btnDownloadAllZip');
+      if (generatedImagesData[0] && generatedImagesData[1] && generatedImagesData[2] && generatedImagesData[3]) {
+        btnZip.style.display = 'block';
+      } else {
+        btnZip.style.display = 'none';
+      }
+    }
+
+    window.downloadAllAsZip = async function() {
+      const zip = new JSZip();
+      const titlesCaps = ["01_Frente_3-4", "02_Perfil_Lateral", "03_Trasera_Cierre", "04_Detalle_Bordado"];
+      const titlesApparel = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
+      const titles = currentModule === 'caps' ? titlesCaps : titlesApparel;
+
+      const btnZip = document.getElementById('btnDownloadAllZip');
+
+      btnZip.textContent = "Comprimiendo ZIP...";
