@@ -116,7 +116,6 @@
       outline: none;
     }
 
-    /* CONTENEDORES DE CARGA DE ARCHIVO CORREGIDOS CON PREVIEW */
     .file-upload-wrapper {
       position: relative;
       background: #1f2937;
@@ -207,7 +206,6 @@
     }
     .btn-zip:hover { opacity: 0.9; }
 
-    /* LIENZO PRINCIPAL INTEGRAL */
     .main-canvas {
       flex: 1;
       display: flex;
@@ -565,7 +563,6 @@
     const generatedImagesData = {};
     let currentModule = 'caps';
 
-    // Manejo de carga de archivos con vista previa (miniatura) y texto verde
     window.handleFileChange = function(inputId, textId, wrapId, thumbId) {
       const input = document.getElementById(inputId);
       const textSpan = document.getElementById(textId);
@@ -646,8 +643,9 @@
     async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
+          // Utilizando modelo multimodal de baja latencia gemini-2.5-flash
           const response = await ai.models.generateContent({
-            model: 'gemini-3.1-flash-image',
+            model: 'gemini-2.5-flash',
             contents: contentsArray,
           });
           return response;
@@ -690,7 +688,6 @@
 
       if (currentModule === 'caps') {
         const style = document.getElementById('capStyle').value;
-        const visor = document.getElementById('capVisor').value;
         const closure = document.getElementById('capClosure').value;
         const headform = document.getElementById('capHeadform').value;
 
@@ -754,7 +751,7 @@
           }
         }
       } catch (error) {
-        console.error("Error en la llamada a la API:", error);
+        console.error("Detalle del error con la API:", error);
       }
 
       if (imageUrl) {
