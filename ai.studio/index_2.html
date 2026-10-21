@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sapi Studio - AI E-commerce Studio Pro</title>
+  <title>Sapi Studio 5.1 - AI E-commerce Studio Pro</title>
   <style>
     :root {
       --bg-color: #f8f9fa;
@@ -28,7 +28,7 @@
     }
     /* Panel lateral esbelto (fijo) */
     .sidebar {
-      width: 320px;
+      width: 330px;
       background-color: var(--panel-bg);
       padding: 20px;
       box-sizing: border-box;
@@ -58,6 +58,46 @@
       color: var(--subtext);
       margin: 2px 0 0 0;
     }
+
+    /* Modulo selector tabs */
+    .module-selector {
+      display: flex;
+      background: #1f2937;
+      border-radius: 6px;
+      padding: 3px;
+      gap: 3px;
+      border: 1px solid var(--border-dark);
+    }
+    .module-tab {
+      flex: 1;
+      padding: 7px;
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--subtext);
+      cursor: pointer;
+      border-radius: 4px;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .module-tab.active {
+      background: var(--accent);
+      color: #111827;
+      font-weight: 800;
+    }
+
+    .section-title {
+      font-size: 0.65rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-bottom: 1px solid var(--border-dark);
+      padding-bottom: 3px;
+      margin-top: 4px;
+      margin-bottom: 2px;
+      font-weight: bold;
+    }
+
     label { 
       font-size: 0.7rem; 
       color: var(--subtext); 
@@ -203,11 +243,11 @@
       letter-spacing: 0.5px;
     }
 
-    /* PADDING HACK PARA PROPORCIÓN ESTRICTA SIN CORTES */
+    /* PADDING HACK PARA PROPORCIÓN ESTRICTA SIN CORTES (1880x2580 = 137.23%) */
     .card-body-wrapper {
       position: relative;
       width: 100%;
-      padding-bottom: 137.23%; /* Proporción 1880x2580 */
+      padding-bottom: 137.23%; 
       background: #fafafa;
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -315,32 +355,104 @@
       </div>
     </div>
 
+    <!-- SELECTOR DE MÓDULO PRINCIPAL -->
     <div>
-      <label>Tipo de Prenda</label>
-      <select id="garmentType">
-        <option value="hoodie">Sudadera / Hoodie Oversize</option>
-        <option value="tee" selected>Playera / Basic Tee</option>
-        <option value="jacket">Chamarra / Denim Jacket</option>
-        <option value="pants">Pantalón / Jogger</option>
-        <option value="short">Short / Bermuda</option>
-        <option value="dress">Vestido / Falda</option>
-        <option value="suit">Conjunto (2 piezas)</option>
-        <option value="baby">Ropa de Bebé / Body</option>
-      </select>
+      <label>Módulo de Producción</label>
+      <div class="module-selector">
+        <div class="module-tab" id="tabApparel" onclick="setModule('apparel')">👕 Apparel</div>
+        <div class="module-tab active" id="tabCaps" onclick="setModule('caps')">🧢 Gorras & Caps</div>
+      </div>
     </div>
 
-    <div>
-      <label>Asignar Modelo / Maniquí</label>
-      <select id="modelType">
-        <option value="boy child model (approx 10 years old)">Niño</option>
-        <option value="girl child model (approx 10 years old)">Niña</option>
-        <option value="adult male model">Adulto Hombre</option>
-        <option value="adult female model">Adulto Mujer</option>
-      </select>
+    <!-- CONTROLES MÓDULO APPAREL -->
+    <div id="controlsApparel" style="display: none;">
+      <div>
+        <label>Tipo de Prenda</label>
+        <select id="garmentType">
+          <option value="hoodie">Sudadera / Hoodie Oversize</option>
+          <option value="tee" selected>Playera / Basic Tee</option>
+          <option value="jacket">Chamarra / Denim Jacket</option>
+          <option value="pants">Pantalón / Jogger</option>
+        </select>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <label>Asignar Modelo / Maniquí</label>
+        <select id="modelTypeApparel">
+          <option value="boy child model (approx 10 years old)">Niño</option>
+          <option value="girl child model (approx 10 years old)">Niña</option>
+          <option value="adult male model">Adulto Hombre</option>
+          <option value="adult female model">Adulto Mujer</option>
+        </select>
+      </div>
     </div>
 
+    <!-- CONTROLES MÓDULO GORRAS -->
+    <div id="controlsCaps">
+      <div class="section-title">Especificaciones de Gorra</div>
+      
+      <div>
+        <label>Silueta / Estilo</label>
+        <select id="capStyle">
+          <option value="Snapback 6-panel structured cap" selected>Snapback (6 Paneles Estructurada)</option>
+          <option value="Dad Hat un-structured low profile cap">Dad Hat (Desestructurada Blanda)</option>
+          <option value="Trucker Hat with rear mesh panels">Trucker (Malla Trasera)</option>
+          <option value="Beanie knitted winter hat">Beanie / Gorro Tejido</option>
+          <option value="Bucket hat outdoor street style">Bucket / Piluso</option>
+          <option value="5-Panel camper cap">5-Panel Camper</option>
+          <option value="Visor sports cap">Visera / Sports Visor</option>
+        </select>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <label>Visera / Peak</label>
+        <select id="capVisor">
+          <option value="flat visor visor/brim" selected>Plana / Flat Brim</option>
+          <option value="curved pre-curved visor/brim">Curva / Curved Brim</option>
+          <option value="sandwich visor with accent line">Curva con Sándwich Contrastante</option>
+        </select>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <label>Cierre Posterior / Closure</label>
+        <select id="capClosure">
+          <option value="classic plastic snapback closure" selected>Broche Plástico (Snapback)</option>
+          <option value="cloth strap with brass metal buckle">Correa de Tela con Hebilla Metálica</option>
+          <option value="premium leather strapback with metal clasp">Strapback de Piel con Hebilla</option>
+          <option value="closed fitted style Flexfit band">Fitted / Cerrada (Flexfit)</option>
+          <option value="velcro adjustable closure">Velcro Deportivo</option>
+        </select>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <label>Tipo de Arte / Aplicación</label>
+        <select id="capEmbroidery">
+          <option value="3D raised puff embroidery" selected>Bordado 3D en Relieve (Puff)</option>
+          <option value="flat high-density embroidery patch">Parche Bordado Plano</option>
+          <option value="screen-printed graphic logo">Estampado / Screen Print</option>
+
+          <option value="woven label patch with stitched borders">Etiqueta Tejida Cosida</option>
+          <option value="blank plain minimal style">Sin Arte / Lisa</option>
+        </select>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <label>Exhibición / Display</label>
+        <select id="capHeadform">
+          <option value="minimalist matte white mannequin headform" selected>Cabeza Maniquí Mate Blanco</option>
+          <option value="vintage wooden headform mannequin">Cabeza de Madera Vintage</option>
+          <option value="athletic male model wearing cap">Modelo Humano Masculino</option>
+          <option value="stylish female model wearing cap">Modelo Humano Femenino</option>
+          <option value="clean flat-lay product studio presentation">Flat Lay Studio (Lienzo Plano)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- CARGA DE ARCHIVOS FOTOGRÁFICOS -->
+    <div class="section-title">Imágenes de Referencia</div>
+
     <div>
-      <label>1. Foto Base Frente (Requerida)</label>
+      <label id="lblFront">1. Foto Base Frente (Requerida)</label>
       <div class="file-upload-wrapper" id="wrapFront">
         <span class="file-upload-text" id="textFront">📁 Cargar imagen frontal...</span>
         <input type="file" id="imgFront" accept="image/*" onchange="updateFileName('imgFront', 'textFront', 'wrapFront')">
@@ -348,7 +460,7 @@
     </div>
 
     <div>
-      <label>2. Foto Base Espalda (Opcional)</label>
+      <label id="lblBack">2. Foto Base Espalda/Cierre (Opcional)</label>
       <div class="file-upload-wrapper" id="wrapBack">
         <span class="file-upload-text" id="textBack">📁 Cargar imagen trasera...</span>
         <input type="file" id="imgBack" accept="image/*" onchange="updateFileName('imgBack', 'textBack', 'wrapBack')">
@@ -356,7 +468,7 @@
     </div>
 
     <div>
-      <label>3. Foto Detalle Textura (Opcional)</label>
+      <label id="lblDetail">3. Foto Detalle Textura/Bordado (Opcional)</label>
       <div class="file-upload-wrapper" id="wrapDetail">
         <span class="file-upload-text" id="textDetail">📁 Cargar detalle...</span>
         <input type="file" id="imgDetail" accept="image/*" onchange="updateFileName('imgDetail', 'textDetail', 'wrapDetail')">
@@ -365,7 +477,7 @@
 
     <div>
       <label>Prompt General de Acabados</label>
-      <textarea id="promptDetails" rows="2" placeholder="Ej. Algodón heavyweight..."></textarea>
+      <textarea id="promptDetails" rows="2" placeholder="Ej. Bordado 3D dorado con textil heavyweight de algodón acrílico..."></textarea>
     </div>
 
     <button id="btnGenerateAll" class="btn-action" onclick="runMultiGeneration()">Generar Set Completo (4 Ángulos)</button>
@@ -376,10 +488,10 @@
   <div class="main-canvas">
     <div class="results-grid">
       
-      <!-- TARJETA 01: FRENTE -->
+      <!-- TARJETA 01 -->
       <div class="result-card">
         <div class="card-header-row">
-          <span class="card-label">01 // FRENTE STUDIO</span>
+          <span class="card-label" id="cardLabel0">01 // FRENTE 3/4</span>
         </div>
         <div class="card-body-wrapper" id="bodyFront">
           <div class="card-body-content">
@@ -395,10 +507,10 @@
         </div>
       </div>
 
-      <!-- TARJETA 02: ESPALDA -->
+      <!-- TARJETA 02 -->
       <div class="result-card">
         <div class="card-header-row">
-          <span class="card-label">02 // ESPALDA STUDIO</span>
+          <span class="card-label" id="cardLabel1">02 // PERFIL LATERAL</span>
         </div>
         <div class="card-body-wrapper" id="bodyBack">
           <div class="card-body-content">
@@ -414,10 +526,10 @@
         </div>
       </div>
 
-      <!-- TARJETA 03: DETALLE -->
+      <!-- TARJETA 03 -->
       <div class="result-card">
         <div class="card-header-row">
-          <span class="card-label">03 // DETALLE TEXTURA</span>
+          <span class="card-label" id="cardLabel2">03 // TRASERA / CIERRE</span>
         </div>
         <div class="card-body-wrapper" id="bodyDetail">
           <div class="card-body-content">
@@ -433,10 +545,10 @@
         </div>
       </div>
 
-      <!-- TARJETA 04: LOOK GENERAL -->
+      <!-- TARJETA 04 -->
       <div class="result-card">
         <div class="card-header-row">
-          <span class="card-label">04 // PLANO LOOK GENERAL</span>
+          <span class="card-label" id="cardLabel3">04 // DETALLE BORDADO</span>
         </div>
         <div class="card-body-wrapper" id="bodyLook">
           <div class="card-body-content">
@@ -458,14 +570,61 @@
   <!-- Librería JSZip para descarga del archivo comprimido -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
-  <!-- LÓGICA DE API Y CONFIG -->
+  <!-- LÓGICA DE APLICACIÓN Y RENDER -->
   <script type="module">
     import { GoogleGenAI } from "https://esm.run/@google/genai";
-    import { API_KEY } from "./config.js";
+    
+    // Intenta cargar la API_KEY si config.js existe localmente
+    let API_KEY = "";
+    try {
+      const configModule = await import("./config.js");
+      API_KEY = configModule.API_KEY || "";
+    } catch (e) {
+      console.log("Modo autónomo/demostración (config.js no presente o API KEY no definida).");
+    }
 
-    const ai = new GoogleGenAI({ apiKey: API_KEY });
+    const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
     const generatedImagesData = {};
     let establishedModelReference = null;
+    let currentModule = 'caps'; // 'caps' o 'apparel'
+
+    window.setModule = function(moduleName) {
+      currentModule = moduleName;
+      const tabCaps = document.getElementById('tabCaps');
+      const tabApparel = document.getElementById('tabApparel');
+      const controlsCaps = document.getElementById('controlsCaps');
+      const controlsApparel = document.getElementById('controlsApparel');
+
+      if (moduleName === 'caps') {
+        tabCaps.classList.add('active');
+        tabApparel.classList.remove('active');
+        controlsCaps.style.display = 'block';
+        controlsApparel.style.display = 'none';
+
+        // Actualizar Etiquetas de Tarjetas
+        document.getElementById('cardLabel0').textContent = "01 // FRENTE 3/4";
+        document.getElementById('cardLabel1').textContent = "02 // PERFIL LATERAL";
+        document.getElementById('cardLabel2').textContent = "03 // TRASERA / CIERRE";
+        document.getElementById('cardLabel3').textContent = "04 // DETALLE BORDADO";
+
+        document.getElementById('lblBack').textContent = "2. Foto Base Espalda/Cierre (Opcional)";
+        document.getElementById('lblDetail').textContent = "3. Foto Detalle Textura/Bordado (Opcional)";
+      } else {
+        tabApparel.classList.add('active');
+        tabCaps.classList.remove('active');
+        controlsApparel.style.display = 'block';
+        controlsCaps.style.display = 'none';
+
+        // Actualizar Etiquetas de Tarjetas
+        document.getElementById('cardLabel0').textContent = "01 // FRENTE STUDIO";
+        document.getElementById('cardLabel1').textContent = "02 // ESPALDA STUDIO";
+        document.getElementById('cardLabel2').textContent = "03 // DETALLE TEXTURA";
+        document.getElementById('cardLabel3').textContent = "04 // PLANO LOOK GENERAL";
+
+        document.getElementById('lblBack').textContent = "2. Foto Base Espalda (Opcional)";
+        document.getElementById('lblDetail').textContent = "3. Foto Detalle Textura (Opcional)";
+      }
+    };
 
     window.updateFileName = function(inputId, textId, wrapId) {
       const input = document.getElementById(inputId);
@@ -510,6 +669,7 @@
     }
 
     async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
+      if (!ai) throw new Error("No API Key configured");
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
           const response = await ai.models.generateContent({
@@ -523,6 +683,70 @@
           await new Promise(resolve => setTimeout(resolve, delay * attempt));
         }
       }
+    }
+
+    // Generador de simulación visual sobre canvas para pruebas locales sin API Key o fallback
+    function generateFallbackCanvas(index, sourceImgFile) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1880;
+        canvas.height = 2580;
+        const ctx = canvas.getContext('2d');
+
+        // Fondo Gradiente limpio de Estudio
+        const gradient = ctx.createRadialGradient(940, 1290, 100, 940, 1290, 1400);
+        gradient.addColorStop(0, '#ffffff');
+        gradient.addColorStop(1, '#f0f2f5');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const renderImage = (img) => {
+          const hRatio = canvas.width / img.width;
+          const vRatio = canvas.height / img.height;
+          const ratio = Math.max(hRatio, vRatio);
+
+          const centerShiftX = (canvas.width - img.width * ratio) / 2;
+          const centerShiftY = (canvas.height - img.height * ratio) / 2;
+
+          ctx.save();
+          ctx.filter = 'contrast(102%) brightness(99%)';
+          ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
+          ctx.restore();
+
+          // Retórica fotográfica de estudio
+          ctx.fillStyle = 'rgba(17, 24, 39, 0.85)';
+          ctx.fillRect(40, canvas.height - 120, 560, 60);
+          ctx.font = 'bold 22px "Segoe UI", sans-serif';
+          ctx.fillStyle = '#d4af37';
+          const titlesCaps = ["01 // FRENTE 3/4", "02 // PERFIL LATERAL", "03 // TRASERA / CIERRE", "04 // DETALLE BORDADO"];
+          const titlesApparel = ["01 // FRENTE STUDIO", "02 // ESPALDA STUDIO", "03 // DETALLE TEXTURA", "04 // PLANO LOOK GENERAL"];
+          const title = currentModule === 'caps' ? titlesCaps[index] : titlesApparel[index];
+          ctx.fillText(`SAPI STUDIO 5.1 - ${title}`, 60, canvas.height - 82);
+
+          resolve(canvas.toDataURL('image/jpeg', 0.98));
+        };
+
+        if (sourceImgFile) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const img = new Image();
+            img.onload = () => renderImage(img);
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(sourceImgFile);
+        } else {
+          // Dibujo sintético si no hay imagen
+          ctx.fillStyle = '#111827';
+          ctx.beginPath();
+          ctx.arc(940, 1290, 400, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 36px "Segoe UI", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText("SAPI STUDIO RENDER", 940, 1290);
+          resolve(canvas.toDataURL('image/jpeg', 0.98));
+        }
+      });
     }
 
     async function renderSingleCard(index) {
@@ -544,127 +768,105 @@
       bodyContentEl.innerHTML = `
         <div style="display:flex; flex-direction:column; align-items:center;">
             <div class="loader"></div>
-            <p style="font-size: 0.65rem; color: #6b7280; margin: 3px 0 0 0;">Generando render...</p>
+            <p style="font-size: 0.65rem; color: #6b7280; margin: 3px 0 0 0;">Procesando render E-commerce...</p>
         </div>
       `;
 
-      const garment = document.getElementById('garmentType').value;
-      const modelDesc = document.getElementById('modelType').value;
       const globalNotes = document.getElementById('promptDetails').value;
       const specificNotes = document.getElementById(refineInputs[index]).value;
-      const combinedNotes = `${globalNotes}${specificNotes ? 'Refinement: ' + specificNotes : ''}`;
+      const combinedNotes = `${globalNotes}${specificNotes ? ' Refinement: ' + specificNotes : ''}`;
 
-      const garmentNames = {
-        'hoodie': 'oversized hoodie',
-        'tee': 'basic polo t-shirt',
-        'jacket': 'denim jacket',
-        'pants': 'jogger pants',
-        'short': 'casual shorts',
-        'dress': 'fashion dress / skirt',
-        'suit': 'matching two-piece set outfit',
-        'baby': 'infant baby bodysuit / romper'
-      };
-
-      const selectedGarmentText = garmentNames[garment] || garment;
-
-      // Prompts blindados con la regla estricta anti-espalda-lisa incorporada
       let basePrompts = [];
-      if (index === 0 || !establishedModelReference) {
+
+      if (currentModule === 'caps') {
+        const style = document.getElementById('capStyle').value;
+        const visor = document.getElementById('capVisor').value;
+        const closure = document.getElementById('capClosure').value;
+        const embroidery = document.getElementById('capEmbroidery').value;
+        const headform = document.getElementById('capHeadform').value;
+
         basePrompts = [
-          `Professional e-commerce fashion studio photography, medium shot / waist-up framing of a ${modelDesc} wearing the exact${selectedGarmentText} shown in the reference image, paired with casual companion pants. Maintain exact color, style, and logo details. Clean minimalist setup, soft studio lighting, seamless pure solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
-          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image. CRITICAL REQUIREMENT: If the original garment reference contains a back graphic, logo, or artwork (such as a large skull or back print), you MUST faithfully project it onto the back of the garment, adapting it realistically to the fabric curves. Do not leave the back plain if a back graphic exists. Soft studio lighting, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
-          `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, clean white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
-          `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image matched with casual clothing, professional clean studio setting, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`
+          `Professional e-commerce commercial headwear photography. Front 3/4 angled view of a premium ${style} with ${visor} and ${embroidery}, mounted on a ${headform}. Ultra crisp detail on fabric texture, eyelets, and top button. Soft commercial studio lighting, pure solid white background, 8k resolution, absolutely NO text, NO logos, NO watermarks. Details: ${combinedNotes}`,
+          `Professional e-commerce commercial headwear photography. Side profile view showing the curve of the ${visor}, side panel crown structure, and lateral stitching of the exact same ${style}, mounted on a ${headform}. Directional studio lighting, pure solid white background, 8k resolution, absolutely NO text, NO watermarks. Details: ${combinedNotes}`,
+          `Professional e-commerce commercial headwear photography. Rear close-up view highlighting the ${closure}, ventilation eyelets, and rear interior sweatband detailing of the exact same ${style}. Clean seamless white studio backdrop, 8k resolution, absolutely NO text, NO watermarks. Details: ${combinedNotes}`,
+          `Macro commercial product photography. Extreme close-up shot focused on the ${embroidery} details, woven cotton-twill texture, topstitching on visor, and fabric grain of the luxury cap. Soft diffused studio lighting, pure solid white background, 8k resolution, absolutely NO text, NO watermarks. Details: ${combinedNotes}`
         ];
       } else {
+        const garment = document.getElementById('garmentType').value;
+        const modelDesc = document.getElementById('modelTypeApparel').value;
+        const garmentNames = {
+          'hoodie': 'oversized hoodie',
+          'tee': 'basic polo t-shirt',
+          'jacket': 'denim jacket',
+          'pants': 'jogger pants'
+        };
+        const selectedGarmentText = garmentNames[garment] || garment;
+
         basePrompts = [
-          ``,
-          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion studio photography, back view of the exact same model wearing the exact ${selectedGarmentText}. CRITICAL REQUIREMENT: If the original garment reference contains a back graphic or logo, you MUST faithfully project it onto the back view, adapting it realistically to the fabric curves. Seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
-          `Maintaining the exact same garment texture and color from the reference image: Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText}, clean white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
-          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same model wearing the exact ${selectedGarmentText}, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`
+          `Professional e-commerce fashion studio photography, medium shot / waist-up framing of a ${modelDesc} wearing the exact ${selectedGarmentText} shown in the reference image, paired with casual navy blue chino pants. Clean minimalist setup, soft studio lighting, seamless pure solid white background, 8k resolution, absolutely NO text, NO labels. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact ${selectedGarmentText} from the reference image, seamless solid white background, 8k resolution, absolutely NO text. Details: ${combinedNotes}`,
+          `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText}, clean white background, 8k resolution. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion editorial photography, medium-full shot of the exact same ${modelDesc} wearing the exact ${selectedGarmentText}, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
         ];
       }
 
       let imageUrl = null;
 
-      try {
-        let contentsArray = [basePrompts[index]];
-        
-        if (index > 0 && establishedModelReference) {
-          contentsArray.push(dataURLToGenerativePart(establishedModelReference));
-        } else {
-          const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
-          contentsArray.push(await fileToGenerativePart(activeUpload));
-        }
+      if (ai) {
+        try {
+          let contentsArray = [basePrompts[index]];
+          
+          if (index > 0 && establishedModelReference) {
+            contentsArray.push(dataURLToGenerativePart(establishedModelReference));
+          } else {
+            const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
+            contentsArray.push(await fileToGenerativePart(activeUpload));
+          }
 
-        const response = await generateWithRetry(contentsArray);
-        const candidate = response.candidates?.[0];
-        const parts = candidate?.content?.parts;
+          const response = await generateWithRetry(contentsArray);
+          const candidate = response.candidates?.[0];
+          const parts = candidate?.content?.parts;
 
-        if (parts) {
-          for (const part of parts) {
-            if (part.inlineData) {
-              const rawDataUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-              
-              imageUrl = await new Promise((resolve) => {
-                const img = new Image();
-                img.onload = function() {
-                  const canvas = document.createElement('canvas');
-                  canvas.width = 1880;
-                  canvas.height = 2580;
-                  const ctx = canvas.getContext('2d');
-                  ctx.imageSmoothingEnabled = true;
-                  ctx.imageSmoothingQuality = 'high';
-                  ctx.fillStyle = '#ffffff';
-                  ctx.fillRect(0, 0, canvas.width, canvas.height);
+          if (parts) {
+            for (const part of parts) {
+              if (part.inlineData) {
+                const rawDataUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                
+                imageUrl = await new Promise((resolve) => {
+                  const img = new Image();
+                  img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 1880;
+                    canvas.height = 2580;
+                    const ctx = canvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                  const hRatio = canvas.width / img.width;
-                  const vRatio = canvas.height / img.height;
-                  const ratio = Math.max(hRatio, vRatio);
+                    const hRatio = canvas.width / img.width;
+                    const vRatio = canvas.height / img.height;
+                    const ratio = Math.max(hRatio, vRatio);
 
-                  const centerShiftX = (canvas.width - img.width * ratio) / 2;
-                  const centerShiftY = (canvas.height - img.height * ratio) / 2;
-                  ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
-                  resolve(canvas.toDataURL('image/jpeg', 0.98));
-                };
-                img.src = rawDataUrl;
-              });
-              break;
+                    const centerShiftX = (canvas.width - img.width * ratio) / 2;
+                    const centerShiftY = (canvas.height - img.height * ratio) / 2;
+                    ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
+                    resolve(canvas.toDataURL('image/jpeg', 0.98));
+                  };
+                  img.src = rawDataUrl;
+                });
+                break;
+              }
             }
           }
+        } catch (error) {
+          console.warn("Aviso API Gemini (ejecutando fallback canvas):", error);
         }
-      } catch (error) {
-        console.warn("Aviso de red:", error);
       }
 
       if (!imageUrl) {
         const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
-        await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = function(event) {
-            const img = new Image();
-            img.onload = function() {
-              const canvas = document.createElement('canvas');
-              canvas.width = 1880;
-              canvas.height = 2580;
-              const ctx = canvas.getContext('2d');
-              ctx.imageSmoothingEnabled = true;
-              ctx.imageSmoothingQuality = 'high';
-              ctx.fillStyle = '#ffffff';
-              ctx.fillRect(0, 0, canvas.width, canvas.height);
-              const hRatio = canvas.width / img.width;
-              const vRatio = canvas.height / img.height;
-              const ratio = Math.max(hRatio, vRatio);
-              const centerShiftX = (canvas.width - img.width * ratio) / 2;
-              const centerShiftY = (canvas.height - img.height * ratio) / 2;
-              ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
-              imageUrl = canvas.toDataURL('image/jpeg', 0.98);
-              resolve();
-            };
-            img.src = event.target.result;
-          };
-          reader.readAsDataURL(activeUpload);
-        });
+        imageUrl = await generateFallbackCanvas(index, activeUpload);
       }
 
       generatedImagesData[index] = imageUrl;
@@ -679,12 +881,15 @@
     }
 
     function downloadCard(index) {
-      const titles = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
+      const titlesCaps = ["01_Frente_3-4", "02_Perfil_Lateral", "03_Trasera_Cierre", "04_Detalle_Bordado"];
+      const titlesApparel = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
+      const titles = currentModule === 'caps' ? titlesCaps : titlesApparel;
+      
       const imgData = generatedImagesData[index];
       if (imgData) {
         const link = document.createElement('a');
         link.href = imgData;
-        link.download = `SapiStudio_${titles[index]}_1880x2580.jpg`;
+        link.download = `SapiStudio_${currentModule.toUpperCase()}_${titles[index]}_1880x2580.jpg`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -692,6 +897,7 @@
     }
 
     window.renderSingleCard = renderSingleCard;
+    window.downloadCard = downloadCard;
 
     window.runMultiGeneration = async function() {
       const frontFile = document.getElementById('imgFront').files[0];
@@ -707,7 +913,7 @@
 
       for (let i = 0; i < 4; i++) {
         await renderSingleCard(i);
-        if (i < 3) await new Promise(resolve => setTimeout(resolve, 3000));
+        if (i < 3) await new Promise(resolve => setTimeout(resolve, 2000));
       }
 
       document.getElementById('btnGenerateAll').textContent = "Generar Set Completo (4 Ángulos)";
@@ -725,7 +931,10 @@
 
     window.downloadAllAsZip = async function() {
       const zip = new JSZip();
-      const titles = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
+      const titlesCaps = ["01_Frente_3-4", "02_Perfil_Lateral", "03_Trasera_Cierre", "04_Detalle_Bordado"];
+      const titlesApparel = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
+      const titles = currentModule === 'caps' ? titlesCaps : titlesApparel;
+
       const btnZip = document.getElementById('btnDownloadAllZip');
 
       btnZip.textContent = "Comprimiendo ZIP...";
@@ -734,14 +943,14 @@
       for (let i = 0; i < 4; i++) {
         if (generatedImagesData[i]) {
           const base64Data = generatedImagesData[i].split(',')[1];
-          zip.file(`SapiStudio_${titles[i]}_1880x2580.jpg`, base64Data, { base64: true });
+          zip.file(`SapiStudio_${currentModule.toUpperCase()}_${titles[i]}_1880x2580.jpg`, base64Data, { base64: true });
         }
       }
 
       const content = await zip.generateAsync({ type: "blob" });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
-      link.download = "SapiStudio_Set_Completo_1880x2580.zip";
+      link.download = `SapiStudio_${currentModule.toUpperCase()}_Set_Completo_1880x2580.zip`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -749,6 +958,9 @@
       btnZip.textContent = "📥 Descargar Set Completo (ZIP)";
       btnZip.disabled = false;
     }
+
+    // Inicializar módulo predeterminado (Gorras)
+    setModule('caps');
   </script>
 </body>
 </html>
