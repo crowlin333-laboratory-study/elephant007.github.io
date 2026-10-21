@@ -408,24 +408,12 @@
       </div>
 
       <div style="margin-top: 8px;">
-        <label>Tipo de Arte / Aplicación</label>
-        <select id="capEmbroidery">
-          <option value="yellow smiley face 3D raised puff embroidery" selected>Bordado Carita Feliz 3D</option>
-          <option value="flat high-density embroidery patch">Parche Bordado Plano</option>
-          <option value="screen-printed graphic logo">Estampado / Screen Print</option>
-          <option value="woven label patch with stitched borders">Etiqueta Tejida Cosida</option>
-          <option value="blank plain minimal style">Sin Arte / Lisa</option>
-        </select>
-      </div>
-
-      <div style="margin-top: 8px;">
-        <label>Exhibición / Display</label>
+        <label>Exhibición / Presentation</label>
         <select id="capHeadform">
-          <option value="minimalist matte white mannequin headform" selected>Cabeza Maniquí Mate Blanco</option>
-          <option value="vintage wooden headform mannequin">Cabeza de Madera Vintage</option>
-          <option value="athletic male model wearing cap">Modelo Humano Masculino</option>
-          <option value="stylish female model wearing cap">Modelo Humano Femenino</option>
-          <option value="clean flat-lay product studio presentation">Flat Lay Studio (Lienzo Plano)</option>
+          <option value="flat-lay product studio presentation on pure seamless white surface" selected>Flat Lay Studio (Lienzo Plano)</option>
+          <option value="minimalist matte white mannequin headform">Cabeza Maniquí Mate Blanco</option>
+          <option value="athletic male model wearing cap waist-up framing">Modelo Humano Masculino</option>
+          <option value="stylish female model wearing cap waist-up framing">Modelo Humano Femenino</option>
         </select>
       </div>
     </div>
@@ -457,8 +445,8 @@
     </div>
 
     <div>
-      <label>Prompt General de Acabados</label>
-      <textarea id="promptDetails" rows="2" placeholder="Gorra negra con bordado de carita feliz amarilla..."></textarea>
+      <label>Notas de Acabados (Opcional)</label>
+      <textarea id="promptDetails" rows="2" placeholder="Mantener color negro profundo, bordado 3D en altorrelieve de alta densidad..."></textarea>
     </div>
 
     <button id="btnGenerateAll" class="btn-action" onclick="runMultiGeneration()">Generar Set Completo (4 Ángulos)</button>
@@ -488,3 +476,206 @@
       <div class="result-card">
         <div class="card-header-row">
           <span class="card-label" id="cardLabel1">02 // PERFIL LATERAL</span>
+        </div>
+        <div class="card-body-wrapper" id="bodyBack">
+          <div class="card-body-content">
+            <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
+          </div>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineBack" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(1)">✨ Generar</button>
+            <button class="btn-card-download" id="dlBack" onclick="downloadCard(1)">📥 Descargar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-card">
+        <div class="card-header-row">
+          <span class="card-label" id="cardLabel2">03 // TRASERA / CIERRE</span>
+        </div>
+        <div class="card-body-wrapper" id="bodyDetail">
+          <div class="card-body-content">
+            <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
+          </div>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineDetail" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(2)">✨ Generar</button>
+            <button class="btn-card-download" id="dlDetail" onclick="downloadCard(2)">📥 Descargar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-card">
+        <div class="card-header-row">
+          <span class="card-label" id="cardLabel3">04 // DETALLE BORDADO</span>
+        </div>
+        <div class="card-body-wrapper" id="bodyLook">
+          <div class="card-body-content">
+             <p style="font-size: 0.65rem; color: var(--subtext); margin: 0; text-align: center; padding: 0 10px;">Esperando generación...</p>
+          </div>
+        </div>
+        <div class="card-footer-refine">
+          <input type="text" id="refineLook" class="card-refine-input" placeholder="Ajustar prompt específico...">
+          <div class="card-actions-row">
+            <button class="btn-card-render" onclick="renderSingleCard(3)">✨ Generar</button>
+            <button class="btn-card-download" id="dlLook" onclick="downloadCard(3)">📥 Descargar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  
+  <script type="module">
+    import { GoogleGenAI } from "https://esm.run/@google/genai";
+    import { API_KEY } from "./config.js";
+
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
+    const generatedImagesData = {};
+    let currentModule = 'caps';
+
+    window.updateFileName = function(inputId, textId, wrapId) {
+      const input = document.getElementById(inputId);
+      const textSpan = document.getElementById(textId);
+      const wrapper = document.getElementById(wrapId);
+
+      if (input && input.files && input.files.length > 0) {
+        const fileName = input.files[0].name;
+        textSpan.textContent = `✔ ${fileName}`;
+        wrapper.classList.add('has-file');
+      } else if (wrapper) {
+        wrapper.classList.remove('has-file');
+      }
+    };
+
+    window.setModule = function(moduleName) {
+      currentModule = moduleName;
+      const tabCaps = document.getElementById('tabCaps');
+      const tabApparel = document.getElementById('tabApparel');
+      const controlsCaps = document.getElementById('controlsCaps');
+      const controlsApparel = document.getElementById('controlsApparel');
+
+      if (moduleName === 'caps') {
+        tabCaps.classList.add('active');
+        tabApparel.classList.remove('active');
+        controlsCaps.style.display = 'block';
+        controlsApparel.style.display = 'none';
+
+        document.getElementById('cardLabel0').textContent = "01 // FRENTE 3/4";
+        document.getElementById('cardLabel1').textContent = "02 // PERFIL LATERAL";
+        document.getElementById('cardLabel2').textContent = "03 // TRASERA / CIERRE";
+        document.getElementById('cardLabel3').textContent = "04 // DETALLE BORDADO";
+
+        document.getElementById('lblBack').textContent = "2. Foto Base Espalda/Cierre (Opcional)";
+        document.getElementById('lblDetail').textContent = "3. Foto Detalle Textura/Bordado (Opcional)";
+      } else {
+        tabApparel.classList.add('active');
+        tabCaps.classList.remove('active');
+        controlsApparel.style.display = 'block';
+        controlsCaps.style.display = 'none';
+
+        document.getElementById('cardLabel0').textContent = "01 // FRENTE STUDIO";
+        document.getElementById('cardLabel1').textContent = "02 // ESPALDA STUDIO";
+        document.getElementById('cardLabel2').textContent = "03 // DETALLE TEXTURA";
+        document.getElementById('cardLabel3').textContent = "04 // PLANO LOOK GENERAL";
+
+        document.getElementById('lblBack').textContent = "2. Foto Base Espalda (Opcional)";
+        document.getElementById('lblDetail').textContent = "3. Foto Detalle Textura (Opcional)";
+      }
+    };
+
+    async function fileToGenerativePart(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Data = reader.result.split(',')[1];
+          resolve({
+            inlineData: {
+              data: base64Data,
+              mimeType: file.type
+            },
+          });
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          const response = await ai.models.generateContent({
+            model: 'gemini-3.1-flash-image',
+            contents: contentsArray,
+          });
+          return response;
+        } catch (error) {
+          console.warn(`Intento ${attempt} fallido.`, error);
+          if (attempt === retries) throw error;
+          await new Promise(resolve => setTimeout(resolve, delay * attempt));
+        }
+      }
+    }
+
+    async function renderSingleCard(index) {
+      const bodiesContent = ['bodyFront', 'bodyBack', 'bodyDetail', 'bodyLook'].map(id => document.getElementById(id).querySelector('.card-body-content'));
+      const refineInputs = ['refineFront', 'refineBack', 'refineDetail', 'refineLook'];
+      const downloadBtns = ['dlFront', 'dlBack', 'dlDetail', 'dlLook'];
+      
+      const bodyContentEl = bodiesContent[index];
+
+      const frontFile = document.getElementById('imgFront').files[0];
+      const backFile = document.getElementById('imgBack').files[0];
+      const detailFile = document.getElementById('imgDetail').files[0];
+
+      if (!frontFile) {
+        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
+        return;
+      }
+
+      bodyContentEl.innerHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <div class="loader"></div>
+            <p style="font-size: 0.65rem; color: #6b7280; margin: 3px 0 0 0;">Generando render con IA...</p>
+        </div>
+      `;
+
+      const globalNotes = document.getElementById('promptDetails').value;
+      const specificNotes = document.getElementById(refineInputs[index]).value;
+      const combinedNotes = `${globalNotes}${specificNotes ? ' Refinement: ' + specificNotes : ''}`;
+
+      let basePrompts = [];
+
+      if (currentModule === 'caps') {
+        const style = document.getElementById('capStyle').value;
+        const visor = document.getElementById('capVisor').value;
+        const closure = document.getElementById('capClosure').value;
+        const headform = document.getElementById('capHeadform').value;
+
+        basePrompts = [
+          `Commercial studio product photograph of a ${style} cap. Recreate the EXACT cap from the reference image maintaining 100% fidelity to the original custom embroidery, patch design, artwork, colors and logo placement without adding or changing any graphic. Position the cap cleanly using a ${headform} setup at a 3/4 front angle. Professional soft lighting, seamless pure white background, high-resolution e-commerce catalog image, crisp focus on stitching and visor, 8k, no background clutter, no box, no text, no watermarks. Details: ${combinedNotes}`,
+          `Commercial studio product photograph showing a clean side profile shot of the EXACT cap from the input reference photo. Maintain 100% fidelity to the custom embroidery, side patch, visor curve and construction. Displayed with a ${headform}. Bright professional studio lighting, pure solid white background, 8k e-commerce photo, no background clutter, no box, no text, no watermarks. Details: ${combinedNotes}`,
+          `Commercial studio product photograph showing a rear close-up shot of the EXACT cap from the input reference photo. Highlight the ${closure} strap, eyelets, and rear panels. Seamless pure white background, studio lighting setup, 8k resolution, no background clutter, no box, no text. Details: ${combinedNotes}`,
+          `Macro product photograph extreme close-up shot focusing on the exact embroidery threads, 3D stitched artwork, and woven fabric texture of the custom cap from the input reference photo. High detail on thread texture and material grain, soft studio lighting, clean solid white background, 8k resolution, no text. Details: ${combinedNotes}`
+        ];
+      } else {
+        const garment = document.getElementById('garmentType').value;
+        const modelDesc = document.getElementById('modelTypeApparel').value;
+        basePrompts = [
+          `Professional e-commerce fashion studio photography, medium shot framing of a ${modelDesc} wearing the exact ${garment} shown in the reference image. Seamless pure solid white background, 8k resolution. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact ${garment} from the reference image, seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
+          `Macro commercial product photography, extreme close-up detail of the fabric texture of the garment from the reference image, clean white background, 8k resolution. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion editorial photography of the exact same ${modelDesc} wearing the exact ${garment}, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
+        ];
+      }
+
+      let imageUrl = null;
+
+      try {
+        const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
+        const contentsArray = [basePrompts[index], await fileToGenerativePart(activeUpload
