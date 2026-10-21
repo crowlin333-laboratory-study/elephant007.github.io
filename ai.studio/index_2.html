@@ -27,7 +27,7 @@
       overflow: hidden;
     }
     .sidebar {
-      width: 320px;
+      width: 330px;
       background-color: var(--panel-bg);
       padding: 20px;
       box-sizing: border-box;
@@ -115,6 +115,8 @@
       border-color: var(--accent);
       outline: none;
     }
+
+    /* CONTENEDORES DE CARGA DE ARCHIVO CORREGIDOS CON PREVIEW */
     .file-upload-wrapper {
       position: relative;
       background: #1f2937;
@@ -124,6 +126,12 @@
       text-align: center;
       cursor: pointer;
       transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      box-sizing: border-box;
     }
     .file-upload-wrapper:hover {
       border-color: var(--accent);
@@ -137,6 +145,7 @@
       height: 100%;
       opacity: 0;
       cursor: pointer;
+      z-index: 5;
     }
     .file-upload-text {
       font-size: 0.75rem;
@@ -145,15 +154,25 @@
       overflow: hidden;
       text-overflow: ellipsis;
       display: block;
+      pointer-events: none;
     }
     .file-upload-wrapper.has-file {
       border-color: #059669;
-      background: rgba(5, 150, 105, 0.1);
+      background: rgba(5, 150, 105, 0.15);
     }
     .file-upload-wrapper.has-file .file-upload-text {
       color: #34d399;
       font-weight: 600;
     }
+    .upload-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      object-fit: cover;
+      display: none;
+      border: 1px solid #059669;
+    }
+
     .btn-action {
       background: linear-gradient(135deg, #e5c158, #b89728);
       color: #121214;
@@ -427,24 +446,27 @@
     <div>
       <label id="lblFront">1. Foto Base Frente (Requerida)</label>
       <div class="file-upload-wrapper" id="wrapFront">
+        <img id="thumbFront" class="upload-thumb" alt="Preview Frente">
         <span class="file-upload-text" id="textFront">📁 Cargar imagen frontal...</span>
-        <input type="file" id="imgFront" accept="image/*" onchange="updateFileName('imgFront', 'textFront', 'wrapFront')">
+        <input type="file" id="imgFront" accept="image/*" onchange="handleFileChange('imgFront', 'textFront', 'wrapFront', 'thumbFront')">
       </div>
     </div>
 
     <div>
       <label id="lblBack">2. Foto Base Espalda/Cierre (Opcional)</label>
       <div class="file-upload-wrapper" id="wrapBack">
+        <img id="thumbBack" class="upload-thumb" alt="Preview Espalda">
         <span class="file-upload-text" id="textBack">📁 Cargar imagen trasera...</span>
-        <input type="file" id="imgBack" accept="image/*" onchange="updateFileName('imgBack', 'textBack', 'wrapBack')">
+        <input type="file" id="imgBack" accept="image/*" onchange="handleFileChange('imgBack', 'textBack', 'wrapBack', 'thumbBack')">
       </div>
     </div>
 
     <div>
       <label id="lblDetail">3. Foto Detalle Textura/Bordado (Opcional)</label>
       <div class="file-upload-wrapper" id="wrapDetail">
+        <img id="thumbDetail" class="upload-thumb" alt="Preview Detalle">
         <span class="file-upload-text" id="textDetail">📁 Cargar detalle...</span>
-        <input type="file" id="imgDetail" accept="image/*" onchange="updateFileName('imgDetail', 'textDetail', 'wrapDetail')">
+        <input type="file" id="imgDetail" accept="image/*" onchange="handleFileChange('imgDetail', 'textDetail', 'wrapDetail', 'thumbDetail')">
       </div>
     </div>
 
@@ -543,17 +565,28 @@
     const generatedImagesData = {};
     let currentModule = 'caps';
 
-    window.updateFileName = function(inputId, textId, wrapId) {
+    // Manejo de carga de archivos con vista previa (miniatura) y texto verde
+    window.handleFileChange = function(inputId, textId, wrapId, thumbId) {
       const input = document.getElementById(inputId);
       const textSpan = document.getElementById(textId);
       const wrapper = document.getElementById(wrapId);
+      const thumb = document.getElementById(thumbId);
 
-      if (input && input.files && input.files.length > 0) {
-        const fileName = input.files[0].name;
-        textSpan.textContent = `✔ ${fileName}`;
+      if (input && input.files && input.files[0]) {
+        const file = input.files[0];
+        textSpan.textContent = `✔ ${file.name}`;
         wrapper.classList.add('has-file');
-      } else if (wrapper) {
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          thumb.src = e.target.result;
+          thumb.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
         wrapper.classList.remove('has-file');
+        thumb.style.display = 'none';
+        thumb.src = '';
       }
     };
 
