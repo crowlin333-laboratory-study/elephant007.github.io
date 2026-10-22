@@ -458,12 +458,10 @@
   <!-- Librería JSZip para descarga del archivo comprimido -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
-  <!-- LÓGICA DE API Y CONFIG -->
+  <!-- LÓGICA DE API Y CONFIG (FETCH DIRECTO ANTI-429 CORREGIDO) -->
   <script type="module">
-    import { GoogleGenAI } from "https://esm.run/@google/genai";
     import { API_KEY } from "./config.js";
 
-    const ai = new GoogleGenAI({ apiKey: API_KEY });
     const generatedImagesData = {};
     let establishedModelReference = null;
 
@@ -509,16 +507,53 @@
       };
     }
 
-    async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
+    // Método con fetch directo y reintentos (API Key concatenada correctamente)
+    async function generateWithRetry(contentsArray, retries = 3, delay = 4000) {
+      const endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + API_KEY;
+      
+      const payload = {
+        contents: [
+          {
+            parts: contentsArray.map(item => {
+              if (typeof item === 'string') {
+                return { text: item };
+              } else if (item.inlineData) {
+                return {
+                  inlineData: {
+                    mimeType: item.inlineData.mimeType,
+                    data: item.inlineData.data
+                  }
+                };
+              }
+              return { text: String(item) };
+            })
+          }
+        ]
+      };
+
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
-          const response = await ai.models.generateContent({
-            model: 'gemini-3.1-flash-image',
-            contents: contentsArray,
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
           });
-          return response;
+
+          if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(errData.error?.message || `Error HTTP: \${res.status}`);
+          }
+
+          const data = await res.json();
+          return {
+            candidates: [{
+              content: {
+                parts: data.candidates[0].content.parts
+              }
+            }]
+          };
         } catch (error) {
-          console.warn(`Intento \${attempt} fallido.`, error);
+          console.warn(`Intento \${attempt} fallido:`, error.message);
           if (attempt === retries) throw error;
           await new Promise(resolve => setTimeout(resolve, delay * attempt));
         }
@@ -567,7 +602,6 @@
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
-      // Prompts blindados con la regla estricta anti-espalda-lisa incorporada
       let basePrompts = [];
       if (index === 0 || !establishedModelReference) {
         basePrompts = [
@@ -692,6 +726,7 @@
     }
 
     window.renderSingleCard = renderSingleCard;
+    window.downloadCard = downloadCard;
 
     window.runMultiGeneration = async function() {
       const frontFile = document.getElementById('imgFront').files[0];
