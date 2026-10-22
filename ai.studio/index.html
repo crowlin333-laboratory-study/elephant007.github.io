@@ -505,16 +505,16 @@
       };
     }
 
-    async function generateWithRetry(contentsArray, retries = 3, delay = 3000) {
+   async function generateWithRetry(contentsArray, retries = 5, delay = 8000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
           const response = await ai.models.generateContent({
-           model: 'gemini-3.5-flash',
+            model: 'gemini-3.6-flash',
             contents: contentsArray,
           });
           return response;
         } catch (error) {
-          console.warn(`Intento ${attempt} fallido.`, error);
+          console.warn(`Intento ${attempt} en espera por límite de región (429). Reintentando en ${delay/1000}s...`);
           if (attempt === retries) throw error;
           await new Promise(resolve => setTimeout(resolve, delay * attempt));
         }
