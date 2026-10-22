@@ -26,7 +26,6 @@
       height: 100vh;
       overflow: hidden;
     }
-    /* Panel lateral esbelto (fijo) */
     .sidebar {
       width: 320px;
       background-color: var(--panel-bg);
@@ -156,7 +155,6 @@
     }
     .btn-zip:hover { opacity: 0.9; }
 
-    /* LIENZO PRINCIPAL INTEGRAL */
     .main-canvas {
       flex: 1;
       display: flex;
@@ -202,12 +200,10 @@
       font-weight: 600;
       letter-spacing: 0.5px;
     }
-
-    /* PADDING HACK PARA PROPORCIÓN ESTRICTA SIN CORTES */
     .card-body-wrapper {
       position: relative;
       width: 100%;
-      padding-bottom: 137.23%; /* Proporción 1880x2580 */
+      padding-bottom: 137.23%;
       background: #fafafa;
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -229,7 +225,6 @@
       object-fit: cover;
       display: block;
     }
-
     .card-footer-refine {
       margin-top: 6px;
       display: flex;
@@ -286,7 +281,6 @@
       transition: opacity 0.2s;
     }
     .btn-card-download:hover { opacity: 0.9; }
-
     .loader {
       border: 3px solid #e5e7eb;
       border-top: 3px solid var(--accent);
@@ -301,7 +295,6 @@
 </head>
 <body>
 
-  <!-- PANEL LATERAL CONFIGURADOR -->
   <div class="sidebar">
     <div class="brand-header-container">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
@@ -372,7 +365,6 @@
     <button id="btnDownloadAllZip" class="btn-zip" onclick="downloadAllAsZip()">📥 Descargar Set Completo (ZIP)</button>
   </div>
 
-  <!-- LIENZO PRINCIPAL (Grid horizontal 4x1) -->
   <div class="main-canvas">
     <div class="results-grid">
       
@@ -455,13 +447,13 @@
     </div>
   </div>
 
-  <!-- Librería JSZip para descarga del archivo comprimido -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
-  <!-- LÓGICA DE API Y CONFIG (FETCH DIRECTO ANTI-429 CORREGIDO) -->
   <script type="module">
+    import { GoogleGenAI } from "https://esm.run/@google/genai";
     import { API_KEY } from "./config.js";
 
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
     const generatedImagesData = {};
     let establishedModelReference = null;
 
@@ -507,53 +499,17 @@
       };
     }
 
-    // Método con fetch directo y reintentos (API Key concatenada correctamente)
-    async function generateWithRetry(contentsArray, retries = 3, delay = 4000) {
-      const endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + API_KEY;
-      
-      const payload = {
-        contents: [
-          {
-            parts: contentsArray.map(item => {
-              if (typeof item === 'string') {
-                return { text: item };
-              } else if (item.inlineData) {
-                return {
-                  inlineData: {
-                    mimeType: item.inlineData.mimeType,
-                    data: item.inlineData.data
-                  }
-                };
-              }
-              return { text: String(item) };
-            })
-          }
-        ]
-      };
-
+    // Usando el SDK oficial con gemini-3.1-flash-image y reintentos con pausa larga para evitar 429
+    async function generateWithRetry(contentsArray, retries = 3, delay = 6000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
-          const res = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+          const response = await ai.models.generateContent({
+            model: 'gemini-3.1-flash-image',
+            contents: contentsArray,
           });
-
-          if (!res.ok) {
-            const errData = await res.json();
-            throw new Error(errData.error?.message || `Error HTTP: \${res.status}`);
-          }
-
-          const data = await res.json();
-          return {
-            candidates: [{
-              content: {
-                parts: data.candidates[0].content.parts
-              }
-            }]
-          };
+          return response;
         } catch (error) {
-          console.warn(`Intento \${attempt} fallido:`, error.message);
+          console.warn(`Intento \${attempt} fallido por límite de cuota (429/RateLimit). Reintentando en \${delay * attempt / 1000}s...`, error);
           if (attempt === retries) throw error;
           await new Promise(resolve => setTimeout(resolve, delay * attempt));
         }
@@ -668,7 +624,7 @@
           }
         }
       } catch (error) {
-        console.warn("Aviso de red:", error);
+        console.warn("Aviso de red, usando respaldo local:", error);
       }
 
       if (!imageUrl) {
@@ -742,7 +698,7 @@
 
       for (let i = 0; i < 4; i++) {
         await renderSingleCard(i);
-        if (i < 3) await new Promise(resolve => setTimeout(resolve, 3000));
+        if (i < 3) await new Promise(resolve => setTimeout(resolve, 8000)); // 8 segundos de pausa entre cada tarjeta para cuidar la cuota
       }
 
       document.getElementById('btnGenerateAll').textContent = "Generar Set Completo (4 Ángulos)";
