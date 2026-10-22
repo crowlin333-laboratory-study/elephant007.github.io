@@ -450,10 +450,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
   <script type="module">
-    import { GoogleGenAI } from "https://esm.run/@google/genai";
     import { API_KEY } from "./config.js";
 
-    const ai = new GoogleGenAI({ apiKey: API_KEY });
     const generatedImagesData = {};
     let establishedModelReference = null;
 
@@ -499,17 +497,47 @@
       };
     }
 
-    // Usando el SDK oficial con gemini-3.1-flash-image y reintentos con pausa larga para evitar 429
-    async function generateWithRetry(contentsArray, retries = 3, delay = 6000) {
+    // Petición REST nativa sin dependencias externas (cero avisos CSP)
+    async function generateWithRetry(contentsArray, retries = 3, delay = 5000) {
+      const endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=" + API_KEY;
+      
+      const payload = {
+        contents: [
+          {
+            parts: contentsArray.map(item => {
+              if (typeof item === 'string') {
+                return { text: item };
+              } else if (item.inlineData) {
+                return {
+                  inlineData: {
+                    mimeType: item.inlineData.mimeType,
+                    data: item.inlineData.data
+                  }
+                };
+              }
+              return { text: String(item) };
+            })
+          }
+        ]
+      };
+
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
-          const response = await ai.models.generateContent({
-            model: 'gemini-3.1-flash-image',
-            contents: contentsArray,
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
           });
-          return response;
+
+          if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(errData.error?.message || `Error HTTP: \${res.status}`);
+          }
+
+          const data = await res.json();
+          return data;
         } catch (error) {
-          console.warn(`Intento \${attempt} fallido por límite de cuota (429/RateLimit). Reintentando en \${delay * attempt / 1000}s...`, error);
+          console.warn(`Intento \${attempt} fallido:`, error.message);
           if (attempt === retries) throw error;
           await new Promise(resolve => setTimeout(resolve, delay * attempt));
         }
@@ -687,7 +715,7 @@
     window.runMultiGeneration = async function() {
       const frontFile = document.getElementById('imgFront').files[0];
       if (!frontFile) {
-        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
+        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en le panel lateral.");
         return;
       }
 
@@ -698,7 +726,7 @@
 
       for (let i = 0; i < 4; i++) {
         await renderSingleCard(i);
-        if (i < 3) await new Promise(resolve => setTimeout(resolve, 8000)); // 8 segundos de pausa entre cada tarjeta para cuidar la cuota
+        if (i < 3) await new Promise(resolve => setTimeout(resolve, 6000));
       }
 
       document.getElementById('btnGenerateAll').textContent = "Generar Set Completo (4 Ángulos)";
