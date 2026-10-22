@@ -26,7 +26,6 @@
       height: 100vh;
       overflow: hidden;
     }
-    /* Panel lateral esbelto (fijo) */
     .sidebar {
       width: 320px;
       background-color: var(--panel-bg);
@@ -156,7 +155,6 @@
     }
     .btn-zip:hover { opacity: 0.9; }
 
-    /* LIENZO PRINCIPAL INTEGRAL */
     .main-canvas {
       flex: 1;
       display: flex;
@@ -202,12 +200,10 @@
       font-weight: 600;
       letter-spacing: 0.5px;
     }
-
-    /* PADDING HACK PARA PROPORCIÓN ESTRICTA SIN CORTES */
     .card-body-wrapper {
       position: relative;
       width: 100%;
-      padding-bottom: 137.23%; /* Proporción 1880x2580 */
+      padding-bottom: 137.23%;
       background: #fafafa;
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -229,7 +225,6 @@
       object-fit: cover;
       display: block;
     }
-
     .card-footer-refine {
       margin-top: 6px;
       display: flex;
@@ -286,7 +281,6 @@
       transition: opacity 0.2s;
     }
     .btn-card-download:hover { opacity: 0.9; }
-
     .loader {
       border: 3px solid #e5e7eb;
       border-top: 3px solid var(--accent);
@@ -343,7 +337,7 @@
       <label>1. Foto Base Frente (Requerida)</label>
       <div class="file-upload-wrapper" id="wrapFront">
         <span class="file-upload-text" id="textFront">📁 Cargar imagen frontal...</span>
-        <input type="file" id="imgFront" accept="image/*" onchange="updateFileName('imgFront', 'textFront', 'wrapFront')">
+        <input type="file" id="imgFront" accept="image/*" onchange="window.updateFileName('imgFront', 'textFront', 'wrapFront')">
       </div>
     </div>
 
@@ -351,7 +345,7 @@
       <label>2. Foto Base Espalda (Opcional)</label>
       <div class="file-upload-wrapper" id="wrapBack">
         <span class="file-upload-text" id="textBack">📁 Cargar imagen trasera...</span>
-        <input type="file" id="imgBack" accept="image/*" onchange="updateFileName('imgBack', 'textBack', 'wrapBack')">
+        <input type="file" id="imgBack" accept="image/*" onchange="window.updateFileName('imgBack', 'textBack', 'wrapBack')">
       </div>
     </div>
 
@@ -359,7 +353,7 @@
       <label>3. Foto Detalle Textura (Opcional)</label>
       <div class="file-upload-wrapper" id="wrapDetail">
         <span class="file-upload-text" id="textDetail">📁 Cargar detalle...</span>
-        <input type="file" id="imgDetail" accept="image/*" onchange="updateFileName('imgDetail', 'textDetail', 'wrapDetail')">
+        <input type="file" id="imgDetail" accept="image/*" onchange="window.updateFileName('imgDetail', 'textDetail', 'wrapDetail')">
       </div>
     </div>
 
@@ -368,11 +362,11 @@
       <textarea id="promptDetails" rows="2" placeholder="Ej. Algodón heavyweight..."></textarea>
     </div>
 
-    <button id="btnGenerateAll" class="btn-action" onclick="runMultiGeneration()">Generar Set Completo (4 Ángulos)</button>
-    <button id="btnDownloadAllZip" class="btn-zip" onclick="downloadAllAsZip()">📥 Descargar Set Completo (ZIP)</button>
+    <button id="btnGenerateAll" class="btn-action" onclick="window.runMultiGeneration()">Generar Set Completo (4 Ángulos)</button>
+    <button id="btnDownloadAllZip" class="btn-zip" onclick="window.downloadAllAsZip()">📥 Descargar Set Completo (ZIP)</button>
   </div>
 
-  <!-- LIENZO PRINCIPAL (Grid horizontal 4x1) -->
+  <!-- LIENZO PRINCIPAL -->
   <div class="main-canvas">
     <div class="results-grid">
       
@@ -389,8 +383,8 @@
         <div class="card-footer-refine">
           <input type="text" id="refineFront" class="card-refine-input" placeholder="Ajustar prompt específico...">
           <div class="card-actions-row">
-            <button class="btn-card-render" onclick="renderSingleCard(0)">✨ Generar</button>
-            <button class="btn-card-download" id="dlFront" onclick="downloadCard(0)">📥 Descargar</button>
+            <button class="btn-card-render" onclick="window.renderSingleCard(0)">✨ Generar</button>
+            <button class="btn-card-download" id="dlFront" onclick="window.downloadCard(0)">📥 Descargar</button>
           </div>
         </div>
       </div>
@@ -408,8 +402,8 @@
         <div class="card-footer-refine">
           <input type="text" id="refineBack" class="card-refine-input" placeholder="Ajustar prompt específico...">
           <div class="card-actions-row">
-            <button class="btn-card-render" onclick="renderSingleCard(1)">✨ Generar</button>
-            <button class="btn-card-download" id="dlBack" onclick="downloadCard(1)">📥 Descargar</button>
+            <button class="btn-card-render" onclick="window.renderSingleCard(1)">✨ Generar</button>
+            <button class="btn-card-download" id="dlBack" onclick="window.downloadCard(1)">📥 Descargar</button>
           </div>
         </div>
       </div>
@@ -427,8 +421,8 @@
         <div class="card-footer-refine">
           <input type="text" id="refineDetail" class="card-refine-input" placeholder="Ajustar prompt específico...">
           <div class="card-actions-row">
-            <button class="btn-card-render" onclick="renderSingleCard(2)">✨ Generar</button>
-            <button class="btn-card-download" id="dlDetail" onclick="downloadCard(2)">📥 Descargar</button>
+            <button class="btn-card-render" onclick="window.renderSingleCard(2)">✨ Generar</button>
+            <button class="btn-card-download" id="dlDetail" onclick="window.downloadCard(2)">📥 Descargar</button>
           </div>
         </div>
       </div>
@@ -446,8 +440,8 @@
         <div class="card-footer-refine">
           <input type="text" id="refineLook" class="card-refine-input" placeholder="Ajustar prompt específico...">
           <div class="card-actions-row">
-            <button class="btn-card-render" onclick="renderSingleCard(3)">✨ Generar</button>
-            <button class="btn-card-download" id="dlLook" onclick="downloadCard(3)">📥 Descargar</button>
+            <button class="btn-card-render" onclick="window.renderSingleCard(3)">✨ Generar</button>
+            <button class="btn-card-download" id="dlLook" onclick="window.downloadCard(3)">📥 Descargar</button>
           </div>
         </div>
       </div>
@@ -455,10 +449,8 @@
     </div>
   </div>
 
-  <!-- Librería JSZip para descarga del archivo comprimido -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
-  <!-- LÓGICA DE API Y CONFIG -->
   <script type="module">
     import { API_KEY } from "./config.js";
 
@@ -507,7 +499,6 @@
       };
     }
 
-    // Conexión limpia por HTTPS Direct Fetch usando gemini-2.5-flash
     async function generateWithRetry(contentsArray, retries = 3, delay = 4000) {
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=\${API_KEY}`;
       
@@ -692,37 +683,4 @@
               const centerShiftX = (canvas.width - img.width * ratio) / 2;
               const centerShiftY = (canvas.height - img.height * ratio) / 2;
               ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
-              imageUrl = canvas.toDataURL('image/jpeg', 0.98);
-              resolve();
-            };
-            img.src = event.target.result;
-          };
-          reader.readAsDataURL(activeUpload);
-        });
-      }
-
-      generatedImagesData[index] = imageUrl;
-
-      if (index === 0 && imageUrl) {
-        establishedModelReference = imageUrl;
-      }
-
-      bodyContentEl.innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
-      document.getElementById(downloadBtns[index]).style.display = 'block';
-      checkAllGenerated();
-    }
-
-    function downloadCard(index) {
-      const titles = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
-      const imgData = generatedImagesData[index];
-      if (imgData) {
-        const link = document.createElement('a');
-        link.href = imgData;
-        link.download = `SapiStudio_${titles[index]}_1880x2580.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    }
-
-    window
+              imageUrl = canvas.toDataURL('image/jpeg', 0.98
