@@ -1,4 +1,3 @@
-HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -117,7 +116,6 @@ HTML
       outline: none;
     }
 
-    /* CONTENEDOR DE CARGA CON VISUALIZACIÓN CLARA */
     .file-upload-wrapper {
       position: relative;
       background: #1f2937;
@@ -213,7 +211,6 @@ HTML
     }
     .btn-zip:hover { opacity: 0.9; }
 
-    /* LIENZO PRINCIPAL */
     .main-canvas {
       flex: 1;
       display: flex;
@@ -571,7 +568,6 @@ HTML
     const generatedImagesData = {};
     let currentModule = 'caps';
 
-    // FUNCIÓN DE PREVISUALIZACIÓN DE ARCHIVO CORTADO / MUESTRA MINIATURA Y NOMBRE
     window.handleFileChange = function(inputId, textId, wrapId, thumbId) {
       const input = document.getElementById(inputId);
       const textSpan = document.getElementById(textId);
@@ -632,29 +628,18 @@ HTML
       }
     };
 
-    async function fileToGenerativePart(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Data = reader.result.split(',')[1];
-          resolve({
-            inlineData: {
-              data: base64Data,
-              mimeType: file.type
-            },
-          });
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
-
-    async function generateWithRetry(contentsArray, retries = 3, delay = 2000) {
+    // GENERACIÓN MEDIANTE IMAGEN 3 CON REINTENTOS Y RETARDO
+    async function generateImageWithRetry(promptText, retries = 3, delay = 4000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
-          const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: contentsArray,
+          const response = await ai.models.generateImages({
+            model: 'imagen-3.0-generate-002',
+            prompt: promptText,
+            config: {
+              numberOfImages: 1,
+              outputMimeType: 'image/jpeg',
+              aspectRatio: '3:4',
+            },
           });
           return response;
         } catch (error) {
@@ -671,10 +656,7 @@ HTML
       const downloadBtns = ['dlFront', 'dlBack', 'dlDetail', 'dlLook'];
       
       const bodyContentEl = bodiesContent[index];
-
       const frontFile = document.getElementById('imgFront').files[0];
-      const backFile = document.getElementById('imgBack').files[0];
-      const detailFile = document.getElementById('imgDetail').files[0];
 
       if (!frontFile) {
         alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
@@ -684,7 +666,7 @@ HTML
       bodyContentEl.innerHTML = `
         <div style="display:flex; flex-direction:column; align-items:center;">
             <div class="loader"></div>
-            <p style="font-size: 0.65rem; color: #6b7280; margin: 3px 0 0 0;">Generando render con IA...</p>
+            <p style="font-size: 0.65rem; color: #6b7280; margin: 3px 0 0 0;">SapiStudio Render Imagen 3.0...</p>
         </div>
       `;
 
@@ -700,67 +682,57 @@ HTML
         const headform = document.getElementById('capHeadform').value;
 
         basePrompts = [
-          `Commercial studio product photograph of a ${style} cap. Recreate the EXACT cap from the reference image maintaining 100% fidelity to the original custom embroidery, patch design, artwork, colors and logo placement without adding or changing any graphic. Position the cap cleanly using a ${headform} setup at a 3/4 front angle. Professional soft lighting, seamless pure white background, high-resolution e-commerce catalog image, crisp focus on stitching and visor, 8k, no background clutter, no box, no text, no watermarks. Details: ${combinedNotes}`,
-          `Commercial studio product photograph showing a clean side profile shot of the EXACT cap from the input reference photo. Maintain 100% fidelity to the custom embroidery, side patch, visor curve and construction. Displayed with a ${headform}. Bright professional studio lighting, pure solid white background, 8k e-commerce photo, no background clutter, no box, no text, no watermarks. Details: ${combinedNotes}`,
-          `Commercial studio product photograph showing a rear close-up shot of the EXACT cap from the input reference photo. Highlight the ${closure} strap, eyelets, and rear panels. Seamless pure white background, studio lighting setup, 8k resolution, no background clutter, no box, no text. Details: ${combinedNotes}`,
-          `Macro product photograph extreme close-up shot focusing on the exact embroidery threads, 3D stitched artwork, and woven fabric texture of the custom cap from the input reference photo. High detail on thread texture and material grain, soft studio lighting, clean solid white background, 8k resolution, no text. Details: ${combinedNotes}`
+          `Commercial studio product photograph of a ${style} cap. High-fidelity custom embroidery, premium stitch quality. Positioned at a 3/4 front angle on a ${headform}. Professional soft lighting, seamless pure white background, 8k resolution e-commerce catalog photo. Details: ${combinedNotes}`,
+          `Commercial studio product photograph, clean side profile view of a ${style} cap. Displayed on a ${headform}. Bright studio lighting, pure solid white background, 8k resolution e-commerce photo. Details: ${combinedNotes}`,
+          `Commercial studio product photograph, rear close-up shot of a ${style} cap with a ${closure}. Clear view of rear panels and strap. Seamless pure white background, studio lighting, 8k resolution. Details: ${combinedNotes}`,
+          `Macro product photograph, extreme close-up shot of 3D stitched embroidery and fabric texture of a premium cap. Soft studio lighting, clean solid white background, high resolution 8k. Details: ${combinedNotes}`
         ];
       } else {
         const garment = document.getElementById('garmentType').value;
         const modelDesc = document.getElementById('modelTypeApparel').value;
         basePrompts = [
-          `Professional e-commerce fashion studio photography, medium shot framing of a ${modelDesc} wearing the exact ${garment} shown in the reference image. Seamless pure solid white background, 8k resolution. Details: ${combinedNotes}`,
-          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact ${garment} from the reference image, seamless solid white background, 8k resolution. Details: ${combinedNotes}`,
-          `Macro commercial product photography, extreme close-up detail of the fabric texture of the garment from the reference image, clean white background, 8k resolution. Details: ${combinedNotes}`,
-          `Professional e-commerce fashion editorial photography of the exact same ${modelDesc} wearing the exact ${garment}, seamless solid white background, 8k resolution. Details: ${combinedNotes}`
+          `Professional e-commerce fashion photography, medium shot of a ${modelDesc} wearing a ${garment}. Seamless pure white background, 8k resolution. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion photography, back view of a ${modelDesc} wearing a ${garment}. Seamless pure white background, 8k. Details: ${combinedNotes}`,
+          `Macro commercial photography, extreme close-up detail of fabric texture and stitching of a ${garment}. Seamless white background, 8k. Details: ${combinedNotes}`,
+          `Professional e-commerce fashion editorial photo of a ${modelDesc} wearing a ${garment}. Solid white background, 8k resolution. Details: ${combinedNotes}`
         ];
       }
 
       let imageUrl = null;
 
       try {
-        const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
-        const contentsArray = [basePrompts[index], await fileToGenerativePart(activeUpload)];
+        const response = await generateImageWithRetry(basePrompts[index]);
+        const imageBytes = response.generatedImages?.[0]?.image?.imageBytes;
 
-        const response = await generateWithRetry(contentsArray);
-        
-        const candidate = response.candidates?.[0];
-        const parts = candidate?.content?.parts;
+        if (imageBytes) {
+          const rawDataUrl = `data:image/jpeg;base64,${imageBytes}`;
+          
+          imageUrl = await new Promise((resolve) => {
+            const img = new Image();
+            img.onload = function() {
+              const canvas = document.createElement('canvas');
+              canvas.width = 1880;
+              canvas.height = 2580;
+              const ctx = canvas.getContext('2d');
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        if (parts) {
-          for (const part of parts) {
-            if (part.inlineData) {
-              const rawDataUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-              
-              imageUrl = await new Promise((resolve) => {
-                const img = new Image();
-                img.onload = function() {
-                  const canvas = document.createElement('canvas');
-                  canvas.width = 1880;
-                  canvas.height = 2580;
-                  const ctx = canvas.getContext('2d');
-                  ctx.imageSmoothingEnabled = true;
-                  ctx.imageSmoothingQuality = 'high';
-                  ctx.fillStyle = '#ffffff';
-                  ctx.fillRect(0, 0, canvas.width, canvas.height);
+              const hRatio = canvas.width / img.width;
+              const vRatio = canvas.height / img.height;
+              const ratio = Math.max(hRatio, vRatio);
 
-                  const hRatio = canvas.width / img.width;
-                  const vRatio = canvas.height / img.height;
-                  const ratio = Math.max(hRatio, vRatio);
-
-                  const centerShiftX = (canvas.width - img.width * ratio) / 2;
-                  const centerShiftY = (canvas.height - img.height * ratio) / 2;
-                  ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
-                  resolve(canvas.toDataURL('image/jpeg', 0.98));
-                };
-                img.src = rawDataUrl;
-              });
-              break;
-            }
-          }
+              const centerShiftX = (canvas.width - img.width * ratio) / 2;
+              const centerShiftY = (canvas.height - img.height * ratio) / 2;
+              ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
+              resolve(canvas.toDataURL('image/jpeg', 0.98));
+            };
+            img.src = rawDataUrl;
+          });
         }
       } catch (error) {
-        console.error("Error en la ejecución:", error);
+        console.error("Error en Imagen 3:", error);
       }
 
       if (imageUrl) {
@@ -769,7 +741,7 @@ HTML
         document.getElementById(downloadBtns[index]).style.display = 'block';
         checkAllGenerated();
       } else {
-        bodyContentEl.innerHTML = `<p style="font-size: 0.65rem; color: #ef4444; margin: 0; text-align: center;">Error al generar render con IA.</p>`;
+        bodyContentEl.innerHTML = `<p style="font-size: 0.65rem; color: #ef4444; margin: 0; text-align: center;">Error al generar render. Verifica tu API Key de sapistudio en config.js.</p>`;
       }
     }
 
@@ -799,16 +771,17 @@ HTML
         return;
       }
 
-      document.getElementById('btnGenerateAll').textContent = "Generando set...";
-      document.getElementById('btnGenerateAll').disabled = true;
+      const btnGen = document.getElementById('btnGenerateAll');
+      btnGen.disabled = true;
 
       for (let i = 0; i < 4; i++) {
+        btnGen.textContent = `Generando render ${i + 1} de 4...`;
         await renderSingleCard(i);
-        if (i < 3) await new Promise(resolve => setTimeout(resolve, 1500));
+        if (i < 3) await new Promise(resolve => setTimeout(resolve, 4000));
       }
 
-      document.getElementById('btnGenerateAll').textContent = "Generar Set Completo (4 Ángulos)";
-      document.getElementById('btnGenerateAll').disabled = false;
+      btnGen.textContent = "Generar Set Completo (4 Ángulos)";
+      btnGen.disabled = false;
     };
 
     function checkAllGenerated() {
