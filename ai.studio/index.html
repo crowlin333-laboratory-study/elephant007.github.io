@@ -460,10 +460,8 @@
   
   <!-- LÓGICA DE API Y CONFIG -->
   <script type="module">
-    import { GoogleGenAI } from "https://esm.run/@google/genai";
     import { API_KEY } from "./config.js";
 
-    const ai = new GoogleGenAI({ apiKey: API_KEY });
     const generatedImagesData = {};
     let establishedModelReference = null;
 
@@ -509,17 +507,53 @@
       };
     }
 
-    // Función de reintento inteligente utilizando gemini-2.5-flash para estabilidad total
-    async function generateWithRetry(contentsArray, retries = 4, delay = 5000) {
+    // Conexión limpia por HTTPS Direct Fetch usando gemini-2.5-flash
+    async function generateWithRetry(contentsArray, retries = 3, delay = 4000) {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=\${API_KEY}`;
+      
+      const payload = {
+        contents: [
+          {
+            parts: contentsArray.map(item => {
+              if (typeof item === 'string') {
+                return { text: item };
+              } else if (item.inlineData) {
+                return {
+                  inlineData: {
+                    mimeType: item.inlineData.mimeType,
+                    data: item.inlineData.data
+                  }
+                };
+              }
+              return { text: String(item) };
+            })
+          }
+        ]
+      };
+
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
-          const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: contentsArray,
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
           });
-          return response;
+
+          if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(errData.error?.message || `Error HTTP: \${res.status}`);
+          }
+
+          const data = await res.json();
+          return {
+            candidates: [{
+              content: {
+                parts: data.candidates[0].content.parts
+              }
+            }]
+          };
         } catch (error) {
-          console.warn(`Intento ${attempt} de${retries} fallido. Reintentando en \${delay/1000}s...`, error);
+          console.warn(`Intento \${attempt} fallido:`, error.message);
           if (attempt === retries) throw error;
           await new Promise(resolve => setTimeout(resolve, delay * attempt));
         }
@@ -568,7 +602,6 @@
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
-      // Prompts blindados con la regla estricta anti-espalda-lisa incorporada
       let basePrompts = [];
       if (index === 0 || !establishedModelReference) {
         basePrompts = [
@@ -638,7 +671,6 @@
         console.warn("Aviso de red en IA, usando respaldo local:", error);
       }
 
-      // Respaldo visual inteligente por si ocurre cualquier interrupción de red
       if (!imageUrl) {
         const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
         await new Promise((resolve) => {
@@ -663,4 +695,34 @@
               imageUrl = canvas.toDataURL('image/jpeg', 0.98);
               resolve();
             };
-            img
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(activeUpload);
+        });
+      }
+
+      generatedImagesData[index] = imageUrl;
+
+      if (index === 0 && imageUrl) {
+        establishedModelReference = imageUrl;
+      }
+
+      bodyContentEl.innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
+      document.getElementById(downloadBtns[index]).style.display = 'block';
+      checkAllGenerated();
+    }
+
+    function downloadCard(index) {
+      const titles = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
+      const imgData = generatedImagesData[index];
+      if (imgData) {
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = `SapiStudio_${titles[index]}_1880x2580.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+
+    window
