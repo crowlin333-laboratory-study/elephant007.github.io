@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sapi Studio - AI E-commerce Studio Pro</title>
+  <title>Sapi Studio 5.1 - AI E-commerce Studio Pro</title>
   <style>
     :root {
       --bg-color: #f8f9fa;
@@ -226,7 +226,7 @@
     .card-body-content img {
       max-width: 100%;
       max-height: 100%;
-      object-fit: cover; /* Llena el espacio sin dejar márgenes blancos */
+      object-fit: cover;
       display: block;
     }
 
@@ -322,6 +322,10 @@
         <option value="tee" selected>Playera / Basic Tee</option>
         <option value="jacket">Chamarra / Denim Jacket</option>
         <option value="pants">Pantalón / Jogger</option>
+        <option value="short">Short / Bermuda</option>
+        <option value="dress">Vestido / Falda</option>
+        <option value="suit">Conjunto (2 piezas)</option>
+        <option value="baby">Ropa de Bebé / Body</option>
       </select>
     </div>
 
@@ -470,7 +474,7 @@
 
       if (input.files && input.files.length > 0) {
         const fileName = input.files[0].name;
-        textSpan.textContent = `✔ ${fileName}`;
+        textSpan.textContent = `✔ \${fileName}`;
         wrapper.classList.add('has-file');
       } else {
         wrapper.classList.remove('has-file');
@@ -505,16 +509,17 @@
       };
     }
 
-   async function generateWithRetry(contentsArray, retries = 5, delay = 8000) {
+    // Función de reintento inteligente utilizando gemini-2.5-flash para estabilidad total
+    async function generateWithRetry(contentsArray, retries = 4, delay = 5000) {
       for (let attempt = 1; attempt <= retries; attempt++) {
         try {
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-2.5-flash',
             contents: contentsArray,
           });
           return response;
         } catch (error) {
-          console.warn(`Intento ${attempt} en espera por límite de región (429). Reintentando en ${delay/1000}s...`);
+          console.warn(`Intento ${attempt} de${retries} fallido. Reintentando en \${delay/1000}s...`, error);
           if (attempt === retries) throw error;
           await new Promise(resolve => setTimeout(resolve, delay * attempt));
         }
@@ -554,26 +559,30 @@
         'hoodie': 'oversized hoodie',
         'tee': 'basic polo t-shirt',
         'jacket': 'denim jacket',
-        'pants': 'jogger pants'
+        'pants': 'jogger pants',
+        'short': 'casual shorts',
+        'dress': 'fashion dress / skirt',
+        'suit': 'matching two-piece set outfit',
+        'baby': 'infant baby bodysuit / romper'
       };
 
       const selectedGarmentText = garmentNames[garment] || garment;
 
-      // Prompts blindados sin texto superpuesto, etiquetas ni marcas flotantes
+      // Prompts blindados con la regla estricta anti-espalda-lisa incorporada
       let basePrompts = [];
       if (index === 0 || !establishedModelReference) {
         basePrompts = [
-          `Professional e-commerce fashion studio photography, medium shot / waist-up framing of a ${modelDesc} wearing the exact${selectedGarmentText} shown in the reference image, paired with casual navy blue chino pants. Maintain exact color, collar style, and logo details. Clean minimalist setup, soft studio lighting, seamless pure solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
-          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image, paired with casual navy blue chino pants and clean white sneakers, identical tailoring, soft studio lighting, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
-          `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, clean white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
-          `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image matched with casual navy blue chino pants and clean white sneakers, professional clean studio setting, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`
+          `Professional e-commerce fashion studio photography, medium shot / waist-up framing of a ${modelDesc} wearing the exact${selectedGarmentText} shown in the reference image, paired with casual companion pants. Maintain exact color, style, and logo details. Clean minimalist setup, soft studio lighting, seamless pure solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: \${combinedNotes}`,
+          `Professional e-commerce fashion studio photography, back view of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image. CRITICAL REQUIREMENT: If the original garment reference contains a back graphic, logo, or artwork, you MUST faithfully project it onto the back of the garment, adapting it realistically to the fabric curves. Do not leave the back plain if a back graphic exists. Soft studio lighting, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: \${combinedNotes}`,
+          `Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury \${selectedGarmentText} from the reference image, sharp focus on woven fibers, directional studio light, clean white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: \${combinedNotes}`,
+          `Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same ${modelDesc} wearing the exact${selectedGarmentText} from the reference image matched with casual clothing, professional clean studio setting, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: \${combinedNotes}`
         ];
       } else {
         basePrompts = [
           ``,
-          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion studio photography, back view of the exact same model wearing the exact ${selectedGarmentText}, paired with casual navy blue chino pants and clean white sneakers, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
+          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion studio photography, back view of the exact same model wearing the exact ${selectedGarmentText}. CRITICAL REQUIREMENT: If the original garment reference contains a back graphic or logo, you MUST faithfully project it onto the back view, adapting it realistically to the fabric curves. Seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
           `Maintaining the exact same garment texture and color from the reference image: Macro commercial product photography, extreme close-up detail of the fabric texture and stitching of the luxury ${selectedGarmentText}, clean white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`,
-          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same model wearing the exact ${selectedGarmentText} matched with casual navy blue chino pants and clean white sneakers, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`
+          `Maintaining the exact same model appearance (same facial features, same skin tone, same hair style and type) from the reference image: Professional e-commerce fashion editorial photography, medium-full editorial shot of the exact same model wearing the exact ${selectedGarmentText}, seamless solid white background, 8k resolution, absolutely NO text, NO labels, NO watermarks. Details: ${combinedNotes}`
         ];
       }
 
@@ -610,7 +619,6 @@
                   ctx.fillStyle = '#ffffff';
                   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                  // CORRECCIÓN: Uso de Math.max (cover) para eliminar por completo las franjas blancas
                   const hRatio = canvas.width / img.width;
                   const vRatio = canvas.height / img.height;
                   const ratio = Math.max(hRatio, vRatio);
@@ -627,9 +635,10 @@
           }
         }
       } catch (error) {
-        console.warn("Aviso de red:", error);
+        console.warn("Aviso de red en IA, usando respaldo local:", error);
       }
 
+      // Respaldo visual inteligente por si ocurre cualquier interrupción de red
       if (!imageUrl) {
         const activeUpload = (index === 1 && backFile) ? backFile : ((index === 2 && detailFile) ? detailFile : frontFile);
         await new Promise((resolve) => {
@@ -654,94 +663,4 @@
               imageUrl = canvas.toDataURL('image/jpeg', 0.98);
               resolve();
             };
-            img.src = event.target.result;
-          };
-          reader.readAsDataURL(activeUpload);
-        });
-      }
-
-      generatedImagesData[index] = imageUrl;
-
-      if (index === 0 && imageUrl) {
-        establishedModelReference = imageUrl;
-      }
-
-      bodyContentEl.innerHTML = `<img src="${imageUrl}" alt="Sapi Studio Render">`;
-      document.getElementById(downloadBtns[index]).style.display = 'block';
-      checkAllGenerated();
-    }
-
-    function downloadCard(index) {
-      const titles = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
-      const imgData = generatedImagesData[index];
-      if (imgData) {
-        const link = document.createElement('a');
-        link.href = imgData;
-        link.download = `SapiStudio_${titles[index]}_1880x2580.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    }
-
-    window.renderSingleCard = renderSingleCard;
-
-    window.runMultiGeneration = async function() {
-      const frontFile = document.getElementById('imgFront').files[0];
-      if (!frontFile) {
-        alert("⚠️ Por favor carga al menos la '1. Foto Base Frente' en el panel lateral.");
-        return;
-      }
-
-      establishedModelReference = null;
-
-      document.getElementById('btnGenerateAll').textContent = "Generando set...";
-      document.getElementById('btnGenerateAll').disabled = true;
-
-      for (let i = 0; i < 4; i++) {
-        await renderSingleCard(i);
-        if (i < 3) await new Promise(resolve => setTimeout(resolve, 3000));
-      }
-
-      document.getElementById('btnGenerateAll').textContent = "Generar Set Completo (4 Ángulos)";
-      document.getElementById('btnGenerateAll').disabled = false;
-    }
-
-    function checkAllGenerated() {
-      const btnZip = document.getElementById('btnDownloadAllZip');
-      if (generatedImagesData[0] && generatedImagesData[1] && generatedImagesData[2] && generatedImagesData[3]) {
-        btnZip.style.display = 'block';
-      } else {
-        btnZip.style.display = 'none';
-      }
-    }
-
-    window.downloadAllAsZip = async function() {
-      const zip = new JSZip();
-      const titles = ["01_Frente_Studio", "02_Espalda_Studio", "03_Detalle_Textura", "04_Look_General"];
-      const btnZip = document.getElementById('btnDownloadAllZip');
-
-      btnZip.textContent = "Comprimiendo ZIP...";
-      btnZip.disabled = true;
-
-      for (let i = 0; i < 4; i++) {
-        if (generatedImagesData[i]) {
-          const base64Data = generatedImagesData[i].split(',')[1];
-          zip.file(`SapiStudio_${titles[i]}_1880x2580.jpg`, base64Data, { base64: true });
-        }
-      }
-
-      const content = await zip.generateAsync({ type: "blob" });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(content);
-      link.download = "SapiStudio_Set_Completo_1880x2580.zip";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      btnZip.textContent = "📥 Descargar Set Completo (ZIP)";
-      btnZip.disabled = false;
-    }
-  </script>
-</body>
-</html>
+            img
